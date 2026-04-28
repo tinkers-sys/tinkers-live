@@ -1,2 +1,3 @@
-// AI chatbot simulation placeholder
-console.log("Tinkers AI ready");
+function addToCart(item){let cart=JSON.parse(localStorage.getItem('cart')||'[]');cart.push(item);localStorage.setItem('cart',JSON.stringify(cart));alert(item+' added to cart');}
+function openChat(){alert('AI Curator: Ask me about product stories, gifting, and recommendations');}
+document.getElementById('cart') && (document.getElementById('cart').innerHTML=JSON.parse(localStorage.getItem('cart')||'[]').join('<br>'));

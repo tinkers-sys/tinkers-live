@@ -7,17 +7,26 @@
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-<header>
-  <div class="logo">Tinkers</div>
+<header class="header">
+  <h1>Tinkers</h1>
   <nav>
-    <a href="#">Art</a><a href="#">Apparel</a><a href="#">Beadwork</a><a href="#">Accessories</a>
+    <a href="#">Art</a>
+    <a href="#">Apparel</a>
+    <a href="#">Beadwork</a>
+    <a href="#">Accessories</a>
+    <a href="checkout.html" class="cart-link">Checkout</a>
   </nav>
 </header>
-<section class="hero">
-  <h1>Welcome to Tinkers</h1>
-  <p>African traditional handcrafted art, apparel & accessories</p>
-  <button>Shop Now</button>
+
+<section class="grid">
+  <div class="card"><img src="images/art-wooden-sculpture.jpg"><h3>African Wooden Sculpture</h3><p>R1299</p><button onclick="addToCart('Sculpture')">Add to cart</button></div>
+  <div class="card"><img src="images/apparel-traditional-dress.jpg"><h3>Traditional Dress</h3><p>R1599</p><button onclick="addToCart('Dress')">Add to cart</button></div>
+  <div class="card"><img src="images/beadwork-necklace.jpg"><h3>Beaded Necklace</h3><p>R499</p><button onclick="addToCart('Necklace')">Add to cart</button></div>
+  <div class="card"><img src="images/accessories-woven-basket.jpg"><h3>Woven Basket</h3><p>R649</p><button onclick="addToCart('Basket')">Add to cart</button></div>
 </section>
+
+<div class="whatsapp-chat" onclick="openChat()">💬 WhatsApp Curator</div>
+
 <script src="js/app.js"></script>
 </body>
 </html>

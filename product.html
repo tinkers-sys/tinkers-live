@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tinkers | Product Detail</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="detail-page">
+  <header class="site-header compact">
+    <div class="logo-wrap">
+      <div class="logo-mark">T</div>
+      <div>
+        <div class="brand">Tinkers</div>
+        <div class="tag">Product detail prototype</div>
+      </div>
+    </div>
+    <div class="detail-actions-top">
+      <a href="index.html" class="secondary-btn">← Back to shop</a>
+      <button class="cart-btn" id="cartButton">Cart <span id="cartCount">0</span></button>
+    </div>
+  </header>
+
+  <main class="detail-layout" id="detailRoot"></main>
+
+  <div class="cart-panel" id="cartPanel" aria-hidden="true">
+    <div class="cart-header">
+      <h3>Your cart</h3>
+      <button id="closeCart" class="icon-btn">✕</button>
+    </div>
+    <div id="cartItems" class="cart-items"></div>
+    <div class="cart-footer">
+      <div class="cart-total">Total: <strong id="cartTotal">R0</strong></div>
+      <button class="checkout-btn" id="checkoutButton">Proceed to checkout</button>
+      <p class="cart-note">Demo cart only — ready for future payment integration.</p>
+    </div>
+  </div>
+
+  <script>window.TINKERS_PRODUCTS = [
+  {
+    "id": "art-wooden-sculpture",
+    "name": "African Wooden Sculpture",
+    "category": "Art",
+    "price": 1299,
+    "origin": "Hand-carved decorative sculpture inspired by traditional African woodcraft.",
+    "story": "Crafted to celebrate heritage motifs and display artistry in a modern curio setting.",
+    "filename": "art-wooden-sculpture.jpg",
+    "accent": "#5b3a29"
+  },
+  {
+    "id": "art-tribal-mask",
+    "name": "Tribal Wall Mask",
+    "category": "Art",
+    "price": 899,
+    "origin": "Decor wall piece inspired by ceremonial mask forms.",
+    "story": "Designed as a storytelling centrepiece for homes, lodges, or gift buyers seeking iconic African visual forms.",
+    "filename": "art-tribal-mask.jpg",
+    "accent": "#4e342e"
+  },
+  {
+    "id": "art-sunset-plaque",
+    "name": "Sunset Carved Plaque",
+    "category": "Art",
+    "price": 749,
+    "origin": "Wooden wall plaque with engraved geometric detail.",
+    "story": "A compact souvenir-style artwork made for display, gifting, and heritage-themed interiors.",
+    "filename": "art-sunset-plaque.jpg",
+    "accent": "#7b4f21"
+  },
+  {
+    "id": "apparel-traditional-dress",
+    "name": "Traditional Chevron Dress",
+    "category": "Apparel",
+    "price": 1599,
+    "origin": "Contemporary dress drawing on bold African colour rhythm.",
+    "story": "Created for shoppers wanting a statement outfit that blends modern silhouette with heritage-inspired patterns.",
+    "filename": "apparel-traditional-dress.jpg",
+    "accent": "#c16422"
+  },
+  {
+    "id": "apparel-heritage-shirt",
+    "name": "Heritage Print Shirt",
+    "category": "Apparel",
+    "price": 899,
+    "origin": "Casual shirt with geometric cultural pattern influences.",
+    "story": "A versatile garment suited to tourists, gifts, and occasion wear with a strong visual identity.",
+    "filename": "apparel-heritage-shirt.jpg",
+    "accent": "#c62828"
+  },
+  {
+    "id": "apparel-beaded-wrap",
+    "name": "Beaded Accent Wrap",
+    "category": "Apparel",
+    "price": 1099,
+    "origin": "Layering piece with bead-inspired detailing and woven trim.",
+    "story": "Designed to add ceremonial flair and a handcrafted finish to a curated apparel collection.",
+    "filename": "apparel-beaded-wrap.jpg",
+    "accent": "#1565c0"
+  },
+  {
+    "id": "beadwork-necklace",
+    "name": "Beadwork Necklace",
+    "category": "Beadwork",
+    "price": 499,
+    "origin": "Multi-colour necklace inspired by traditional beadwork palettes.",
+    "story": "Built for guests seeking wearable keepsakes and bold handcrafted accessories.",
+    "filename": "beadwork-necklace.jpg",
+    "accent": "#0057b8"
+  },
+  {
+    "id": "beadwork-bracelet-set",
+    "name": "Beaded Bracelet Set",
+    "category": "Beadwork",
+    "price": 329,
+    "origin": "Stackable bracelets in coordinated heritage colours.",
+    "story": "A high-margin accessory option ideal for gift shopping and impulse purchases.",
+    "filename": "beadwork-bracelet-set.jpg",
+    "accent": "#f4b400"
+  },
+  {
+    "id": "beadwork-earrings",
+    "name": "Beaded Drop Earrings",
+    "category": "Beadwork",
+    "price": 279,
+    "origin": "Lightweight earrings with handcrafted bead patterns.",
+    "story": "Made for customers who want expressive detail in a portable souvenir format.",
+    "filename": "beadwork-earrings.jpg",
+    "accent": "#d93025"
+  },
+  {
+    "id": "accessories-woven-basket",
+    "name": "Woven Basket",
+    "category": "Accessories",
+    "price": 649,
+    "origin": "Handwoven basket-style container with geometric motif.",
+    "story": "Practical decor piece that bridges souvenir shopping and premium home styling.",
+    "filename": "accessories-woven-basket.jpg",
+    "accent": "#8d6e63"
+  },
+  {
+    "id": "accessories-beaded-pouch",
+    "name": "Beaded Pouch",
+    "category": "Accessories",
+    "price": 399,
+    "origin": "Small carry pouch with bead-inspired panel detailing.",
+    "story": "Compact accessory built for gifting and curated tourist collections.",
+    "filename": "accessories-beaded-pouch.jpg",
+    "accent": "#0f9d58"
+  },
+  {
+    "id": "accessories-woven-tote",
+    "name": "Woven Tote Bag",
+    "category": "Accessories",
+    "price": 899,
+    "origin": "Carry tote with woven texture and heritage motif accents.",
+    "story": "A lifestyle accessory designed for repeat use long after the trip has ended.",
+    "filename": "accessories-woven-tote.jpg",
+    "accent": "#795548"
+  }
+];</script>
+  <script src="js/app.js"></script>
+</body>
+</html>
