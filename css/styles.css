@@ -1,0 +1,4 @@
+body{margin:0;font-family:Segoe UI;background:#f7f7f7}
+header{background:#24333a;color:#fff;padding:20px;display:flex;justify-content:space-between}
+.hero{padding:60px;background:linear-gradient(135deg,#24333a,#36454f);color:white;text-align:center}
+button{padding:12px 24px;border:none;background:#c55a11;color:white;border-radius:6px}
