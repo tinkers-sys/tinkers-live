@@ -1,15 +1,32 @@
-body{font-family:Segoe UI;background:#f7f7f7;margin:0}
-.header{background:#24333a;color:white;padding:20px;display:flex;justify-content:space-between}
-.header a{color:white;margin:0 10px;text-decoration:none}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;padding:30px}
-.card{background:white;padding:15px;border-radius:10px;text-align:center}
-.card img{width:100%;border-radius:10px}
-button{background:#c55a11;color:white;border:none;padding:10px;border-radius:6px;cursor:pointer}
-.whatsapp-chat{position:fixed;bottom:20px;right:20px;background:#25D366;color:white;padding:15px;border-radius:50px;cursor:pointer}
-.hero {
-  background: linear-gradient(135deg, #24333a, #36454f);
+/* BASE */
+body {
+  font-family: Segoe UI, sans-serif;
+  background: #f7f7f7;
+  margin: 0;
+}
+
+/* HEADER */
+.header {
+  background: #24333a;
   color: white;
-  padding: 80px 20px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header a {
+  color: white;
+  margin: 0 10px;
+  text-decoration: none;
+}
+
+/* HERO */
+.hero {
+  background-size: cover;
+  background-position: center;
+  color: white;
+  padding: 120px 20px;
   text-align: center;
 }
 
@@ -41,6 +58,7 @@ button{background:#c55a11;color:white;border:none;padding:10px;border-radius:6px
   padding: 14px 24px;
   border-radius: 8px;
   text-decoration: none;
+  font-weight: bold;
 }
 
 .secondary-btn {
@@ -50,90 +68,54 @@ button{background:#c55a11;color:white;border:none;padding:10px;border-radius:6px
   border-radius: 8px;
   text-decoration: none;
 }
+
+/* HERO → SHOP DIVIDER */
+.hero-divider {
+  height: 50px;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.45),
+    #f7f7f7
+  );
+}
+
 /* PRODUCT GRID */
 .grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 24px;
-  padding: 40px 20px;
-  background: #f7f7f7;
-}
-
-/* PRODUCT CARD */
-.card {
-  background: white;
-  border-radius: 12px;
-  padding: 16px;
-  text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
-}
-
-/* FIX IMAGE SIZE */
-.card img {
-  width: 100%;
-  max-width: 220px;      /* slightly smaller = cleaner */
-  height: 160px;         /* key change */
-  object-fit: contain;
-  background-color: #f3f3f3; /* neutral backdrop */
-  border-radius: 8px;
-  padding: 10px;         /* pulls image in from edges */
-  margin: 0 auto 12px;
-  display: block;
-}
-.grid {
-  background:f7;            /* clean retail background */
-  padding: 60px 20px;
+  background-color: #f7f7f7;
+  padding: 70px 30px 90px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 28px;
+  gap: 30px;
   position: relative;
   z-index: 2;
 }
-``
-
-.card {
-  background: white;
-  border-radius: 12px;
-  padding: 16px;
-  text-align: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
-}
-.hero-divider {
-  height:40px;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.25), #f7f7f7);
-}
-``
-
-.card img {
-  width: 100%;
-  height: 200px;        /* KEY FIX */
-  object-fit: contain; /* keeps full product visible */
-  margin-bottom: 12px;
-}
-/* PRODUCT GRID */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 24px;
-  padding: 40px 20px;
-  background: #f7f7f7;
-}
 
 /* PRODUCT CARD */
 .card {
   background: white;
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: 14px;
+  padding: 24px 18px 26px;
   text-align: center;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
-/* PRODUCT IMAGE SIZE FIX */
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* PRODUCT IMAGE */
 .card img {
   width: 100%;
-  height: 200px;
+  max-width: 220px;
+  height: 160px;
   object-fit: contain;
-  margin-bottom: 12px;
+  background-color: #f3f3f3;
+  border-radius: 8px;
+  padding: 12px;
+  margin: 0 auto 14px;
+  display: block;
 }
 
 /* PRODUCT TEXT */
@@ -147,11 +129,29 @@ button{background:#c55a11;color:white;border:none;padding:10px;border-radius:6px
   color: #777;
 }
 
-
 .price {
   font-weight: bold;
   margin: 8px 0;
 }
-``
 
+/* BUTTONS */
+button {
+  background: #c55a11;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+}
 
+/* WHATSAPP */
+.whatsapp-chat {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #25D366;
+  color: white;
+  padding: 14px 18px;
+  border-radius: 50px;
+  cursor: pointer;
+}
