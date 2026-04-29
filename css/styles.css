@@ -1,3 +1,12 @@
+:root {
+  --color: #24333a;
+  --color-accent: #c55a11;
+  --color-earth: #6b4a2b;
+  --color-bg: #f7f7f7;
+  --color-soft: #f3f3f3;
+  --color-white: #ffffff;
+}
+``
 /* BASE */
 body {
   font-family: Segoe UI, sans-serif;
