@@ -71,9 +71,12 @@ button{background:#c55a11;color:white;border:none;padding:10px;border-radius:6px
 /* FIX IMAGE SIZE */
 .card img {
   width: 100%;
-  max-width: 240px;          /* ✅ prevents oversizing */
-  height: 200px;             /* ✅ consistent card height */
-  object-fit: contain;       /* ✅ keeps full product visible */
+  max-width: 220px;      /* slightly smaller = cleaner */
+  height: 160px;         /* key change */
+  object-fit: contain;
+  background-color: #f3f3f3; /* neutral backdrop */
+  border-radius: 8px;
+  padding: 10px;         /* pulls image in from edges */
   margin: 0 auto 12px;
   display: block;
 }
