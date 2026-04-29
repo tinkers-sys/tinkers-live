@@ -50,3 +50,30 @@ button{background:#c55a11;color:white;border:none;padding:10px;border-radius:6px
   border-radius: 8px;
   text-decoration: none;
 }
+/* PRODUCT GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  padding: 40px 20px;
+  background: #f7f7f7;
+}
+
+/* PRODUCT CARD */
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+}
+
+/* FIX IMAGE SIZE */
+.card img {
+  width: 100%;
+  max-width: 240px;          /* ✅ prevents oversizing */
+  height: 200px;             /* ✅ consistent card height */
+  object-fit: contain;       /* ✅ keeps full product visible */
+  margin: 0 auto 12px;
+  display: block;
+}
