@@ -77,3 +77,25 @@ button{background:#c55a11;color:white;border:none;padding:10px;border-radius:6px
   margin: 0 auto 12px;
   display: block;
 }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  padding: 40px 20px;
+  background: #f7f7f7;
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+}
+
+.card img {
+  width: 100%;
+  height: 200px;        /* KEY FIX */
+  object-fit: contain; /* keeps full product visible */
+  margin-bottom: 12px;
+}
