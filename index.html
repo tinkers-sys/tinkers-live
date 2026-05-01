@@ -5,6 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tinkers | African Curio Shop</title>
 
+  <!-- Netlify Identity widget (REQUIRED for invite/reset links) -->
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+  <script>
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on("init", function () {
+        // If arriving from an invite or password reset email
+        if (
+          location.hash &&
+          (location.hash.includes("invite_token") ||
+           location.hash.includes("recovery_token"))
+        ) {
+          location.href = "/admin/" + location.hash;
+        }
+      });
+    }
+  </script>
+
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="css/additions.css" />
 </head>
