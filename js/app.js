@@ -301,3 +301,4 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.error(err);
   }
 });
+// trigger validation
