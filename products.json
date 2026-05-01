@@ -1,29 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tinkers | Checkout</title>
-  <link rel="stylesheet" href="css/styles.css" />
-</head>
-<body>
-<header class="header">
-  <h2>Tinkers</h2>
-  <nav>
-    <a href="index.html">← Back to shop</a>
-  </nav>
-</header>
-
-<main class="checkout-wrap">
-  <h2>Checkout (Demo)</h2>
-  <div id="cart" class="checkout-cart"></div>
-  <div class="checkout-summary">
-    <div>Total: <strong id="checkoutTotal">R0</strong></div>
-    <button id="payNow">Pay Now</button>
-    <p class="cart-note">Demo only — ready for PayFast / Peach Payments integration.</p>
-  </div>
-</main>
-
-<script src="js/app.js"></script>
-</body>
-</html>
+[
+  {
+    "id": "apparel-traditional-dress",
+    "name": "Traditional Chevron Dress",
+    "category": "Apparel",
+    "price": 1599,
+    "image": "apparel-traditional-dress.jpg",
+    "type": "retail"
+  },
+  {
+    "id": "beadwork-necklace",
+    "name": "Beadwork Necklace",
+    "category": "Beadwork",
+    "price": 499,
+    "image": "beadwork-necklace.jpg",
+    "type": "retail"
+  },
+  {
+    "id": "accessories-woven-basket",
+    "name": "Woven Basket",
+    "category": "Accessories",
+    "price": 649,
+    "image": "accessories-woven-basket.jpg",
+    "type": "retail"
+  },
+  {
+    "id": "art-lion-head-portrait",
+    "name": "Lion Head Portrait",
+    "category": "Art",
+    "price": 18500,
+    "image": "art-lion-head-portrait-chesa-monaisa.jpg",
+    "type": "original",
+    "artist": "Chesa Monaisa",
+    "signed": true,
+    "edition": "One-of-one",
+    "medium": "Hand-painted on canvas"
+  }
+]
