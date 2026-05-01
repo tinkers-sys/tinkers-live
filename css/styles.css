@@ -1,7 +1,15 @@
+:root {
+  --color-dark: #24333a;
+  --color-accent: #c55a11;
+  --color-earth: #6b4a2b;
+  --color-bg: #f7f7f7;
+  --color-soft: #f3f3f3;
+  --color-white: #ffffff;
+}
 body{font-family:Segoe UI;background:#f7f7f7;margin:0}
 .header{background:#24333a;color:white;padding:20px;display:flex;justify-content:space-between}
 .header a{color:white;margin:0 10px;text-decoration:none}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;padding:30px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;padding:0;}
 .card{background:white;padding:15px;border-radius:10px;text-align:center}
 .card img{width:100%;border-radius:10px}
 button{background:#c55a11;color:white;border:none;padding:10px;border-radius:6px;cursor:pointer}
