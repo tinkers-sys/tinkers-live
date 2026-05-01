@@ -8,6 +8,26 @@ public_folder: "/images"
 collections:
   - name: "products"
     label: "Products"
-    file: "products.json"
-    fields:
-      - { label: "Products", name: "products", widget: "list" }
+    files:
+      - label: "Product List"
+        name: "products"
+        file: "products.json"
+        format: "json"
+        fields:
+          - label: "Products"
+            name: "products"
+            widget: "list"
+            summary: "{{fields.name}} — {{fields.category}}"
+            fields:
+              - { label: "ID", name: "id", widget: "string" }
+              - { label: "Name", name: "name", widget: "string" }
+              - { label: "Category", name: "category", widget: "select", options: ["Art", "Apparel", "Beadwork", "Accessories"] }
+              - { label: "Price (ZAR)", name: "price", widget: "number", min: 0 }
+              - { label: "Image", name: "image", widget: "image" }
+              - { label: "Type", name: "type", widget: "select", options: ["retail", "original"] }
+              - { label: "Stock", name: "stock", widget: "number", min: 0 }
+              - { label: "Availability", name: "availability", widget: "select", options: ["in_stock", "low_stock", "out_of_stock", "preorder"] }
+              - { label: "Artist", name: "artist", widget: "string", required: false }
+              - { label: "Signed", name: "signed", widget: "boolean", required: false }
+              - { label: "Edition", name: "edition", widget: "string", required: false }
+              - { label: "Medium", name: "medium", widget: "string", required: false }
