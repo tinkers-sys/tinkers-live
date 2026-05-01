@@ -8,6 +8,20 @@ function moneyZAR(value) {
   const n = Number(value || 0);
   return 'R' + n.toLocaleString('en-ZA');
 }
+function availabilityLabel(p){
+  const a = (p.availability || 'in_stock').toLowerCase();
+  if (a === 'out_of_stock') return 'Out of stock';
+  if (a === 'low_stock') return 'Low stock';
+  if (a === 'preorder') return 'Pre‑order';
+  return 'In stock';
+}
+
+function canAddToCart(p){
+  if (p.type === 'original') return false;  // originals = enquiry only
+  if ((p.availability || 'in_stock').toLowerCase() === 'out_of_stock') return false;
+  return Number(p.stock ?? 0) > 0;
+}
+
 
 function getImage(p) {
   return (p && (p.image || p.filename))
