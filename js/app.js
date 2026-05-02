@@ -76,11 +76,19 @@ function updateCartCount() {
 
 /* ---------- Data ---------- */
 async function loadProducts() {
-  const res = await fetch(PRODUCTS_URL, { cache: 'no-store' });
-  if (!res.ok) throw new Error('Could not load products.json');
+  const res = await fetch('admin/products/');
+  const html = await res.text();
 
-  const data = await res.json();
-  const products = Array.isArray(data) ? data : (data.products || []);
+  // Extract .json filenames from directory listing
+  const files = [...html.matchAll(/href="([^"]+\.json)"/g)].map(m => m[1]);
+
+  const products = await Promise.all(
+    files.map(async file => {
+      const r = await fetch('admin/products/' + file);
+      return await r.json();
+    })
+  );
+
   window.__products = products;
   return products;
 }
