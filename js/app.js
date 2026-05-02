@@ -79,8 +79,6 @@ async function loadProducts() {
   const res = await fetch('products.json', { cache: 'no-store' });
   if (!res.ok) throw new Error('Could not load products.json');
   const data = await res.json();
-  const products = Array.isArray(data) ? data : (data.products || []);
-  window.__products = products;
   return products;
 }
 
