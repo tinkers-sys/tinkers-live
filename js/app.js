@@ -76,22 +76,14 @@ function updateCartCount() {
 
 /* ---------- Data ---------- */
 async function loadProducts() {
-  const res = await fetch('admin/products/');
-  const html = await res.text();
-
-  // Extract .json filenames from directory listing
-  const files = [...html.matchAll(/href="([^"]+\.json)"/g)].map(m => m[1]);
-
-  const products = await Promise.all(
-    files.map(async file => {
-      const r = await fetch('admin/products/' + file);
-      return await r.json();
-    })
-  );
-
+  const res = await fetch('products.json', { cache: 'no-store' });
+  if (!res.ok) throw new Error('Could not load products.json');
+  const data = await res.json();
+  const products = Array.isArray(data) ? data : (data.products || []);
   window.__products = products;
   return products;
 }
+
 
 /* ---------- Navigation ---------- */
 function wireNavFilters(products) {
