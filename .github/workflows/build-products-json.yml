@@ -1,1 +1,39 @@
+name: Build products.json from CMS products
 
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "admin/products/**/*.json"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Combine CMS product files
+        run: |
+          python - << 'PY'
+          import json, glob
+
+          files = sorted(glob.glob("admin/products/*.json"))
+          products = []
+
+          for f in files:
+            with open(f, "r", encoding="utf-8") as fp:
+              products.append(json.load(fp))
+
+          with open("products.json", "w", encoding="utf-8") as out:
+            json.dump(products, out, indent=2, ensure_ascii=False)
+
+          print(f"Generated products.json with {len(products)} products")
+          PY
+
+      - name: Commit products.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add products.json
+          git commit -m "Auto-build products.json from CMS" || echo "No changes"
+          git push
