@@ -8,3 +8,46 @@
   "stock": 10,
   "availability": "in_stock"
 }
+name: Build products.json from admin/products
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "admin/products/**.json"
+      - ".github/workflows/build-products-json.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Combine product files into products.json
+        run: |
+          python - << 'PY'
+          import json, glob, os
+
+          files = sorted(glob.glob("admin/products/*.json"))
+          products = []
+          for f in files:
+            with open(f, "r", encoding="utf-8") as fh:
+              products.append(json.load(fh))
+
+          with open("products.json", "w", encoding="utf-8") as out:
+            json.dump(products, out, indent=2, ensure_ascii=False)
+
+          print(f"Wrote products.json with {len(products)} products from {len(files)} files.")
+          PY
+
+      - name: Commit updated products.json (if changed)
+        run: |
+          if git diff --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add products.json
+          git commit -m "Auto-build products.json from admin/products"
+          git push
