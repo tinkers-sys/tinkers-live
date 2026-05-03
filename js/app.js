@@ -376,7 +376,29 @@ function openChat() {
   const url = buildWhatsAppLink("Hi! I’d like recommendations from Tinkers (gifting, décor, or wearable items).");
   window.open(url, "_blank", "noopener");
 }
-
+async function reloadProducts() {
+  const products = await loadProducts();
+  window.__products = products;
+  renderHome(products);
+  renderCartPanel(products);
+  console.log("Products reloaded");
+}
+<button onclick="reloadProducts()" style="margin:20px">
+  Reload Products
+</button>
+async function reloadProductsAndClearCart() {
+  localStorage.removeItem("tinkers_cart_v1");
+  const products = await loadProducts();
+  window.__products = products;
+  renderHome(products);
+  renderCartPanel(products);
+  updateCartCount();
+  console.log("Products reloaded & cart cleared");
+}
+<button onclick="reloadProductsAndClearCart()">
+  Reset Shop
+</button>
+``
 /* ---------- Init (single initializer) ---------- */
 document.addEventListener("DOMContentLoaded", async () => {
   try {
