@@ -1,9 +1,12 @@
-/* Tinkers — app.js (static hosting friendly: GitHub Pages + Cloudflare Pages)
-   - Loads products from ./products.json
-   - Renders: Home (grid + featured original), Product detail, Cart panel, Checkout
-*/
-
 "use strict";
+
+/* Tinkers — app.js (GitHub Pages + Cloudflare Pages friendly)
+   Uses: products.json (your current schema)
+   Renders:
+   - Home: Featured original artwork + retail grid
+   - Product page: product.html?id=...
+   - Cart + checkout (only if elements exist)
+*/
 
 const PRODUCTS_URL = "./products.json";
 const CART_KEY = "tinkers_cart_v1";
@@ -17,61 +20,49 @@ function moneyZAR(value) {
   return "R" + n.toLocaleString("en-ZA");
 }
 
-function whatsappLinkForProduct(product, extra = "") {
-  const name = product?.name || "a product";
-  const msg = `Hi, I'm interested in ${name}. ${extra}`.trim();
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+function buildWhatsAppLink(message) {
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
 }
 
-/**
- * Robust image resolver:
- * - If product.image is already a path like "images/products/x.jpg" -> use as-is
- * - If product.image includes a folder like "products/x.jpg" -> prefix with "images/"
- * - If product.image is just "x.jpg" -> assume "images/products/x.jpg" first (fallback to "images/x.jpg" via onerror)
- */
-function resolveImagePrimary(product) {
-  const img = product && (product.image || product.filename);
+// Supports:
+// - "images/abc.jpg" (already a path)
+// - "products/abc.jpg" (will become images/products/abc.jpg)
+// - "abc.jpg" (will try images/abc.jpg first, then images/products/abc.jpg)
+function getImagePath(p) {
+  const img = p && (p.image || p.filename);
   if (!img) return "";
 
-  if (/^https?:\/\//i.test(img)) return img;          // absolute URL
-  if (img.startsWith("images/")) return img;          // already rooted correctly
-
-  if (img.includes("/")) return "images/" + img;      // e.g. "products/x.jpg" -> "images/products/x.jpg"
-
-  // filename only -> prefer products subfolder
-  return "images/products/" + img;
-}
-
-function resolveImageFallback(product) {
-  const img = product && (product.image || product.filename);
-  if (!img) return "";
   if (/^https?:\/\//i.test(img)) return img;
   if (img.startsWith("images/")) return img;
 
-  // filename only fallback
-  if (!img.includes("/")) return "images/" + img;
+  if (img.includes("/")) return "images/" + img;
 
-  // if it had folder and failed, fallback to "images/<filename>"
-  const file = img.split("/").pop();
-  return file ? "images/" + file : "";
+  // filename-only: prefer images/<file> (your current pattern),
+  // with an automatic fallback handled in the img tag.
+  return "images/" + img;
 }
 
-function imgTag(product, alt = "") {
-  const primary = resolveImagePrimary(product);
-  const fallback = resolveImageFallback(product);
+// filename-only fallback to images/products/<file>
+function getImageFallback(p) {
+  const img = p && (p.image || p.filename);
+  if (!img) return "";
+  if (/^https?:\/\//i.test(img)) return img;
+  if (img.startsWith("images/")) return img;
+  if (img.includes("/")) return "images/" + img;
+  return "images/products/" + img;
+}
 
-  if (!primary) {
-    // If you have a placeholder image, set it here:
-    // return `<img src="images/placeholder.jpg" alt="${escapeHtml(alt)}">`;
-    return `<div class="img-missing">No image</div>`;
-  }
+function productImgTag(p) {
+  const primary = getImagePath(p);
+  const fallback = getImageFallback(p);
 
-  // Use onerror fallback only when it is different
+  if (!primary) return `<div class="img-missing">No image</div>`;
+
   if (fallback && fallback !== primary) {
-    return `<img src="${primary}" alt="${escapeHtml(alt)}" onerror="this.onerror=null;this.src='${fallback}'">`;
+    return `<img src="${primary}" alt="${escapeHtml(p.name)}"
+      onerror="this.onerror=null;this.src='${fallback}'">`;
   }
-
-  return `<img src="${primary}" alt="${escapeHtml(alt)}">`;
+  return `<img src="${primary}" alt="${escapeHtml(p.name)}">`;
 }
 
 function escapeHtml(str) {
@@ -96,10 +87,16 @@ function writeCart(cart) {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
 }
 
+function updateCartCount() {
+  const el = document.getElementById("cartCount");
+  if (!el) return;
+  const count = readCart().reduce((sum, x) => sum + x.qty, 0);
+  el.textContent = String(count);
+}
+
 function addToCart(id) {
   const cart = readCart();
   const found = cart.find((x) => x.id === id);
-
   if (found) found.qty += 1;
   else cart.push({ id, qty: 1 });
 
@@ -120,34 +117,15 @@ function updateQty(id, delta) {
   renderCheckout(window.__products || []);
 }
 
-function clearCart() {
-  writeCart([]);
-  updateCartCount();
-  renderCartPanel(window.__products || []);
-  renderCheckout(window.__products || []);
-}
-
-function updateCartCount() {
-  const el = document.getElementById("cartCount");
-  if (!el) return;
-
-  const count = readCart().reduce((sum, x) => sum + x.qty, 0);
-  el.textContent = String(count);
-}
-
 /* ---------- Data ---------- */
 async function loadProducts() {
   const res = await fetch(PRODUCTS_URL, { cache: "no-store" });
   if (!res.ok) throw new Error("Could not load products.json");
-
   const data = await res.json();
-
-  // supports either array OR {products:[...]} while staying compatible with your current array
-  const products = Array.isArray(data) ? data : (data.products || []);
-  return products;
+  return Array.isArray(data) ? data : (data.products || []);
 }
 
-/* ---------- Navigation Filters (optional) ---------- */
+/* ---------- Nav filtering ---------- */
 function wireNavFilters(products) {
   const links = document.querySelectorAll("nav a[data-filter]");
   if (!links.length) return;
@@ -161,17 +139,17 @@ function wireNavFilters(products) {
   });
 }
 
-/* ---------- Homepage ---------- */
-/**
- * Expects:
- * - grid container:  <div id="products"></div>
- * - optional featured: <section id="originalArt"></section>
- */
+/* ---------- Homepage renderer ---------- */
+/*
+  Requires:
+    - <section id="originalArt"> (optional)
+    - <section id="products"></section>
+*/
 function renderHome(products, category = "All") {
   const grid = document.getElementById("products");
   if (!grid) return;
 
-  // Featured Original Artwork block
+  // Featured original artwork
   const originals = products.filter((p) => (p.type || "").toLowerCase() === "original");
   const featured = document.getElementById("originalArt");
 
@@ -179,15 +157,15 @@ function renderHome(products, category = "All") {
     const p = originals[0];
     featured.style.display = "block";
 
-    const badgeText = p.signed ? "Original · Signed" : "Original Artwork";
+    const badge = p.signed ? "Original · Signed" : "Original Artwork";
 
     featured.innerHTML = `
       <div class="featured-art-inner">
         <div class="featured-art-image">
-          ${imgTag(p, p.name)}
+          ${productImgTag(p)}
         </div>
         <div>
-          <span class="art-badge">${escapeHtml(badgeText)}</span>
+          <span class="art-badge">${escapeHtml(badge)}</span>
           <h2>${escapeHtml(p.name)}</h2>
           <p class="artist">By ${escapeHtml(p.artist || "Artist")}</p>
 
@@ -198,9 +176,12 @@ function renderHome(products, category = "All") {
 
           <div class="art-price">${moneyZAR(p.price)}</div>
 
-          <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
             <a class="primary-btn" href="product.html?id=${encodeURIComponent(p.id)}">View Artwork Details</a>
-            <a class="secondary-btn" href="${whatsappLinkForProduct(p, "I would like to enquire/reserve.")}" target="_blank" rel="noopener">Enquire on WhatsApp</a>
+            <a class="secondary-btn" target="_blank" rel="noopener"
+               href="${buildWhatsAppLink(`Hi, I'm interested in ${p.name}. Please share more details.`)}">
+              Enquire on WhatsApp
+            </a>
           </div>
         </div>
       </div>
@@ -210,7 +191,7 @@ function renderHome(products, category = "All") {
     featured.innerHTML = "";
   }
 
-  // Retail products list (exclude originals)
+  // Retail products (everything except originals)
   const retail = products.filter((p) => (p.type || "").toLowerCase() !== "original");
   const filtered = category === "All" ? retail : retail.filter((p) => p.category === category);
 
@@ -219,7 +200,7 @@ function renderHome(products, category = "All") {
       const safeId = String(p.id || "").replace(/'/g, "\\'");
       return `
         <div class="card">
-          ${imgTag(p, p.name)}
+          ${productImgTag(p)}
           <h3>${escapeHtml(p.name)}</h3>
           <p class="category">${escapeHtml(p.category || "")}</p>
           <p class="price">${moneyZAR(p.price)}</p>
@@ -227,7 +208,10 @@ function renderHome(products, category = "All") {
           <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
             <a class="secondary-btn" href="product.html?id=${encodeURIComponent(p.id)}">View</a>
             <button type="button" onclick="addToCart('${safeId}')">Add to cart</button>
-            <a class="btn-whatsapp" href="${whatsappLinkForProduct(p)}" target="_blank" rel="noopener">WhatsApp</a>
+            <a class="secondary-btn" target="_blank" rel="noopener"
+               href="${buildWhatsAppLink(`Hi, I'm interested in ${p.name}. Is it available and can you deliver?`)}">
+              WhatsApp
+            </a>
           </div>
         </div>
       `;
@@ -235,11 +219,11 @@ function renderHome(products, category = "All") {
     .join("");
 }
 
-/* ---------- Product Page ---------- */
-/**
- * Expects:
- * - detail root: <div id="detailRoot"></div>
- */
+/* ---------- Product detail page ---------- */
+/*
+  Requires:
+    - <div id="detailRoot"></div>
+*/
 function renderProductDetail(products) {
   const root = document.getElementById("detailRoot");
   if (!root) return;
@@ -257,9 +241,9 @@ function renderProductDetail(products) {
   const safeId = String(p.id || "").replace(/'/g, "\\'");
 
   root.innerHTML = `
-    <section class="detail">
-      <div class="detail-media">
-        ${imgTag(p, p.name)}
+    <section>
+      <div style="max-width:720px;margin:0 auto;">
+        ${productImgTag(p)}
       </div>
 
       <h1>${escapeHtml(p.name)}</h1>
@@ -269,23 +253,24 @@ function renderProductDetail(products) {
       ${
         isOriginal
           ? `
-        <div class="original-meta">
-          ${p.medium ? `<p><strong>Medium:</strong> ${escapeHtml(p.medium)}</p>` : ""}
-          ${p.edition ? `<p><strong>Edition:</strong> ${escapeHtml(p.edition)}</p>` : ""}
-          ${p.signed ? `<p><strong>Signed:</strong> Yes</p>` : ""}
-        </div>
-
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <a class="primary-btn" href="${whatsappLinkForProduct(p, "I would like to enquire/reserve this original artwork.")}" target="_blank" rel="noopener">Enquire / Reserve</a>
-          <a class="secondary-btn" href="index.html">Back to shop</a>
-        </div>
+        <p>
+          ${p.medium ? `<strong>Medium:</strong> ${escapeHtml(p.medium)}<br>` : ""}
+          ${p.edition ? `<strong>Edition:</strong> ${escapeHtml(p.edition)}<br>` : ""}
+          ${p.signed ? `<strong>Signed:</strong> Yes<br>` : ""}
+        </p>
+        <a class="primary-btn" target="_blank" rel="noopener"
+           href="${buildWhatsAppLink(`Hi, I'd like to enquire / reserve: ${p.name}. Please advise next steps.`)}">
+          Enquire / Reserve
+        </a>
+        <a class="secondary-btn" href="index.html">Back to shop</a>
       `
           : `
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-          <button type="button" onclick="addToCart('${safeId}')">Add to cart</button>
-          <a class="btn-whatsapp" href="${whatsappLinkForProduct(p)}" target="_blank" rel="noopener">Enquire on WhatsApp</a>
-          <a class="secondary-btn" href="index.html">Back to shop</a>
-        </div>
+        <button type="button" onclick="addToCart('${safeId}')">Add to cart</button>
+        <a class="secondary-btn" target="_blank" rel="noopener"
+           href="${buildWhatsAppLink(`Hi, I'm interested in ${p.name}. Can you share more details?`)}">
+          Enquire on WhatsApp
+        </a>
+        <a class="secondary-btn" href="index.html">Back to shop</a>
       `
       }
     </section>
@@ -296,13 +281,7 @@ function renderProductDetail(products) {
   renderCartPanel(products);
 }
 
-/* ---------- Cart Panel ---------- */
-/**
- * Optional elements:
- * - cartPanel, cartButton, closeCart
- * - cartItems, cartTotal
- * - buttons inside panel with data-qty and data-id
- */
+/* ---------- Cart panel (optional UI) ---------- */
 function wireCartPanel() {
   const panel = document.getElementById("cartPanel");
   const openBtn = document.getElementById("cartButton");
@@ -311,21 +290,15 @@ function wireCartPanel() {
   if (openBtn && panel) openBtn.onclick = () => panel.classList.add("open");
   if (closeBtn && panel) closeBtn.onclick = () => panel.classList.remove("open");
 
-  // Qty buttons inside panel
+  // Qty buttons
   document.addEventListener("click", (e) => {
     const btn = e.target.closest("[data-qty]");
     if (!btn) return;
-
     const id = btn.getAttribute("data-id");
     const delta = Number(btn.getAttribute("data-qty"));
     if (!id || !Number.isFinite(delta)) return;
-
     updateQty(id, delta);
   });
-
-  // Optional clear cart button
-  const clearBtn = document.getElementById("clearCart");
-  if (clearBtn) clearBtn.onclick = () => clearCart();
 }
 
 function renderCartPanel(products) {
@@ -345,19 +318,18 @@ function renderCartPanel(products) {
     .map((ci) => {
       const p = products.find((x) => x.id === ci.id);
       if (!p) return "";
-
       const line = Number(p.price || 0) * Number(ci.qty || 0);
       total += line;
 
       return `
         <div class="cart-item">
-          <div class="cart-thumb">${imgTag(p, p.name)}</div>
-          <div class="cart-info">
+          <img src="${getImagePath(p)}" onerror="this.onerror=null;this.src='${getImageFallback(p)}'">
+          <div>
             <strong>${escapeHtml(p.name)}</strong><br>
             ${moneyZAR(p.price)}
-            <div class="qty">
+            <div>
               <button type="button" data-qty="-1" data-id="${escapeHtml(p.id)}">−</button>
-              <span>Qty ${ci.qty}</span>
+              Qty ${ci.qty}
               <button type="button" data-qty="1" data-id="${escapeHtml(p.id)}">+</button>
             </div>
           </div>
@@ -370,12 +342,7 @@ function renderCartPanel(products) {
   totalEl.textContent = moneyZAR(total);
 }
 
-/* ---------- Checkout ---------- */
-/**
- * Expects (on checkout page):
- * - cart container: <div id="cart"></div>
- * - total: <span id="checkoutTotal"></span>
- */
+/* ---------- Checkout renderer ---------- */
 function renderCheckout(products) {
   const cartEl = document.getElementById("cart");
   const totalEl = document.getElementById("checkoutTotal");
@@ -393,13 +360,12 @@ function renderCheckout(products) {
     .map((ci) => {
       const p = products.find((x) => x.id === ci.id);
       if (!p) return "";
-
       const line = Number(p.price || 0) * Number(ci.qty || 0);
       total += line;
 
       return `
         <div class="checkout-item">
-          <div class="checkout-thumb">${imgTag(p, p.name)}</div>
+          <img src="${getImagePath(p)}" onerror="this.onerror=null;this.src='${getImageFallback(p)}'">
           <div class="name">${escapeHtml(p.name)}</div>
           <strong>${moneyZAR(line)}</strong>
         </div>
@@ -408,21 +374,13 @@ function renderCheckout(products) {
     .join("");
 
   totalEl.textContent = moneyZAR(total);
+}
 
-  // Optional: WhatsApp checkout/enquiry button
-  const checkoutWhatsApp = document.getElementById("checkoutWhatsApp");
-  if (checkoutWhatsApp) {
-    const msgLines = cart
-      .map((ci) => {
-        const p = products.find((x) => x.id === ci.id);
-        if (!p) return null;
-        return `• ${p.name} x${ci.qty} (${moneyZAR(p.price)})`;
-      })
-      .filter(Boolean);
-
-    const msg = `Hi, I'd like to place an order/enquiry:\n${msgLines.join("\n")}\nTotal: ${moneyZAR(total)}`;
-    checkoutWhatsApp.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
-  }
+/* ---------- WhatsApp Curator button support ---------- */
+function openChat() {
+  // Called by your <div class="whatsapp-chat" onclick="openChat()">
+  const url = buildWhatsAppLink("Hi! I’d like recommendations from Tinkers (gifting, décor, or wearable items).");
+  window.open(url, "_blank", "noopener");
 }
 
 /* ---------- Init (single initializer) ---------- */
@@ -431,9 +389,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     updateCartCount();
 
     const products = await loadProducts();
-    window.__products = products; // so cart functions can re-render
+    window.__products = products;
 
-    // Home page
     if (document.getElementById("products")) {
       wireNavFilters(products);
       renderHome(products);
@@ -441,12 +398,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       renderCartPanel(products);
     }
 
-    // Product detail page
     if (document.getElementById("detailRoot")) {
       renderProductDetail(products);
     }
 
-    // Checkout page
     if (document.getElementById("checkoutTotal")) {
       wireCartPanel();
       renderCartPanel(products);
@@ -456,4 +411,3 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error(err);
   }
 });
-``
