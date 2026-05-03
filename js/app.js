@@ -53,16 +53,10 @@ function getImageFallback(p) {
 }
 
 function productImgTag(p) {
-  const primary = getImagePath(p);
-  const fallback = getImageFallback(p);
+  const src = getImagePath(p);
+  if (!src) return `<div class="img-missing">No image</div>`;
 
-  if (!primary) return `<div class="img-missing">No image</div>`;
-
-  if (fallback && fallback !== primary) {
-    return `<img src="${primary}" alt="${escapeHtml(p.name)}"
-      onerror="this.onerror=null;this.src='${fallback}'">`;
-  }
-  return `<img src="${primary}" alt="${escapeHtml(p.name)}">`;
+  return `<img src="${src}" alt="${escapeHtml(p.name)}" loading="lazy">`;
 }
 
 function escapeHtml(str) {
