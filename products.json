@@ -4,7 +4,7 @@
     "name": "Traditional Chevron Dress",
     "category": "Apparel",
     "price": 1599,
-    "image": "apparel-traditional-dress.jpg",
+    "image": "images/products/apparel-traditional-dress.jpg",
     "type": "retail"
   },
   {
@@ -12,7 +12,7 @@
     "name": "Beadwork Necklace",
     "category": "Beadwork",
     "price": 499,
-    "image": "beadwork-necklace.jpg",
+    "image": "images/products/beadwork-necklace.jpg",
     "type": "retail"
   },
   {
@@ -20,7 +20,7 @@
     "name": "Woven Basket",
     "category": "Accessories",
     "price": 649,
-    "image": "accessories-woven-basket.jpg",
+    "image": "images/products/accessories-woven-basket.jpg",
     "type": "retail"
   },
   {
@@ -28,7 +28,7 @@
     "name": "Lion Head Portrait",
     "category": "Art",
     "price": 18500,
-    "image": "art-lion-head-portrait-chesa-monaisa.jpg",
+    "image": "images/products/art-lion-head-portrait-chesa-monaisa.jpg",
     "type": "original",
     "artist": "Chesa Monaisa",
     "signed": true,
