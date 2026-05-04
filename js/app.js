@@ -79,29 +79,40 @@ function addToCart(id) {
 }
 
 function renderCart(products) {
-  const el = document.getElementById("cart");
-  if (!el) return;
+  const cartEl = document.getElementById("cart");
+  const totalEl = document.getElementById("cartTotal");
+
+  if (!cartEl || !totalEl) return;
 
   const cart = readCart();
+
   if (!cart.length) {
-    el.innerHTML = "<p>Your cart is empty.</p>";
+    cartEl.innerHTML = "<p>Your cart is empty.</p>";
+    totalEl.textContent = "R0";
     return;
   }
 
-  el.innerHTML = "";
-  cart.forEach(line => {
-    const p = products.find(x => x.id === line.id);
-    if (!p) return;
+  let total = 0;
+  cartEl.innerHTML = "";
 
-    el.innerHTML += `
+  cart.forEach(item => {
+    const product = products.find(p => p.id === item.id);
+    if (!product) return;
+
+    const lineTotal = product.price * item.qty;
+    total += lineTotal;
+
+    cartEl.innerHTML += `
       <div class="card">
-        <img src="images/${p.image}">
-        <h3>${p.name}</h3>
-        <p>Qty: ${line.qty}</p>
-        <p>R${p.price * line.qty}</p>
+        images/${product.image}
+        <h3>${product.name}</h3>
+        <p>Qty: ${item.qty}</p>
+        <p>R${lineTotal}</p>
       </div>
     `;
   });
+
+  totalEl.textContent = "R" + total;
 }
 function clearCart() {
   localStorage.removeItem(CART_KEY);
