@@ -30,10 +30,10 @@ jobs:
           print(f"Generated products.json with {len(products)} products")
           PY
 
-      - name: Commit products.json
+      - name: Commit updated products.json
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add products.json
-          git commit -m "Auto-build products.json from CMS" || echo "No changes"
+          git commit -m "Auto-build products.json from admin/products" || echo "No changes"
           git push
