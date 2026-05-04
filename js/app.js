@@ -111,7 +111,7 @@ function renderCart(products) {
 
     cartEl.innerHTML += `
       <div class="card">
-        images/${product.image}
+       <img src="images/${product.image}" alt="${product.name}" />
         <h3>${product.name}</h3>
         <p>Qty: ${item.qty}</p>
         <p>R${lineTotal}</p>
