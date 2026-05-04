@@ -1,27 +1,38 @@
 "use strict";
 
-const BASE_PATH = location.pathname.includes("tinkers-live")
+/* ===== Paths ===== */
+const BASE_PATH = location.pathname.includes("/tinkers-live/")
   ? "/tinkers-live"
   : "";
 
 const PRODUCTS_URL = BASE_PATH + "/products.json";
-
 const CART_KEY = "tinkers_cart_v1";
-const WHATSAPP_NUMBER = "27682525454";
 
-function loadProducts() {
-  return fetch(PRODUCTS_URL, { cache: "no-store" })
-    .then(res => res.json())
-    .catch(() => []);
+/* ===== Products ===== */
+async function loadProducts() {
+  try {
+    const res = await fetch(PRODUCTS_URL, { cache: "no-store" });
+    if (!res.ok) throw new Error("Failed to load products.json");
+    return await res.json();
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
 }
 
-function renderProducts(products) {
+/* ===== Render products ===== */
+function renderProducts(products, category = "All") {
   const grid = document.getElementById("products");
   if (!grid) return;
 
   grid.innerHTML = "";
 
-  products.forEach(p => {
+  const filtered =
+    category === "All"
+      ? products
+      : products.filter(p => p.category === category);
+
+  filtered.forEach(p => {
     const card = document.createElement("div");
     card.className = "card";
 
@@ -36,10 +47,74 @@ function renderProducts(products) {
   });
 }
 
-function addToCart(id) {
-  alert(id + " added to cart");
+/* ===== Categories ===== */
+function wireCategoryLinks(products) {
+  document.querySelectorAll("nav a[data-filter]").forEach(link => {
+    link.addEventListener("click", e => {
+      e.preventDefault();
+      const cat = link.dataset.filter;
+      renderProducts(products, cat);
+    });
+  });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  loadProducts().then(renderProducts);
+/* ===== Cart ===== */
+function readCart() {
+  return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+}
+
+function writeCart(cart) {
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+}
+
+function addToCart(id) {
+  const cart = readCart();
+  const item = cart.find(i => i.id === id);
+
+  if (item) item.qty += 1;
+  else cart.push({ id, qty: 1 });
+
+  writeCart(cart);
+  alert("Added to cart");
+}
+
+function renderCart(products) {
+  const el = document.getElementById("cart");
+  if (!el) return;
+
+  const cart = readCart();
+  if (!cart.length) {
+    el.innerHTML = "<p>Your cart is empty.</p>";
+    return;
+  }
+
+  el.innerHTML = "";
+  cart.forEach(line => {
+    const p = products.find(x => x.id === line.id);
+    if (!p) return;
+
+    el.innerHTML += `
+      <div class="card">
+        <img src="images/${p.image}">
+        <h3>${p.name}</h3>
+        <p>Qty: ${line.qty}</p>
+        <p>R${p.price * line.qty}</p>
+      </div>
+    `;
+  });
+}
+
+/* ===== Init ===== */
+document.addEventListener("DOMContentLoaded", async () => {
+  const products = await loadProducts();
+  window.__products = products;
+
+  if (document.getElementById("products")) {
+    renderProducts(products);
+    wireCategoryLinks(products);
+  }
+
+  if (document.getElementById("cart")) {
+    renderCart(products);
+  }
 });
