@@ -80,7 +80,8 @@ function addToCart(id) {
 
 function renderCart(products) {
   const cartEl = document.getElementById("cart");
-  const totalEl = document.getElementById("cartTotal");
+ const totalEl = document.getElementById("checkoutTotal");
+
 
   if (!cartEl || !totalEl) return;
 
