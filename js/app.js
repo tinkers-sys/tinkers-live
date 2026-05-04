@@ -131,6 +131,31 @@ function clearCart() {
 
   alert("Cart cleared");
 }
+function payNow() {
+  const cart = readCart();
+  if (!cart.length) {
+    alert("Your cart is empty");
+    return;
+  }
+
+  let message = "🛒 Tinkers Order Summary:%0A%0A";
+  let total = 0;
+
+  cart.forEach(item => {
+    const p = window.__products.find(x => x.id === item.id);
+    if (!p) return;
+
+    const line = p.price * item.qty;
+    total += line;
+    message += `${p.name} x${item.qty} – R${line}%0A`;
+  });
+
+  message += `%0A✅ Total: R${total}`;
+
+  const url = `https://wa.me/27682525454?text=${message}`;
+  window.open(url, "_blank");
+}
+``
 
 /* ===== Init ===== */
 document.addEventListener("DOMContentLoaded", async () => {
