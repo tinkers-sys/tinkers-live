@@ -103,6 +103,16 @@ function renderCart(products) {
     `;
   });
 }
+function clearCart() {
+  localStorage.removeItem(CART_KEY);
+
+  const cartEl = document.getElementById("cart");
+  if (cartEl) {
+    cartEl.innerHTML = "<p>Your cart is empty.</p>";
+  }
+
+  alert("Cart cleared");
+}
 
 /* ===== Init ===== */
 document.addEventListener("DOMContentLoaded", async () => {
