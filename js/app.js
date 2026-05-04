@@ -1,6 +1,11 @@
 "use strict";
 
-const PRODUCTS_URL = "/products.json";
+const BASE_PATH = location.pathname.includes("tinkers-live")
+  ? "/tinkers-live"
+  : "";
+
+const PRODUCTS_URL = BASE_PATH + "/products.json";
+
 const CART_KEY = "tinkers_cart_v1";
 const WHATSAPP_NUMBER = "27682525454";
 
