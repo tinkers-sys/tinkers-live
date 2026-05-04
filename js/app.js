@@ -69,14 +69,20 @@ function writeCart(cart) {
 
 function addToCart(id) {
   const cart = readCart();
-  const item = cart.find(i => i.id === id);
+  const product = window.__products.find(p => p.id === id);
 
-  if (item) item.qty += 1;
-  else cart.push({ id, qty: 1 });
+  const existing = cart.find(item => item.id === id);
+  if (existing) {
+    existing.qty += 1;
+  } else {
+    cart.push({ id, qty: 1 });
+  }
 
   writeCart(cart);
-  alert("Added to cart");
+
+  alert(`${product ? product.name : "Product"} added to cart`);
 }
+
 
 function renderCart(products) {
   const cartEl = document.getElementById("cart");
