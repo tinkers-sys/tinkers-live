@@ -1,13 +1,10 @@
 [
-{
+  {
     "id": "africa-map-earrings",
     "name": "African Map Earrings",
     "category": "Accessories",
     "price": 300,
     "image": "africa-map-earrings.jpg",
     "type": "retail"
-  },
-
+  }
 ]
-``
-
