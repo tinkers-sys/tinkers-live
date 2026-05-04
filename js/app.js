@@ -1,6 +1,6 @@
 "use strict";
 
-const PRODUCTS_URL = "./products.json";
+const PRODUCTS_URL = "/products.json";
 const CART_KEY = "tinkers_cart_v1";
 const WHATSAPP_NUMBER = "27682525454";
 
