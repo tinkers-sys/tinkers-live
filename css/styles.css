@@ -68,3 +68,22 @@ button{background:#c55a11;color:white;border:none;padding:10px;border-radius:6px
   border-radius: 8px;
   text-decoration: none;
 }
+/* Checkout grid */
+.checkout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+/* Smaller cards for checkout */
+.checkout-grid .card {
+  padding: 12px;
+  text-align: center;
+}
+
+/* Smaller images for checkout */
+.checkout-grid img {
+  height: 120px;
+  object-fit: contain;
+}
+
