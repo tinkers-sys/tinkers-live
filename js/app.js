@@ -85,7 +85,8 @@ function addToCart(id) {
 
 
 function renderCart(products) {
-  const cartEl = document.getElementById("cart");
+ const cartEl = document.getElementById("cart");
+cartEl.className = "checkout-grid";
  const totalEl = document.getElementById("checkoutTotal");
 
 
