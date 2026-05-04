@@ -11,7 +11,17 @@ body{font-family:Segoe UI;background:#f7f7f7;margin:0}
 .header a{color:white;margin:0 10px;text-decoration:none}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;padding:0;}
 .card{background:white;padding:15px;border-radius:10px;text-align:center}
-.card img{width:100%;border-radius:10px}
+.card img{
+  width: 100%;
+  max-width: 240px;     /* prevents oversizing */
+  height: 200px;        /* fixed card height */
+  object-fit: contain;  /* keeps product fully visible */
+  background: #f3f3f3;  /* neat neutral backdrop */
+  padding: 10px;
+  border-radius: 10px;
+  display: block;
+  margin: 0 auto 12px;
+}
 button{background:#c55a11;color:white;border:none;padding:10px;border-radius:6px;cursor:pointer}
 .whatsapp-chat{position:fixed;bottom:20px;right:20px;background:#25D366;color:white;padding:15px;border-radius:50px;cursor:pointer}
 .hero {
