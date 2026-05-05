@@ -185,25 +185,25 @@ function payNow() {
     return;
   }
 
-  let message = "🛒 Tinkers Order Summary:%0A%0A";
   let total = 0;
+  let lines = [];
 
   cart.forEach(item => {
-    const p = window.__products.find(x => x.id === item.id);
+    const p = (window.__products || []).find(x => x.id === item.id);
     if (!p) return;
-
-    const line = p.price * item.qty;
-    total += line;
-    message += `${p.name} x${item.qty} – R${line}%0A`;
+    const lineTotal = Number(p.price || 0) * Number(item.qty || 0);
+    total += lineTotal;
+    lines.push(`• ${p.name}  x${item.qty}  = R${lineTotal}`);
   });
 
-  message += `%0A✅ Total: R${total}`;
+  const message =
+    `🛒 Tinkers Order Summary\n\n` +
+    lines.join("\n") +
+    `\n\n✅ Total: R${total}\n\n` +
+    `Name:\nDelivery address (if needed):\nPreferred payment method (EFT / Card):`;
 
-  const url = `https://wa.me/27682525454?text=${message}`;
-  window.open(url, "_blank");
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, "_blank");
 }
-``
-
 /* ===== Init ===== */
 document.addEventListener("DOMContentLoaded", async () => {
   const products = await loadProducts();
