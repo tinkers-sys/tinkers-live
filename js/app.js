@@ -21,30 +21,57 @@ async function loadProducts() {
 }
 
 /* ===== Render products ===== */
-function renderProducts(products, category = "All") {
-  const grid = document.getElementById("products");
-  if (!grid) return;
+function renderCart(products) {
+  const cartEl = document.getElementById("cart");
+  const totalEl = document.getElementById("checkoutTotal"); // matches your checkout.html
+  if (!cartEl || !totalEl) return;
 
-  grid.innerHTML = "";
+  const cart = readCart();
 
-  const filtered =
-    category === "All"
-      ? products
-      : products.filter(p => p.category === category);
+  if (!cart.length) {
+    cartEl.innerHTML = "<p>Your cart is empty.</p>";
+    totalEl.textContent = "R0";
+    return;
+  }
 
-  filtered.forEach(p => {
+  // Compact grid container
+  cartEl.innerHTML = `<div class="checkout-grid" id="checkoutGrid"></div>`;
+  const grid = document.getElementById("checkoutGrid");
+
+  let total = 0;
+
+  cart.forEach(item => {
+    const product = products.find(p => p.id === item.id);
+    if (!product) return;
+
+    const lineTotal = Number(product.price || 0) * Number(item.qty || 0);
+    total += lineTotal;
+
     const card = document.createElement("div");
-    card.className = "card";
+    card.className = "checkout-card";
 
     card.innerHTML = `
-      <img src="images/${p.image}" alt="${p.name}">
-      <h3>${p.name}</h3>
-      <p class="price">R${p.price}</p>
-      <button onclick="addToCart('${p.id}')">Add to cart</button>
+      <img class="checkout-thumb" src="images/${product.image}" alt="${product.name}">
+      <div class="checkout-info">
+        <div class="checkout-name">${product.name}</div>
+        <div class="checkout-price">R${product.price}</div>
+
+        <div class="qty-row">
+          <button type="button" class="qty-btn" onclick="updateQty('${product.id}', -1)">−</button>
+          <span class="qty-val">${item.qty}</span>
+          <button type="button" class="qty-btn" onclick="updateQty('${product.id}', 1)">+</button>
+
+          <button type="button" class="remove-btn" onclick="removeFromCart('${product.id}')">Remove</button>
+        </div>
+
+        <div class="checkout-line">Line total: <strong>R${lineTotal}</strong></div>
+      </div>
     `;
 
     grid.appendChild(card);
   });
+
+  totalEl.textContent = "R" + total;
 }
 
 /* ===== Categories ===== */
@@ -132,6 +159,25 @@ function clearCart() {
 
   alert("Cart cleared");
 }
+function updateQty(id, delta) {
+  const cart = readCart();
+  const item = cart.find(x => x.id === id);
+  if (!item) return;
+
+  item.qty += delta;
+
+  // remove if qty goes to zero
+  const next = cart.filter(x => x.qty > 0);
+  writeCart(next);
+  renderCart(window.__products || []);
+}
+
+function removeFromCart(id) {
+  const cart = readCart().filter(x => x.id !== id);
+  writeCart(cart);
+  renderCart(window.__products || []);
+}
+
 function payNow() {
   const cart = readCart();
   if (!cart.length) {
