@@ -291,4 +291,66 @@ body {
   border: 1px solid #c55a11;
   color: #c55a11;
 }
-``
+/* ===== CUSTOM THEME ===== */
+
+.header {
+  background: #24333a;
+  color: white;
+}
+
+.hero {
+  background: linear-gradient(135deg, #24333a, #36454f);
+  color: white;
+}
+
+.hero h1 {
+  font-size: 42px;
+}
+
+.hero p {
+  opacity: 0.95;
+}
+
+/* ===== PRODUCT GRID ===== */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  padding: 30px;
+}
+
+.card {
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.card img {
+  height: 200px;
+  width: 100%;
+  object-fit: contain;
+}
+
+/* ===== CHECKOUT GRID ===== */
+
+.checkout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.checkout-card {
+  background: white;
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  gap: 14px;
+}
+
+.checkout-thumb {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
