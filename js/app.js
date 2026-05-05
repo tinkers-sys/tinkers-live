@@ -62,10 +62,18 @@ function wireCategoryLinks(products) {
 function addToCart(id) {
   const cart = readCart();
   const item = cart.find(i => i.id === id);
-  if (item) item.qty += 1;
-  else cart.push({ id, qty: 1 });
+
+  if (item) {
+    item.qty += 1;
+  } else {
+    cart.push({ id, qty: 1 });
+  }
+
   writeCart(cart);
   updateCartCount();
+
+  const product = window.__products.find(p => p.id === id);
+  alert(`${product ? product.name : "Item"} added to cart`);
 }
 
 /* ---- Init ---- */
