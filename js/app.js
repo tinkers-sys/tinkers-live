@@ -80,3 +80,25 @@ document.addEventListener("DOMContentLoaded", async () => {
     wireCategoryLinks(products);
   }
 });
+function payNow() {
+  const cart = readCart();
+  if (!cart.length) {
+    alert("Your cart is empty");
+    return;
+  }
+
+  let total = 0;
+  let items = [];
+
+  cart.forEach(item => {
+    const p = window.__products.find(x => x.id === item.id);
+    if (!p) return;
+    total += p.price * item.qty;
+    items.push(`${p.name} x${item.qty}`);
+  });
+
+  document.getElementById("pf_amount").value = total.toFixed(2);
+  document.getElementById("pf_item_name").value = items.join(", ");
+
+  document.getElementById("payfastForm").submit();
+}
