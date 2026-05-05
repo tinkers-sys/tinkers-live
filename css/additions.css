@@ -154,3 +154,49 @@
 .checkout-summary {
   margin-bottom: 40px;
 }
+/* PRODUCT GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.card img {
+  height: 200px;
+  object-fit: contain;
+}
+
+/* CHECKOUT GRID */
+.checkout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.checkout-card {
+  background: white;
+  padding: 14px;
+  border-radius: 10px;
+  display: flex;
+  gap: 14px;
+}
+
+.checkout-thumb {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.qty-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.remove-btn {
+  margin-left: auto;
+  background: transparent;
+  color: #c55a11;
+  border: 1px solid #c55a11;
+}
