@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tinkers | Checkout</title>
 
-  <link rel="stylesheet" href="css/styles.css" />
-  <link rel="stylesheet" href="css/additions.css" />
+  <link rel="stylesheet" href="css/styles.css">
+  css/additions.css
 </head>
 
 <body>
@@ -14,4 +14,62 @@
 <header class="header">
   <h2>Tinkers</h2>
   <nav>
-    <a
+    index.html← Back to shop</a>
+  </nav>
+</header>
+
+<main class="checkout-wrap">
+
+  <h2>Checkout</h2>
+
+  <!-- ✅ CART ITEMS (rendered by app.js) -->
+  <div id="cart" class="checkout-cart"></div>
+
+  <!-- ✅ SUMMARY / ACTIONS -->
+  <div class="checkout-summary">
+    <div class="checkout-total">
+      Total: <strong id="checkoutTotal">R0</strong>
+    </div>
+
+    <div class="checkout-actions">
+      <button onclick="payNow()" class="primary-btn">
+        Pay with PayFast
+      </button>
+
+      <button onclick="clearCart()" class="secondary-btn">
+        Clear cart
+      </button>
+    </div>
+
+    <p class="cart-note">
+      Sandbox checkout via PayFast (test mode).
+    </p>
+  </div>
+
+</main>
+
+<!-- ✅ PAYFAST SANDBOX FORM (hidden) -->
+https://sandbox.payfast.co.za/eng/process
+  <input type="hidden" name="merchant_id" value="10000100">
+  <input type="hidden" name="merchant_key" value="46f0cd694581a">
+
+  <input type="hidden"
+         name="return_url"
+         value="https://tinkers-sys.github.io/tinkers-live/thank-you.html">
+
+  <input type="hidden"
+         name="cancel_url"
+         value="https://tinkers-sys.github.io/tinkers-live/checkout.html">
+
+  <input type="hidden"
+         name="notify_url"
+         value="https://example.com/notify">
+
+  <input type="hidden" name="amount" id="pf_amount">
+  <input type="hidden" name="item_name" id="pf_item_name">
+</form>
+
+<script src="js/app.js"></script>
+
+</body>
+</html>
