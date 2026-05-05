@@ -1,4 +1,3 @@
-
 "use strict";
 
 const BASE_PATH = location.pathname.includes("/tinkers-live/") ? "/tinkers-live" : "";
@@ -67,20 +66,11 @@ function addToCart(id) {
 document.addEventListener("DOMContentLoaded", async () => {
   const products = await loadProducts();
   window.__products = products;
-
-  // ✅ ALWAYS update cart count on page load
   updateCartCount();
 
-  // ✅ Home page
-  const productsGrid = document.getElementById("products");
-  if (productsGrid) {
-    renderProducts(products, "All");
+  if (document.getElementById("products")) {
+    renderProducts(products);
     wireCategoryLinks(products);
   }
-
-  // ✅ Checkout page
-  const cartEl = document.getElementById("cart");
-  if (cartEl) {
-    renderCheckout(products);
-  }
 });
+``
