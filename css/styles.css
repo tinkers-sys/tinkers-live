@@ -152,3 +152,22 @@ button{background:#c55a11;color:white;border:none;padding:10px;border-radius:6px
   .checkout-grid{ grid-template-columns: 1fr; }
   .checkout-thumb{ width:64px; height:64px; }
 }
+/* Equal-height product cards */
+.card {
+  display: flex;
+  flex-direction: column;
+ /* Emphasize product prices */
+.price {
+  font-weight: 700;
+  color: #c55a11;
+  margin-top: 6px;
+}
+  /* Softer remove button in checkout */
+.remove-btn {
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.remove-btn:hover {
+  opacity: 1;
+}
