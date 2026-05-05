@@ -137,7 +137,8 @@ function renderCheckout() {
   }
 
   let total = 0;
-  cartEl.innerHTML = "";
+  cartEl.innerHTML = `<div class="checkout-grid"></div>`;
+  const grid = cartEl.querySelector(".checkout-grid");
 
   cart.forEach(item => {
     const product = window.__products.find(p => p.id === item.id);
@@ -146,13 +147,23 @@ function renderCheckout() {
     const lineTotal = product.price * item.qty;
     total += lineTotal;
 
-    cartEl.innerHTML += `
-      <div class="checkout-item">
-        <img src="images/${product.image}" alt="${product.name}">
-        <div>
-          <strong>${product.name}</strong><br>
-          Qty: ${item.qty}<br>
-          ${moneyZAR(lineTotal)}
+    grid.innerHTML += `
+      <div class="checkout-card">
+        <img class="checkout-thumb" src="images/${product.image}" alt="${product.name}">
+
+        <div class="checkout-info">
+          <strong>${product.name}</strong>
+
+          <div class="qty-row">
+            <button onclick="updateQty('${product.id}', -1)">−</button>
+            <span>${item.qty}</span>
+            <button onclick="updateQty('${product.id}', 1)">+</button>
+            <button class="remove-btn" onclick="removeFromCart('${product.id}')">Remove</button>
+          </div>
+
+          <div class="checkout-line">
+            ${moneyZAR(lineTotal)}
+          </div>
         </div>
       </div>
     `;
@@ -160,7 +171,6 @@ function renderCheckout() {
 
   totalEl.textContent = moneyZAR(total);
 }
-
 /* ===============================
    PAYFAST
 ================================ */
