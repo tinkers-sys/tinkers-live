@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tinkers | Checkout</title>
 
-  <!-- ✅ FIXED CSS LINKS -->
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/additions.css">
 </head>
@@ -23,38 +22,38 @@
 
   <h2>Checkout</h2>
 
-  <!-- Cart -->
+  <!-- CART CONTENT -->
   <div id="cart" class="checkout-cart"></div>
 
-  <!-- Summary -->
+  <!-- SUMMARY -->
   <div class="checkout-summary">
-    <div class="checkout-total">
-      Total: <strong id="checkoutTotal">R0</strong>
+
+    <p>
+      Total:
+      <strong id="checkoutTotal">R0</strong>
+    </p>
+
+    <!-- BUTTONS (plain & visible) -->
+    <div style="display:flex; gap:12px; margin-top:15px;">
+      <button onclick="payNow()">Pay with PayFast</button>
+      <button onclick="clearCart()">Clear cart</button>
     </div>
 
-    <div class="checkout-actions">
-      <button class="primary-btn" onclick="payNow()">
-        Pay with PayFast
-      </button>
-
-      <button class="secondary-btn" onclick="clearCart()">
-        Clear cart
-      </button>
-    </div>
-
-    <p class="cart-note">
+    <p style="margin-top:12px; font-size:14px; color:#666;">
       Sandbox checkout via PayFast (test mode).
     </p>
+
   </div>
 
 </main>
 
-<!-- PayFast Sandbox -->
-<form id="payfastForm"
-      method="post"
-      action="https://sandbox.payfast.co.za/eng/process"
-      style="display:none;">
-
+<!-- PAYFAST FORM -->
+<form
+  id="payfastForm"
+  method="post"
+  action="https://sandbox.payfast.co.za/eng/process"
+  style="display:none;"
+>
   <input type="hidden" name="merchant_id" value="10000100">
   <input type="hidden" name="merchant_key" value="46f0cd694581a">
 
@@ -64,8 +63,7 @@
   <input type="hidden" name="cancel_url"
          value="https://tinkers-sys.github.io/tinkers-live/checkout.html">
 
-  <input type="hidden" name="notify_url"
-         value="https://example.com/notify">
+  <input type="hidden" name="notify_url" value="https://example.com/notify">
 
   <input type="hidden" name="amount" id="pf_amount">
   <input type="hidden" name="item_name" id="pf_item_name">
