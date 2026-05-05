@@ -354,3 +354,40 @@ body {
   height: 80px;
   object-fit: contain;
 }
+/* ===== HERO BACKGROUND IMAGE THEME ===== */
+.hero {
+  background-image:
+    linear-gradient(rgba(36, 51, 58, 0.78), rgba(36, 51, 58, 0.78)),
+    url("../images/tinkers-theme.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 100px 20px;
+  text-align: center;
+  color: white;
+}
+
+/* Hero content sizing */
+.hero-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.hero h1 {
+  font-size: 42px;
+  margin-bottom: 16px;
+}
+
+.hero p {
+  font-size: 18px;
+  opacity: 0.95;
+}
+
+/* Hero buttons */
+.hero-actions {
+  margin-top: 30px;
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
