@@ -179,12 +179,18 @@ function removeFromCart(id) {
 }
 
 function payNow() {
-  const cart = readCart();
-  if (!cart.length) {
-    alert("Your cart is empty");
+  if (PAYMENT_MODE === "whatsapp") {
+    return payNowWhatsApp();
+  }
+  if (PAYMENT_MODE === "payfast") {
+    alert("PayFast integration coming next.");
     return;
   }
-
+  if (PAYMENT_MODE === "peach") {
+    alert("Peach Payments integration coming next.");
+    return;
+  }
+}
   let total = 0;
   let lines = [];
 
