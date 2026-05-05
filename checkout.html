@@ -8,6 +8,17 @@
   <link rel="stylesheet" href="css/styles.css" />
   css/additions.css
 </head>
+<form id="payfastForm" method="post" action="https://sandbox.payfast.co.za/eng/process" style="display:none;">
+  <input type="hidden" name="merchant_id" value="10000100">
+  <input type="hidden" name="merchant_key" value="46f0cd694581a">
+
+  <input type="hidden" name="return_url" value="https://tinkers-sys.github.io/tinkers-live/thank-you.html">
+  <input type="hidden" name="cancel_url" value="https://tinkers-sys.github.io/tinkers-live/checkout.html">
+  <input type="hidden" name="notify_url" value="https://example.com/notify">
+
+  <input type="hidden" name="amount" id="pf_amount">
+  <input type="hidden" name="item_name" id="pf_item_name">
+</form>
 
 <body>
 
