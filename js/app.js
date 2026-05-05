@@ -1,5 +1,5 @@
 "use strict";
-
+const PAYMENT_MODE = "whatsapp"; // later: "payfast" or "peach"
 /* ===== Paths ===== */
 const BASE_PATH = location.pathname.includes("/tinkers-live/")
   ? "/tinkers-live"
