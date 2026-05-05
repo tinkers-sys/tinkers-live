@@ -120,6 +120,25 @@ function addToCart(id) {
   const product = window.__products.find(p => p.id === id);
   showToast(`${product.name} added to cart`);
 }
+function updateQty(id, delta) {
+  const cart = readCart();
+  const item = cart.find(i => i.id === id);
+  if (!item) return;
+
+  item.qty += delta;
+  const updated = cart.filter(i => i.qty > 0);
+  writeCart(updated);
+
+  updateCartCount();
+  renderCheckout();
+}
+
+function removeFromCart(id) {
+  const updated = readCart().filter(i => i.id !== id);
+  writeCart(updated);
+  updateCartCount();
+  renderCheckout();
+}
 
 /* ===============================
    CHECKOUT RENDERING
