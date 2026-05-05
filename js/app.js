@@ -1,164 +1,92 @@
 "use strict";
-const PAYMENT_MODE = "whatsapp"; // later: "payfast" or "peach"
-/* ===== Paths ===== */
-const BASE_PATH = location.pathname.includes("/tinkers-live/")
-  ? "/tinkers-live"
-  : "";
 
+/* ========= Hosting-safe products.json path =========
+   GitHub Pages: /tinkers-live/products.json
+   Root hosts:   /products.json
+*/
+const BASE_PATH = location.pathname.includes("/tinkers-live/") ? "/tinkers-live" : "";
 const PRODUCTS_URL = BASE_PATH + "/products.json";
+
+/* ========= Cart ========= */
 const CART_KEY = "tinkers_cart_v1";
 
-/* ===== Products ===== */
+/* ========= WhatsApp ========= */
+const WHATSAPP_NUMBER = "27682525454";
+
+/* ========= Payment switch (do later one-at-a-time) ========= */
+const PAYMENT_MODE = "whatsapp"; // later: "payfast" or "peach"
+
+/* ========= Helpers ========= */
+function moneyZAR(n) {
+  const v = Number(n || 0);
+  return "R" + v.toLocaleString("en-ZA");
+}
+function readCart() {
+  return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
+}
+function writeCart(cart) {
+  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+}
+function buildWhatsAppLink(message) {
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+}
+
+/* ========= Load products ========= */
 async function loadProducts() {
   try {
     const res = await fetch(PRODUCTS_URL, { cache: "no-store" });
     if (!res.ok) throw new Error("Failed to load products.json");
-    return await res.json();
+    const data = await res.json();
+    return Array.isArray(data) ? data : (data.products || []);
   } catch (e) {
     console.error(e);
     return [];
   }
 }
 
-/* ===== Render products ===== */
-function renderCart(products) {
-  const cartEl = document.getElementById("cart");
-  const totalEl = document.getElementById("checkoutTotal"); // matches your checkout.html
-  if (!cartEl || !totalEl) return;
+/* ========= Render: Home products grid ========= */
+function renderProducts(products, category = "All") {
+  const grid = document.getElementById("products");
+  if (!grid) return;
 
-  const cart = readCart();
+  const filtered = category === "All" ? products : products.filter(p => p.category === category);
 
-  if (!cart.length) {
-    cartEl.innerHTML = "<p>Your cart is empty.</p>";
-    totalEl.textContent = "R0";
-    return;
-  }
-
-  // Compact grid container
-  cartEl.innerHTML = `<div class="checkout-grid" id="checkoutGrid"></div>`;
-  const grid = document.getElementById("checkoutGrid");
-
-  let total = 0;
-
-  cart.forEach(item => {
-    const product = products.find(p => p.id === item.id);
-    if (!product) return;
-
-    const lineTotal = Number(product.price || 0) * Number(item.qty || 0);
-    total += lineTotal;
-
-    const card = document.createElement("div");
-    card.className = "checkout-card";
-
-    card.innerHTML = `
-      <img class="checkout-thumb" src="images/${product.image}" alt="${product.name}">
-      <div class="checkout-info">
-        <div class="checkout-name">${product.name}</div>
-        <div class="checkout-price">R${product.price}</div>
-
-        <div class="qty-row">
-          <button type="button" class="qty-btn" onclick="updateQty('${product.id}', -1)">−</button>
-          <span class="qty-val">${item.qty}</span>
-          <button type="button" class="qty-btn" onclick="updateQty('${product.id}', 1)">+</button>
-
-          <button type="button" class="remove-btn" onclick="removeFromCart('${product.id}')">Remove</button>
-        </div>
-
-        <div class="checkout-line">Line total: <strong>R${lineTotal}</strong></div>
+  grid.innerHTML = filtered.map(p => `
+    <div class="card">
+      <img src="images/${p.image}" alt="${p.name}" loading="lazy">
+      <h3>${p.name}</h3>
+      <p class="category">${p.category || ""}</p>
+      <p class="price">${moneyZAR(p.price)}</p>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button type="button" onclick="addToCart('${p.id}')">Add to cart</button>
       </div>
-    `;
-
-    grid.appendChild(card);
-  });
-
-  totalEl.textContent = "R" + total;
+    </div>
+  `).join("");
 }
 
-/* ===== Categories ===== */
 function wireCategoryLinks(products) {
   document.querySelectorAll("nav a[data-filter]").forEach(link => {
     link.addEventListener("click", e => {
       e.preventDefault();
-      const cat = link.dataset.filter;
+      const cat = link.dataset.filter || "All";
       renderProducts(products, cat);
     });
   });
 }
 
-/* ===== Cart ===== */
-function readCart() {
-  return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
-}
-
-function writeCart(cart) {
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
-}
-
+/* ========= Cart actions ========= */
 function addToCart(id) {
   const cart = readCart();
-  const product = window.__products.find(p => p.id === id);
-
-  const existing = cart.find(item => item.id === id);
-  if (existing) {
-    existing.qty += 1;
-  } else {
-    cart.push({ id, qty: 1 });
-  }
+  const item = cart.find(x => x.id === id);
+  if (item) item.qty += 1;
+  else cart.push({ id, qty: 1 });
 
   writeCart(cart);
 
-  alert(`${product ? product.name : "Product"} added to cart`);
+  const p = (window.__products || []).find(x => x.id === id);
+  alert(`${p ? p.name : "Product"} added to cart`);
 }
 
-
-function renderCart(products) {
- const cartEl = document.getElementById("cart");
-cartEl.className = "checkout-grid";
- const totalEl = document.getElementById("checkoutTotal");
-
-
-  if (!cartEl || !totalEl) return;
-
-  const cart = readCart();
-
-  if (!cart.length) {
-    cartEl.innerHTML = "<p>Your cart is empty.</p>";
-    totalEl.textContent = "R0";
-    return;
-  }
-
-  let total = 0;
-  cartEl.innerHTML = "";
-
-  cart.forEach(item => {
-    const product = products.find(p => p.id === item.id);
-    if (!product) return;
-
-    const lineTotal = product.price * item.qty;
-    total += lineTotal;
-
-    cartEl.innerHTML += `
-      <div class="card">
-       <img src="images/${product.image}" alt="${product.name}" />
-        <h3>${product.name}</h3>
-        <p>Qty: ${item.qty}</p>
-        <p>R${lineTotal}</p>
-      </div>
-    `;
-  });
-
-  totalEl.textContent = "R" + total;
-}
-function clearCart() {
-  localStorage.removeItem(CART_KEY);
-
-  const cartEl = document.getElementById("cart");
-  if (cartEl) {
-    cartEl.innerHTML = "<p>Your cart is empty.</p>";
-  }
-
-  alert("Cart cleared");
-}
 function updateQty(id, delta) {
   const cart = readCart();
   const item = cart.find(x => x.id === id);
@@ -166,61 +94,121 @@ function updateQty(id, delta) {
 
   item.qty += delta;
 
-  // remove if qty goes to zero
   const next = cart.filter(x => x.qty > 0);
   writeCart(next);
-  renderCart(window.__products || []);
+
+  renderCheckout(window.__products || []);
 }
 
 function removeFromCart(id) {
-  const cart = readCart().filter(x => x.id !== id);
-  writeCart(cart);
-  renderCart(window.__products || []);
+  const next = readCart().filter(x => x.id !== id);
+  writeCart(next);
+  renderCheckout(window.__products || []);
 }
 
-function payNow() {
-  if (PAYMENT_MODE === "whatsapp") {
-    return payNowWhatsApp();
-  }
-  if (PAYMENT_MODE === "payfast") {
-    alert("PayFast integration coming next.");
-    return;
-  }
-  if (PAYMENT_MODE === "peach") {
-    alert("Peach Payments integration coming next.");
-    return;
-  }
+function clearCart() {
+  localStorage.removeItem(CART_KEY);
+  renderCheckout(window.__products || []);
+  alert("Cart cleared");
 }
+
+/* ========= Checkout render (small grid + total) ========= */
+function renderCheckout(products) {
+  const cartEl = document.getElementById("cart");
+  const totalEl = document.getElementById("checkoutTotal");
+  if (!cartEl || !totalEl) return;
+
+  const cart = readCart();
+  if (!cart.length) {
+    cartEl.innerHTML = `<p>Your cart is empty.</p>`;
+    totalEl.textContent = "R0";
+    return;
+  }
+
   let total = 0;
-  let lines = [];
+
+  cartEl.innerHTML = `<div class="checkout-grid"></div>`;
+  const grid = cartEl.querySelector(".checkout-grid");
+
+  cart.forEach(line => {
+    const p = products.find(x => x.id === line.id);
+    if (!p) return;
+
+    const lineTotal = Number(p.price || 0) * Number(line.qty || 0);
+    total += lineTotal;
+
+    const div = document.createElement("div");
+    div.className = "checkout-card";
+    div.innerHTML = `
+      <img class="checkout-thumb" src="images/${p.image}" alt="${p.name}" loading="lazy">
+      <div class="checkout-info">
+        <div class="checkout-name">${p.name}</div>
+        <div class="checkout-price">${moneyZAR(p.price)}</div>
+
+        <div class="qty-row">
+          <button type="button" class="qty-btn" onclick="updateQty('${p.id}', -1)">−</button>
+          <span class="qty-val">${line.qty}</span>
+          <button type="button" class="qty-btn" onclick="updateQty('${p.id}', 1)">+</button>
+
+          <button type="button" class="remove-btn" onclick="removeFromCart('${p.id}')">Remove</button>
+        </div>
+
+        <div class="checkout-line">Line total: <strong>${moneyZAR(lineTotal)}</strong></div>
+      </div>
+    `;
+    grid.appendChild(div);
+  });
+
+  totalEl.textContent = moneyZAR(total);
+}
+
+/* ========= Pay Now (WhatsApp now; PayFast/Peach later) ========= */
+function payNow() {
+  if (PAYMENT_MODE === "whatsapp") return payNowWhatsApp();
+  if (PAYMENT_MODE === "payfast") return alert("PayFast integration coming next.");
+  if (PAYMENT_MODE === "peach") return alert("Peach Payments integration coming next.");
+}
+
+function payNowWhatsApp() {
+  const cart = readCart();
+  if (!cart.length) {
+    alert("Your cart is empty");
+    return;
+  }
+
+  let total = 0;
+  const lines = [];
 
   cart.forEach(item => {
     const p = (window.__products || []).find(x => x.id === item.id);
     if (!p) return;
     const lineTotal = Number(p.price || 0) * Number(item.qty || 0);
     total += lineTotal;
-    lines.push(`• ${p.name}  x${item.qty}  = R${lineTotal}`);
+    lines.push(`• ${p.name}  x${item.qty}  = ${moneyZAR(lineTotal)}`);
   });
 
   const message =
     `🛒 Tinkers Order Summary\n\n` +
     lines.join("\n") +
-    `\n\n✅ Total: R${total}\n\n` +
+    `\n\n✅ Total: ${moneyZAR(total)}\n\n` +
     `Name:\nDelivery address (if needed):\nPreferred payment method (EFT / Card):`;
 
-  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, "_blank");
+  window.open(buildWhatsAppLink(message), "_blank", "noopener");
 }
-/* ===== Init ===== */
+
+/* ========= Init ========= */
 document.addEventListener("DOMContentLoaded", async () => {
   const products = await loadProducts();
   window.__products = products;
 
+  // Home page
   if (document.getElementById("products")) {
-    renderProducts(products);
+    renderProducts(products, "All");
     wireCategoryLinks(products);
   }
 
+  // Checkout page
   if (document.getElementById("cart")) {
-    renderCart(products);
+    renderCheckout(products);
   }
 });
