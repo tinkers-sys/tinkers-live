@@ -1,32 +1,74 @@
 "use strict";
 
+/* ===============================
+   CONFIG
+================================ */
 const BASE_PATH = location.pathname.includes("/tinkers-live/") ? "/tinkers-live" : "";
 const PRODUCTS_URL = BASE_PATH + "/products.json";
 const CART_KEY = "tinkers_cart_v1";
 
-/* ---- Cart helpers ---- */
+/* ===============================
+   CART HELPERS
+================================ */
 function readCart() {
   return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
 }
+
 function writeCart(cart) {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
 }
+
+function clearCart() {
+  localStorage.removeItem(CART_KEY);
+  updateCartCount();
+  if (document.getElementById("cart")) renderCheckout();
+}
+
+/* ===============================
+   UI HELPERS
+================================ */
+function moneyZAR(n) {
+  return "R" + Number(n || 0).toLocaleString("en-ZA");
+}
+
 function updateCartCount() {
   const el = document.getElementById("cartCount");
   if (!el) return;
-  const qty = readCart().reduce((s, i) => s + (Number(i.qty) || 0), 0);
-  el.textContent = String(qty);
+  const totalQty = readCart().reduce((s, i) => s + i.qty, 0);
+  el.textContent = totalQty;
 }
 
-/* ---- Products ---- */
+function showToast(message) {
+  let toast = document.getElementById("toast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "toast";
+    toast.style.cssText = `
+      position:fixed;
+      bottom:20px;
+      right:20px;
+      background:#c55a11;
+      color:#fff;
+      padding:12px 18px;
+      border-radius:6px;
+      z-index:9999;
+      font-weight:600;
+    `;
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.style.display = "block";
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => (toast.style.display = "none"), 2000);
+}
+
+/* ===============================
+   PRODUCTS
+================================ */
 async function loadProducts() {
   const res = await fetch(PRODUCTS_URL, { cache: "no-store" });
   const data = await res.json();
-  return Array.isArray(data) ? data : (data.products || []);
-}
-
-function moneyZAR(n) {
-  return "R" + Number(n || 0).toLocaleString("en-ZA");
+  return Array.isArray(data) ? data : [];
 }
 
 function renderProducts(products, category = "All") {
@@ -38,15 +80,19 @@ function renderProducts(products, category = "All") {
       ? products
       : products.filter(p => p.category === category);
 
-  grid.innerHTML = list.map(p => `
-    <div class="card">
-      <img src="images/${p.image}" alt="${p.name}" loading="lazy">
-      <h3>${p.name}</h3>
-      <p class="category">${p.category || ""}</p>
-      <p class="price">${moneyZAR(p.price)}</p>
-      <button type="button" onclick="addToCart('${p.id}')">Add to cart</button>
-    </div>
-  `).join("");
+  grid.innerHTML = list
+    .map(
+      p => `
+      <div class="card">
+        <img src="images/${p.image}" alt="${p.name}" loading="lazy">
+        <h3>${p.name}</h3>
+        <p class="category">${p.category}</p>
+        <p class="price">${moneyZAR(p.price)}</p>
+        <button onclick="addToCart('${p.id}')">Add to cart</button>
+      </div>
+    `
+    )
+    .join("");
 }
 
 function wireCategoryLinks(products) {
@@ -58,36 +104,66 @@ function wireCategoryLinks(products) {
   });
 }
 
-/* ---- Cart actions ---- */
+/* ===============================
+   CART ACTIONS
+================================ */
 function addToCart(id) {
   const cart = readCart();
   const item = cart.find(i => i.id === id);
 
-  if (item) {
-    item.qty += 1;
-  } else {
-    cart.push({ id, qty: 1 });
-  }
+  if (item) item.qty += 1;
+  else cart.push({ id, qty: 1 });
 
   writeCart(cart);
   updateCartCount();
 
   const product = window.__products.find(p => p.id === id);
-  alert(`${product ? product.name : "Item"} added to cart`);
+  showToast(`${product.name} added to cart`);
 }
 
-/* ---- Init ---- */
-document.addEventListener("DOMContentLoaded", async () => {
-  const products = await loadProducts();
-  window.__products = products;
+/* ===============================
+   CHECKOUT RENDERING
+================================ */
+function renderCheckout() {
+  const cartEl = document.getElementById("cart");
+  const totalEl = document.getElementById("checkoutTotal");
+  if (!cartEl || !totalEl) return;
 
-  updateCartCount(); // ✅ updates Checkout (x) immediately on page load
-
-  if (document.getElementById("products")) {
-    renderProducts(products, "All");
-    wireCategoryLinks(products);
+  const cart = readCart();
+  if (!cart.length) {
+    cartEl.innerHTML = "<p>Your cart is empty.</p>";
+    totalEl.textContent = "R0";
+    return;
   }
-});
+
+  let total = 0;
+  cartEl.innerHTML = "";
+
+  cart.forEach(item => {
+    const product = window.__products.find(p => p.id === item.id);
+    if (!product) return;
+
+    const lineTotal = product.price * item.qty;
+    total += lineTotal;
+
+    cartEl.innerHTML += `
+      <div class="checkout-item">
+        <img src="images/${product.image}" alt="${product.name}">
+        <div>
+          <strong>${product.name}</strong><br>
+          Qty: ${item.qty}<br>
+          ${moneyZAR(lineTotal)}
+        </div>
+      </div>
+    `;
+  });
+
+  totalEl.textContent = moneyZAR(total);
+}
+
+/* ===============================
+   PAYFAST
+================================ */
 function payNow() {
   const cart = readCart();
   if (!cart.length) {
@@ -110,3 +186,22 @@ function payNow() {
 
   document.getElementById("payfastForm").submit();
 }
+
+/* ===============================
+   INIT
+================================ */
+document.addEventListener("DOMContentLoaded", async () => {
+  const products = await loadProducts();
+  window.__products = products;
+
+  updateCartCount();
+
+  if (document.getElementById("products")) {
+    renderProducts(products, "All");
+    wireCategoryLinks(products);
+  }
+
+  if (document.getElementById("cart")) {
+    renderCheckout();
+  }
+});
