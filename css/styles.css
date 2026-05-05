@@ -1,1 +1,174 @@
+:root {
+  --color-dark: #24333a;
+  --color-accent: #c55a11;
+  --color-earth: #6b4a2b;
+  --color-bg: #f7f7f7;
+  --color-soft: #f3f3f3;
+  --color-white: #ffffff;
+}
+body{font-family:Segoe UI;background:#f7f7f7;margin:0}
+.header{background:#24333a;color:white;padding:20px;display:flex;justify-content:space-between}
+.header a{color:white;margin:0 10px;text-decoration:none}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px;padding:0;}
+.card{background:white;padding:15px;border-radius:10px;text-align:center}
+.card img{
+  width: 100%;
+  max-width: 240px;     /* prevents oversizing */
+  height: 200px;        /* fixed card height */
+  object-fit: contain;  /* keeps product fully visible */
+  background: #f3f3f3;  /* neat neutral backdrop */
+  padding: 10px;
+  border-radius: 10px;
+  display: block;
+  margin: 0 auto 12px;
+}
+button{background:#c55a11;color:white;border:none;padding:10px;border-radius:6px;cursor:pointer}
+.whatsapp-chat{position:fixed;bottom:20px;right:20px;background:#25D366;color:white;padding:15px;border-radius:50px;cursor:pointer}
+.hero {
+  background: linear-gradient(135deg, #24333a, #36454f);
+  color: white;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.hero-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.hero h1 {
+  font-size: 42px;
+  margin-bottom: 16px;
+}
+
+.hero p {
+  font-size: 18px;
+  opacity: 0.95;
+}
+
+.hero-actions {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.primary-btn {
+  background: #c55a11;
+  color: white;
+  padding: 14px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.secondary-btn {
+  background: white;
+  color: #24333a;
+  padding: 14px 24px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+/* Checkout grid */
+.checkout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+/* Smaller cards for checkout */
+.checkout-grid .card {
+  padding: 12px;
+  text-align: center;
+}
+
+/* Smaller images for checkout */
+.checkout-grid img {
+  height: 120px;
+  object-fit: contain;
+}
+
+/* Compact cart grid for checkout */
+.checkout-grid{
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+  margin-top: 10px;
+}
+
+.checkout-card{
+  background:#fff;
+  border-radius:12px;
+  padding:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.06);
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+}
+
+.checkout-thumb{
+  width:72px;
+  height:72px;
+  object-fit:cover;
+  border-radius:10px;
+  background:#f3f3f3;
+  flex:0 0 auto;
+}
+
+.checkout-info{ flex:1; }
+.checkout-name{ font-weight:700; margin-bottom:4px; }
+.checkout-price{ color:#666; font-size:13px; margin-bottom:8px; }
+
+.qty-row{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  flex-wrap:wrap;
+  margin:6px 0;
+}
+
+.qty-btn{
+  background:#c55a11;
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  padding:6px 10px;
+  cursor:pointer;
+}
+
+.qty-val{ min-width:28px; text-align:center; font-weight:700; }
+
+.remove-btn{
+  background:#fff;
+  color:#c55a11;
+  border:1px solid #c55a11;
+  border-radius:8px;
+  padding:6px 10px;
+  cursor:pointer;
+}
+.checkout-line{ font-size:13px; color:#333; margin-top:6px; }
+
+/* Mobile: tighter grid */
+@media (max-width: 520px){
+  .checkout-grid{ grid-template-columns: 1fr; }
+  .checkout-thumb{ width:64px; height:64px; }
+}
+/* Equal-height product cards */
+.card {
+  display: flex;
+  flex-direction: column;
+ /* Emphasize product prices */
+.price {
+  font-weight: 700;
+  color: #c55a11;
+  margin-top: 6px;
+}
+  /* Softer remove button in checkout */
+.remove-btn {
+  font-size: 13px;
+  opacity: 0.85;
+}
+
+.remove-btn:hover {
+  opacity: 1;
+}
 
