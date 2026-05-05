@@ -67,10 +67,20 @@ function addToCart(id) {
 document.addEventListener("DOMContentLoaded", async () => {
   const products = await loadProducts();
   window.__products = products;
+
+  // ✅ ALWAYS update cart count on page load
   updateCartCount();
 
-  if (document.getElementById("products")) {
-    renderProducts(products);
+  // ✅ Home page
+  const productsGrid = document.getElementById("products");
+  if (productsGrid) {
+    renderProducts(products, "All");
     wireCategoryLinks(products);
+  }
+
+  // ✅ Checkout page
+  const cartEl = document.getElementById("cart");
+  if (cartEl) {
+    renderCheckout(products);
   }
 });
