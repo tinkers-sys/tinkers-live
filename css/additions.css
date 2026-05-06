@@ -2,13 +2,15 @@
 .hero {
   min-height: calc(100vh - 80px);
   margin-top: 80px;
-  padding: 0;
+
   background-image:
-    linear-gradient(rgba(36,51,58,.78), rgba(36,51,58,.78)),
+    linear-gradient(rgba(36,51,58,.82), rgba(36,51,58,.82)),
     url("../images/tinkers-theme.jpg");
+
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -22,44 +24,58 @@
 }
 
 .hero h1 {
-  font-size: 42px;
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 1.2;
   margin-bottom: 16px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.35);
 }
 
 .hero p {
-  font-size: 18px;
+  font-size: 19px;
   opacity: 0.95;
+  max-width: 720px;
+  margin: 0 auto;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.3);
 }
 
 .hero-actions {
   margin-top: 28px;
   display: flex;
-  gap: 16px;
+  gap: 18px;
   justify-content: center;
+}
+
+.hero-actions .primary-btn,
+.hero-actions .secondary-btn {
+  padding: 16px 26px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 12px;
 }
 
 /* ================= CHECKOUT GRID ================= */
 .checkout-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 22px;
 }
 
 .checkout-card {
   background: white;
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: 14px;
+  padding: 18px;
   display: flex;
-  gap: 14px;
+  gap: 18px;
   align-items: flex-start;
 }
 
 .checkout-thumb {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   object-fit: contain;
   background: var(--color-soft);
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
 .checkout-info {
@@ -68,27 +84,30 @@
 
 .qty-row {
   display: flex;
-  gap: 8px;
+  gap: 10px;
   align-items: center;
-  margin-top: 10px;
+  margin-top: 12px;
 }
 
 .qty-row button {
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 6px;
   background: var(--color-accent);
   color: white;
-  border-radius: 6px;
-  padding: 4px 8px;
 }
 
 .remove-btn {
   margin-left: auto;
+  padding: 6px 10px;
+  font-size: 13px;
+  border-radius: 6px;
   background: transparent;
   border: 1px solid var(--color-accent);
   color: var(--color-accent);
-  padding: 4px 8px;
 }
 
-/* ================= FLOATING WHATSAPP (OPTIONAL) ================= */
+/* ================= OPTIONAL WHATSAPP BUTTON ================= */
 .whatsapp-chat {
   position: fixed;
   bottom: 20px;
