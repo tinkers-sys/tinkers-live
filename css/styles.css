@@ -115,17 +115,48 @@ button.secondary-btn {
   margin: 12px 0;
 }
 
+/* ===== BUTTON VISIBILITY FIX ===== */
+
+/* Home: Add to cart */
 .card button {
   margin-top: 14px;
-  padding: 14px 20px;
+  padding: 14px 22px;
   font-size: 15px;
+  font-weight: 600;
   border-radius: 10px;
+  background: var(--color-accent);
+  color: white;
+  border: none;
 }
 
-.card:hover {
-  transform: translateY(-4px);
-  transition: transform 0.25s ease;
+.card button:hover {
+  background: #a94a0f; /* slightly darker accent */
 }
+
+/* Checkout primary (PayFast) */
+.checkout-summary .primary-btn,
+.checkout-summary button.primary-btn {
+  background: var(--color-accent);
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 14px 26px;
+}
+
+/* Checkout secondary (Clear cart / Remove) */
+.checkout-summary .secondary-btn,
+.remove-btn {
+  background: white;
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+}
+
+.checkout-summary .secondary-btn:hover,
+.remove-btn:hover {
+  background: var(--color-soft);
+}
+
 
 /* ================= CHECKOUT BASE ================= */
 .checkout-wrap {
