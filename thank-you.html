@@ -1,20 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thank You | Tinkers</title>
+
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/additions.css">
+
 </head>
-  <script>
-  localStorage.removeItem("tinkers_cart_v1");
-</script>
-  <script>
+<body>
+
+<header class="header">
+  <h2>Tinkers</h2>
+  <nav>
+    <a href="index.html">Back to shop</a>
+  </nav>
+</header>
+
+<main class="checkout-wrap">
+
+  <h2>Thank you for your order 🎉</h2>
+
+  <p style="max-width:700px;">
+    Your payment was successful. We’ve received your order and will be preparing it for processing.
+  </p>
+
+  <div class="checkout-summary" style="margin-top: 24px;">
+    <p>
+      <strong>Order reference:</strong>
+    </p>
+    <p id="orderRef"></p>
+
+    <p>
+      You’ll be contacted if we need additional details regarding delivery.
+    </p>
+
+    <p>
+      Questions? WhatsApp us or email:
+      <br>
+      <strong>orders@tinkers.co.za</strong>
+    </p>
+
+    <a href="index.html" class="primary-btn">
+      Continue shopping
+    </a>
+  </div>
+
+</main>
+
+<script>
+  // ✅ Generate simple order reference
+  const ref = "TNK-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+  document.getElementById("orderRef").textContent = ref;
+
   // ✅ Clear cart after successful PayFast return
   localStorage.removeItem("tinkers_cart_v1");
 </script>
 
-<body>
-  <h1>Thank you for your order 🎉</h1>
-  <p>Your payment was successful.</p>
-  <a href="index.html">Back to shop</a>
 </body>
 </html>
