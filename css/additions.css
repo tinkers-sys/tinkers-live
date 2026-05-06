@@ -64,18 +64,19 @@
 .checkout-card {
   background: white;
   border-radius: 14px;
-  padding: 18px;
+  padding: 22px;
   display: flex;
-  gap: 18px;
+  gap: 20px;
   align-items: flex-start;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
 }
 
 .checkout-thumb {
-  width: 100px;
-  height: 100px;
+  width: 110px;
+  height: 110px;
   object-fit: contain;
   background: var(--color-soft);
-  border-radius: 10px;
+  border-radius: 12px;
 }
 
 .checkout-info {
@@ -84,9 +85,14 @@
 
 .qty-row {
   display: flex;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
-  margin-top: 12px;
+  margin-top: 14px;
+}
+
+.qty-row span {
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .qty-row button {
@@ -105,17 +111,4 @@
   background: transparent;
   border: 1px solid var(--color-accent);
   color: var(--color-accent);
-}
-
-/* ================= OPTIONAL WHATSAPP BUTTON ================= */
-.whatsapp-chat {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #25D366;
-  color: white;
-  padding: 14px 18px;
-  border-radius: 32px;
-  font-weight: 600;
-  cursor: pointer;
 }
