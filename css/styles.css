@@ -115,7 +115,6 @@ button.secondary-btn {
   margin: 12px 0;
 }
 
-/* Add to cart button */
 .card button {
   margin-top: 14px;
   padding: 14px 20px;
@@ -130,9 +129,9 @@ button.secondary-btn {
 
 /* ================= CHECKOUT BASE ================= */
 .checkout-wrap {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 48px 28px;
+  padding: 56px 32px;
 }
 
 .checkout-cart {
