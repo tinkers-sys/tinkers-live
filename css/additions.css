@@ -112,3 +112,31 @@
   border: 1px solid var(--color-accent);
   color: var(--color-accent);
 }
+/* ===== CHECKOUT BUTTON VISIBILITY FIX ===== */
+
+/* PayFast button – strong primary */
+.checkout-summary button[onclick*="payNow"] {
+  background: var(--color-accent);
+  color: white;
+  border: none;
+  padding: 14px 26px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 10px;
+}
+
+/* Clear cart button – secondary */
+.checkout-summary button[onclick*="clearCart"] {
+  background: white;
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  padding: 14px 22px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 10px;
+}
+
+/* Hover states for clarity */
+.checkout-summary button:hover {
+  opacity: 0.9;
+}
