@@ -84,7 +84,7 @@ function renderProducts(products, category = "All") {
     .map(
       p => `
       <div class="card">
-        <img src="images/${p.image}" alt="${p.name}" loading="lazy">
+       <img src="images/${p.image}" alt="${p.name}" loading="lazy">
         <h3>${p.name}</h3>
         <p class="category">${p.category}</p>
         <p class="price">${moneyZAR(p.price)}</p>
