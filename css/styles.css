@@ -22,7 +22,7 @@ body {
   background: var(--color-dark);
   color: white;
   height: 80px;
-  padding: 0 24px;
+  padding: 0 28px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -36,17 +36,22 @@ body {
 
 .header nav a {
   color: white;
-  margin-left: 16px;
+  margin-left: 18px;
   text-decoration: none;
   font-size: 14px;
 }
 
-/* ================= BUTTONS ================= */
-.hero-actions .primary-btn,
-.hero-actions .secondary-btn {
-  padding: 14px 22px;
-  font-size: 15px;
+/* ================= BUTTONS (GLOBAL) ================= */
+button,
+.primary-btn,
+.secondary-btn {
+  cursor: pointer;
+  font-family: inherit;
   border-radius: 10px;
+  padding: 14px 22px;       /* increased */
+  font-size: 15px;          /* increased */
+  font-weight: 600;
+  border: none;
 }
 
 .primary-btn,
@@ -62,70 +67,74 @@ button.secondary-btn {
   border: 1px solid var(--color-dark);
 }
 
-/* ================= GRID (HOME) ================= */
+/* ================= GRID (HOME PRODUCTS) ================= */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 24px;
-  padding: 36px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* bigger cards */
+  gap: 28px;
+  padding: 44px;
 }
 
 .card {
   background: white;
-  padding: 18px;
-  border-radius: 14px;
+  padding: 20px;
+  border-radius: 16px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .card img {
   width: 100%;
-  height: 240px;
+  height: 260px;              /* increased image size */
   object-fit: contain;
   background: var(--color-soft);
-  border-radius: 10px;
-}
-
-/* ✅ ADD TO CART BUTTON SIZE */
-.card button {
-  margin-top: 10px;
-  padding: 12px 16px;
-  font-size: 14px;
-  border-radius: 8px;
+  border-radius: 12px;
 }
 
 .card h3 {
-  font-size: 16px;
-  margin: 12px 0 6px;
+  font-size: 17px;            /* increased */
+  margin: 14px 0 6px;
 }
 
 .card .category {
   font-size: 13px;
+  color: #666;
 }
 
 .card .price {
-  font-size: 16px;
+  font-size: 17px;            /* increased */
   font-weight: 700;
   color: var(--color-accent);
-  margin: 10px 0;
+  margin: 12px 0;
+}
+
+/* ✅ ADD TO CART BUTTON (HOME PAGE) */
+.card button {
+  margin-top: 14px;
+  padding: 14px 20px;         /* larger click target */
+  font-size: 15px;
+  border-radius: 10px;
 }
 
 /* ================= CHECKOUT BASE ================= */
 .checkout-wrap {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 40px 24px;
+  padding: 48px 28px;
 }
 
 .checkout-cart {
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .checkout-summary {
   background: white;
-  border-radius: 12px;
-  padding: 20px;
+  border-radius: 14px;
+  padding: 22px;
   display: flex;
-  gap: 20px;
+  gap: 22px;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
