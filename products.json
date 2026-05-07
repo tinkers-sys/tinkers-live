@@ -1,13 +1,14 @@
 [
-  {
-    "id": "african-warrior-shirt",
-    "name": "African Warrior Shirt",
-    "category": "Apparel",
-    "price": 850,
-    "image": "African-Warrior-Shirt.jpg",
-    "type": "retail"
-    
-  },
+ {
+  "id": "african-warrior-shirt",
+  "name": "African Warrior Shirt",
+  "category": "Apparel",
+  "price": 850,
+  "image": "African-Warrior-Shirt.jpg",
+  "type": "retail",
+  "stock": 5
+}
+
   {
     "id": "ankara-suit",
     "name": "Ankara Suit",
