@@ -99,6 +99,7 @@ function renderProducts(products, category = "All") {
 
     let stockNote = "";
     let buttonHTML = "";
+     let badge = "";
 
     if (availableStock === Infinity) {
       // Unlimited stock (older products)
