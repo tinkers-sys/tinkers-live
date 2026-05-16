@@ -279,6 +279,40 @@ function whatsappProduct(name) {
     "_blank"
   );
 }
+function whatsappCart() {
+  const cart = readCart();
+  if (!cart.length) {
+    alert("Your cart is empty");
+    return;
+  }
+
+  let message = "Hi Tinkers, I would like to order:\n\n";
+  let total = 0;
+
+  cart.forEach(item => {
+    const product = window.__products.find(p => p.id === item.id);
+    if (!product) return;
+
+    const lineTotal = product.price * item.qty;
+    total += lineTotal;
+
+    message += `• ${product.name} x${item.qty} - ${moneyZAR(lineTotal)}\n`;
+  });
+
+  message += `\nTotal: ${moneyZAR(total)}`;
+
+  // ✅ Track event
+  if (typeof gtag !== "undefined") {
+    gtag('event', 'whatsapp_cart_checkout', {
+      value: total
+    });
+  }
+
+  window.open(
+    `https://wa.me/27682525454?text=${encodeURIComponent(message)}`,
+    "_blank"
+  );
+}
 
 /* ===============================
    PAYFAST
