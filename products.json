@@ -78,7 +78,7 @@
     "category": "Beadwork",
     "price": 1500,
     "image": "beadwork-necklace.jpg",
-    "type": "retail"
+    "type": "retail" ,
      "stock": 5
   }
 ]
