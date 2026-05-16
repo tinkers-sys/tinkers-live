@@ -112,7 +112,7 @@ function renderProducts(products, category = "All") {
       badge = `<div class="badge">OUT</div>`;
       buttonHTML = `<button disabled>Out of stock</button>`;
 
-    } else if (availableStock === 1) {
+    } else if (availableStock <= 1) {
       stockNote = "Only 1 left";
       badge = `<div class="badge">LAST ITEM</div>`;
       buttonHTML = `
