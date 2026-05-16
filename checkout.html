@@ -67,6 +67,16 @@
   </div>
 
 </main>
+  <div id="orderSummary" style="
+  margin-top:20px;
+  padding:15px;
+  background:#f7f7f7;
+  border-radius:8px;
+">
+  <h3>Order Summary</h3>
+  <div id="summaryItems"></div>
+  <p><strong>Total: <span id="summaryTotal">R0</span></strong></p>
+</div>
 
 <!-- PAYFAST FORM -->
 <form
@@ -91,7 +101,36 @@
 </form>
 
 <script src="js/app.js"></script>
+<script>
+function renderSummary() {
+  const cart = JSON.parse(localStorage.getItem("tinkers_cart_v1") || "[]");
 
+  const container = document.getElementById("summaryItems");
+  const totalEl = document.getElementById("summaryTotal");
+
+  if (!container) return;
+
+  let total = 0;
+  container.innerHTML = "";
+
+  cart.forEach(item => {
+    const product = window.__products?.find(p => p.id === item.id);
+
+    if (!product) return;
+
+    const lineTotal = product.price * item.qty;
+    total += lineTotal;
+
+    container.innerHTML += `
+      <p>${product.name} × ${item.qty} = R${lineTotal}</p>
+    `;
+  });
+
+  totalEl.textContent = "R" + total;
+}
+
+document.addEventListener("DOMContentLoaded", renderSummary);
+</script>
 </body>
 </html>
 <footer style="text-align:center; padding:30px; font-size:14px;">
