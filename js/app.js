@@ -169,18 +169,36 @@ function addToCart(id) {
   showToast(`${product.name} added to cart`);
 }
 function updateQty(id, delta) {
+  const product = window.__products.find(p => p.id === id);
+  if (!product) return;
+
+  const soldData = readSold();
+  const baseStock = typeof product.stock === "number" ? product.stock : Infinity;
+  const soldQty = soldData[id] || 0;
+
   const cart = readCart();
   const item = cart.find(i => i.id === id);
   if (!item) return;
 
-  item.qty += delta;
-  const updated = cart.filter(i => i.qty > 0);
-  writeCart(updated);
+  const availableStock = baseStock - soldQty;
+  const newQty = item.qty + delta;
+
+  if (newQty > availableStock) {
+    alert("No more stock available.");
+    return;
+  }
+
+  if (newQty <= 0) {
+    removeFromCart(id);
+    return;
+  }
+
+  item.qty = newQty;
+  writeCart(cart);
 
   updateCartCount();
   renderCheckout();
 }
-
 function removeFromCart(id) {
   const updated = readCart().filter(i => i.id !== id);
   writeCart(updated);
