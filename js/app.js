@@ -8,6 +8,9 @@ const PRODUCTS_URL = BASE_PATH + "/products.json";
 const CART_KEY = "tinkers_cart_v1";
 const SOLD_KEY = "tinkers_sold";
 
+/* ===============================
+   SOLD HELPERS
+================================ */
 function readSold() {
   return JSON.parse(localStorage.getItem(SOLD_KEY) || "{}");
 }
@@ -99,36 +102,36 @@ function renderProducts(products, category = "All") {
 
     let stockNote = "";
     let buttonHTML = "";
-     let badge = "";
+    let badge = "";
 
     if (availableStock === Infinity) {
-      // Unlimited stock (older products)
       buttonHTML = `<button onclick="addToCart('${p.id}')">Add to cart</button>`;
+
     } else if (availableStock <= 0) {
       stockNote = "Out of stock";
+      badge = `<div class="badge">OUT</div>`;
       buttonHTML = `<button disabled>Out of stock</button>`;
-   } else if (availableStock === 1) {
-  stockNote = "Only 1 left";
-  badge = `<div class="badge">LAST ITEM</div>`;
-  buttonHTML = `
-    <button onclick="whatsappProduct('${p.name}')">
-      Reserve via WhatsApp
-    </button>`;
-} else if (availableStock <= 3) {
-  stockNote = `Only ${availableStock} left`;
-  badge = `<div class="badge">LOW STOCK</div>`;
-  buttonHTML = `<button onclick="addToCart('${p.id}')">Add to cart</button>`;
-} else {
-  buttonHTML = `<button onclick="addToCart('${p.id}')">Add to cart</button>`;
-}
-    } else {
+
+    } else if (availableStock === 1) {
+      stockNote = "Only 1 left";
+      badge = `<div class="badge">LAST ITEM</div>`;
+      buttonHTML = `
+        <button onclick="whatsappProduct('${p.name}')">
+          Reserve via WhatsApp
+        </button>`;      
+
+    } else if (availableStock <= 3) {
       stockNote = `Only ${availableStock} left`;
+      badge = `<div class="badge">LOW STOCK</div>`;
+      buttonHTML = `<button onclick="addToCart('${p.id}')">Add to cart</button>`;
+
+    } else {
       buttonHTML = `<button onclick="addToCart('${p.id}')">Add to cart</button>`;
     }
 
     return `
-     <div class="card">
-  ${badge}
+      <div class="card">
+        ${badge}
         <img src="images/${p.image}" alt="${p.name}" loading="lazy">
         <h3>${p.name}</h3>
         <p class="category">${p.category}</p>
@@ -167,7 +170,7 @@ function addToCart(id) {
   const availableStock = baseStock - soldQty;
 
   if (qtyInCart >= availableStock) {
-    alert("Sorry, no more stock available for this item.");
+    alert("Sorry, no more stock available.");
     return;
   }
 
@@ -178,6 +181,7 @@ function addToCart(id) {
   updateCartCount();
   showToast(`${product.name} added to cart`);
 }
+
 function updateQty(id, delta) {
   const product = window.__products.find(p => p.id === id);
   if (!product) return;
@@ -209,6 +213,7 @@ function updateQty(id, delta) {
   updateCartCount();
   renderCheckout();
 }
+
 function removeFromCart(id) {
   const updated = readCart().filter(i => i.id !== id);
   writeCart(updated);
@@ -217,7 +222,7 @@ function removeFromCart(id) {
 }
 
 /* ===============================
-   CHECKOUT RENDERING
+   CHECKOUT
 ================================ */
 function renderCheckout() {
   const cartEl = document.getElementById("cart");
@@ -245,34 +250,28 @@ function renderCheckout() {
     grid.innerHTML += `
       <div class="checkout-card">
         <img class="checkout-thumb" src="images/${product.image}" alt="${product.name}">
-
         <div class="checkout-info">
           <strong>${product.name}</strong>
-
           <div class="qty-row">
             <button onclick="updateQty('${product.id}', -1)">−</button>
             <span>${item.qty}</span>
             <button onclick="updateQty('${product.id}', 1)">+</button>
             <button class="remove-btn" onclick="removeFromCart('${product.id}')">Remove</button>
           </div>
-
-          <div class="checkout-line">
-            ${moneyZAR(lineTotal)}
-          </div>
+          <div class="checkout-line">${moneyZAR(lineTotal)}</div>
         </div>
-      </div>
-    `;
+      </div>`;
   });
 
   totalEl.textContent = moneyZAR(total);
 }
-   function whatsappProduct(name) {
 
-  // ✅ Track GA4 event
+/* ===============================
+   WHATSAPP
+================================ */
+function whatsappProduct(name) {
   if (typeof gtag !== "undefined") {
-    gtag('event', 'whatsapp_product_enquiry', {
-      product_name: name
-    });
+    gtag('event', 'whatsapp_product_enquiry', { product_name: name });
   }
 
   window.open(
@@ -280,6 +279,7 @@ function renderCheckout() {
     "_blank"
   );
 }
+
 /* ===============================
    PAYFAST
 ================================ */
