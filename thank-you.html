@@ -61,8 +61,25 @@
   const ref = "TNK-" + Math.random().toString(36).substring(2, 8).toUpperCase();
   document.getElementById("orderRef").textContent = ref;
 
-  // ✅ Clear cart after successful PayFast return
+  // ✅ STEP 1: Get cart data
+  const cart = JSON.parse(localStorage.getItem("tinkers_cart_v1") || "[]");
+
+  // ✅ STEP 2: Your Google Script URL (PASTE YOURS HERE)
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3ZleL6269FAtILm43fwUz6mDB-XpzZwmizsTNFkpkYW6hxdYugiPS-uDE_gRmkrB-/exec";
+
+  // ✅ STEP 3: Send stock update requests
+  cart.forEach(item => {
+    fetch(`${SCRIPT_URL}?id=${item.id}&qty=${item.qty}`)
+      .then(res => res.text())
+      .then(data => console.log("Stock update:", data))
+      .catch(err => console.error("Error updating stock:", err));
+  });
+
+  // ✅ STEP 4: Clear cart AFTER sending updates
   localStorage.removeItem("tinkers_cart_v1");
+
+  // ✅ OPTIONAL: Refresh page data
+  setTimeout(() => location.reload(), 1000);
 </script>
 
 </body>
