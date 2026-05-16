@@ -260,6 +260,26 @@ function whatsappCart() {
 }
 
 document.addEventListener("DOMContentLoaded", renderSummary);
+function toggleAddress() {
+  const delivery = document.querySelector('input[name="delivery"]:checked')?.value;
+  const addressBlock = document.getElementById("addressBlock");
+
+  if (delivery === "delivery") {
+    addressBlock.style.display = "block";
+  } else {
+    addressBlock.style.display = "none";
+  }
+}
+
+// ✅ Run when page loads
+document.addEventListener("DOMContentLoaded", toggleAddress);
+
+// ✅ Run when delivery option changes
+document.addEventListener("change", function(e) {
+  if (e.target.name === "delivery") {
+    toggleAddress();
+  }
+});  
 
 </script>
 
