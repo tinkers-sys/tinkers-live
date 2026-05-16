@@ -107,19 +107,28 @@ function renderProducts(products, category = "All") {
     } else if (availableStock <= 0) {
       stockNote = "Out of stock";
       buttonHTML = `<button disabled>Out of stock</button>`;
-    } else if (availableStock === 1) {
-      stockNote = "Only 1 left";
-      buttonHTML = `
-        <button onclick="whatsappProduct('${p.name}')">
-          Reserve via WhatsApp
-        </button>`;
+   } else if (availableStock === 1) {
+  stockNote = "Only 1 left";
+  badge = `<div class="badge">LAST ITEM</div>`;
+  buttonHTML = `
+    <button onclick="whatsappProduct('${p.name}')">
+      Reserve via WhatsApp
+    </button>`;
+} else if (availableStock <= 3) {
+  stockNote = `Only ${availableStock} left`;
+  badge = `<div class="badge">LOW STOCK</div>`;
+  buttonHTML = `<button onclick="addToCart('${p.id}')">Add to cart</button>`;
+} else {
+  buttonHTML = `<button onclick="addToCart('${p.id}')">Add to cart</button>`;
+}
     } else {
       stockNote = `Only ${availableStock} left`;
       buttonHTML = `<button onclick="addToCart('${p.id}')">Add to cart</button>`;
     }
 
     return `
-      <div class="card">
+     <div class="card">
+  ${badge}
         <img src="images/${p.image}" alt="${p.name}" loading="lazy">
         <h3>${p.name}</h3>
         <p class="category">${p.category}</p>
