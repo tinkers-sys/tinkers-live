@@ -74,6 +74,34 @@
       .then(data => console.log("Stock update:", data))
       .catch(err => console.error("Error updating stock:", err));
   });
+  // ✅ TRACK PURCHASE IN GA4
+if (typeof gtag !== "undefined") {
+
+  let total = 0;
+  const items = [];
+
+  cart.forEach(item => {
+    const product = window.__products?.find(p => p.id === item.id);
+
+    if (!product) return;
+
+    const value = product.price * item.qty;
+    total += value;
+
+    items.push({
+      item_name: product.name,
+      quantity: item.qty,
+      price: product.price
+    });
+  });
+
+  gtag('event', 'purchase', {
+    value: total,
+    currency: 'ZAR',
+    items: items
+  });
+}
+
 
   // ✅ STEP 4: Clear cart AFTER sending updates
   localStorage.removeItem("tinkers_cart_v1");
