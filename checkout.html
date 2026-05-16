@@ -67,14 +67,24 @@
 </div>
 
 <!-- ✅ PAYFAST -->
-<form id="payfastForm" action="https://sandbox.payfast.co.za/eng/process" method="post">
+<form id="payfastForm" method="post" action="https://sandbox.payfast.co.za/eng/process">
 
+  <!-- ✅ REQUIRED PAYFAST FIELDS -->
+  <input type="hidden" name="merchant_id" value="10000100">
+  <input type="hidden" name="merchant_key" value="46f0cd694581a">
+
+  <!-- ✅ ORDER DETAILS -->
   <input type="hidden" name="amount" id="pf_amount">
   <input type="hidden" name="item_name" id="pf_item_name">
+
+  <!-- ✅ OPTIONAL URLs -->
+  <input type="hidden" name="return_url" value="https://tinkers-sys.github.io/tinkers-live/thank-you.html">
+  <input type="hidden" name="cancel_url" value="https://tinkers-sys.github.io/tinkers-live/checkout.html">
 
   <button type="button" onclick="payNow()" class="primary-btn">
     Pay Now
   </button>
+
 </form>
 
 <!-- ✅ WHATSAPP -->
