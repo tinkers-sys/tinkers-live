@@ -7,7 +7,7 @@
   "image": "African-Warrior-Shirt.jpg",
   "type": "retail",
   "stock": 5
-}
+},
 
   {
     "id": "ankara-suit",
@@ -17,7 +17,7 @@
     "image": "Ankara-Suit.jpg",
     "type": "retail" ,
     "stock": 5
-  }
+  },
   {
     "id": "beaded-giraffe",
     "name": "Beaded Giraffe Sculpture",
@@ -26,7 +26,7 @@
     "image": "Beaded-Giraffe.jpg",
     "type": "retail" ,
     "stock": 5
-  }
+  },
   {
     "id": "beaded-wallet",
     "name": "Beaded Wallet",
@@ -35,7 +35,7 @@
     "image": "Beaded-Wallet.jpg",
     "type": "retail" ,
      "stock": 5
-  }
+  },
   {
     "id": "summer-dress",
     "name": "Summer Dress",
@@ -44,7 +44,7 @@
     "image": "Summer-Dress.jpg",
     "type": "retail" ,
      "stock": 5
-  }
+  },
   {
     "id": "zulu-mqhele",
     "name": "Zulu Mqhele Headpiece",
@@ -53,7 +53,7 @@
     "image": "Zulu-Mqhele.jpg",
     "type": "retail" ,
      "stock": 5
-  }
+  },
   {
     "id": "africa-map-earrings",
     "name": "African Map Earrings",
@@ -62,7 +62,7 @@
     "image": "africa-map-earrings.jpg",
     "type": "retail",
      "stock": 5
-  }
+  },
   {
     "id": "traditional-dress",
     "name": "Traditional African Dress",
@@ -71,7 +71,7 @@
     "image": "apparel-traditional-dress.jpg",
     "type": "retail" ,
      "stock": 5
-  }
+  },
   {
     "id": "beadwork-necklace",
     "name": "Handmade Beadwork Necklace",
@@ -80,5 +80,5 @@
     "image": "beadwork-necklace.jpg",
     "type": "retail" ,
      "stock": 5
-  }
+  },
 ]
