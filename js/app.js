@@ -4,7 +4,7 @@
    CONFIG
 ================================ */
 const BASE_PATH = location.pathname.includes("/tinkers-live/") ? "/tinkers-live" : "";
-const PRODUCTS_URL = BASE_PATH + "/products.json";
+const PRODUCTS_URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1";
 const CART_KEY = "tinkers_cart_v1";
 const SOLD_KEY = "tinkers_sold";
 
@@ -78,9 +78,14 @@ function showToast(message) {
    PRODUCTS
 ================================ */
 async function loadProducts() {
-  const res = await fetch(PRODUCTS_URL, { cache: "no-store" });
+  const res = await fetch(PRODUCTS_URL);
   const data = await res.json();
-  return Array.isArray(data) ? data : [];
+
+  return data.map(p => ({
+    ...p,
+    price: Number(p.price),
+    stock: Number(p.stock)
+  }));
 }
 
 function renderProducts(products, category = "All") {
