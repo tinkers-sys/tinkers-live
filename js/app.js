@@ -294,6 +294,8 @@ function whatsappCart() {
   let message = "Hi Tinkers, I would like to order:\n\n";
   let total = 0;
 
+  const SCRIPT_URL = "YOUR_GOOGLE_SCRIPT_URL";
+
   cart.forEach(item => {
     const product = window.__products.find(p => p.id === item.id);
     if (!product) return;
@@ -301,17 +303,13 @@ function whatsappCart() {
     const lineTotal = product.price * item.qty;
     total += lineTotal;
 
-    message += `• ${product.name} x${item.qty} - ${moneyZAR(lineTotal)}\n`;
+    message += `• ${product.name} x${item.qty} - R${lineTotal}\n`;
+
+    // ✅ SEND TO GOOGLE SHEET
+    fetch(`${SCRIPT_URL}?product=${encodeURIComponent(product.name)}&qty=${item.qty}&total=${lineTotal}`);
   });
 
-  message += `\nTotal: ${moneyZAR(total)}`;
-
-  // ✅ Track event
-  if (typeof gtag !== "undefined") {
-    gtag('event', 'whatsapp_cart_checkout', {
-      value: total
-    });
-  }
+  message += `\nTotal: R${total}`;
 
   window.open(
     `https://wa.me/27682525454?text=${encodeURIComponent(message)}`,
