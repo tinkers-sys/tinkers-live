@@ -7,6 +7,30 @@
 
 <link rel="stylesheet" href="css/styles.css">
 <link rel="stylesheet" href="css/additions.css">
+
+<style>
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+label {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+input:focus:valid, textarea:focus:valid {
+  border: 1px solid #2ecc71;
+}
+
+input:invalid, textarea:invalid {
+  border: 1px solid #e74c3c;
+}
+</style>
+
 </head>
 
 <body>
@@ -24,12 +48,11 @@
 
 <!-- ✅ CART -->
 <div id="cart"></div>
-
 <h3>Total: <span id="checkoutTotal">R0</span></h3>
 
 <!-- ✅ DELIVERY -->
 <div style="margin-top:20px;">
-  <strong>Delivery Option:</strong><br>
+  <strong>Delivery Option</strong><br>
 
   <label>
     <input type="radio" name="delivery" value="collection" checked>
@@ -43,39 +66,29 @@
 </div>
 
 <!-- ✅ CUSTOMER FORM -->
-<!-- ✅ CUSTOMER DETAILS -->
 <div style="margin-top:20px;">
   <h3>Customer Details</h3>
 
-  <!-- ✅ NAME -->
   <label>Full Name</label>
-  <input type="text" id="custName" placeholder="Enter your full name"
-    style="width:100%; padding:10px; margin-bottom:10px;">
+  <input type="text" id="custName" placeholder="Enter your full name">
 
-  <!-- ✅ PHONE -->
   <label>Phone Number</label>
-  <input type="tel" id="custPhone" placeholder="+27..."
-    style="width:100%; padding:10px; margin-bottom:10px;">
+  <input type="tel" id="custPhone" placeholder="0821234567 or +27821234567">
+  <small style="color:#888;">Format: 0821234567 or +27821234567</small>
 
-  <!-- ✅ EMAIL (NEW FIELD) -->
   <label>Email (optional)</label>
-  <input type="email" id="custEmail" placeholder="example@email.com"
-    style="width:100%; padding:10px; margin-bottom:10px;">
+  <input type="email" id="custEmail" placeholder="example@email.com">
 
-  <!-- ✅ ADDRESS (AUTO SHOWN FOR DELIVERY ONLY) -->
   <div id="addressBlock" style="display:none;">
     <label>Delivery Address</label>
-    <textarea id="custAddress" placeholder="Street, City, Postal Code"
-      style="width:100%; padding:10px; margin-bottom:10px;"></textarea>
+    <textarea id="custAddress" placeholder="Street, City, Postal Code"></textarea>
   </div>
 
-  <!-- ✅ NOTES -->
-  <label>Order Notes (optional)</label>
-  <textarea id="custNotes" placeholder="e.g. Call before delivery"
-    style="width:100%; padding:10px;"></textarea>
+  <label>Order Notes</label>
+  <textarea id="custNotes" placeholder="Optional notes..."></textarea>
 </div>
 
-<!-- ✅ ORDER SUMMARY -->
+<!-- ✅ SUMMARY -->
 <div style="margin-top:20px; padding:15px; background:#f7f7f7; border-radius:8px;">
   <h3>Order Summary</h3>
   <div id="summaryItems"></div>
@@ -83,17 +96,14 @@
 </div>
 
 <!-- ✅ PAYFAST -->
-<form id="payfastForm" method="post" action="https://sandbox.payfast.co.za/eng/process">
+<form id="payfastForm" action="https://sandbox.payfast.co.za/eng/process" method="post">
 
-  <!-- ✅ REQUIRED PAYFAST FIELDS -->
   <input type="hidden" name="merchant_id" value="10000100">
   <input type="hidden" name="merchant_key" value="46f0cd694581a">
 
-  <!-- ✅ ORDER DETAILS -->
   <input type="hidden" name="amount" id="pf_amount">
   <input type="hidden" name="item_name" id="pf_item_name">
 
-  <!-- ✅ OPTIONAL URLs -->
   <input type="hidden" name="return_url" value="https://tinkers-sys.github.io/tinkers-live/thank-you.html">
   <input type="hidden" name="cancel_url" value="https://tinkers-sys.github.io/tinkers-live/checkout.html">
 
@@ -118,10 +128,18 @@
 
 </main>
 
-<!-- ✅ APP -->
 <script src="js/app.js"></script>
 
 <script>
+
+/* ===============================
+   TOGGLE ADDRESS
+================================ */
+function toggleAddress() {
+  const delivery = document.querySelector('input[name="delivery"]:checked')?.value;
+  document.getElementById("addressBlock").style.display =
+    delivery === "delivery" ? "block" : "none";
+}
 
 /* ===============================
    SUMMARY
@@ -135,9 +153,7 @@ function renderSummary() {
   container.innerHTML = "";
 
   cart.forEach(item => {
-    if (!window.__products) return;
-
-    const p = window.__products.find(x => x.id === item.id);
+    const p = window.__products?.find(x => x.id === item.id);
     if (!p) return;
 
     const lineTotal = p.price * item.qty;
@@ -147,44 +163,54 @@ function renderSummary() {
   });
 
   const delivery = document.querySelector('input[name="delivery"]:checked')?.value;
-
   if (delivery === "delivery") total += 100;
 
   totalEl.textContent = "R" + total;
 }
 
 /* ===============================
-   DELIVERY CHANGE
+   PHONE FORMAT (SA)
 ================================ */
-document.addEventListener("change", e => {
-  if (e.target.name === "delivery") renderSummary();
+document.getElementById("custPhone").addEventListener("input", function () {
+  let value = this.value.replace(/\D/g, "");
+
+  if (value.startsWith("0")) {
+    value = "+27" + value.substring(1);
+  }
+  this.value = value;
 });
 
 /* ===============================
-   PAYFAST
+   PAYNOW
 ================================ */
 function payNow() {
 
   const cart = JSON.parse(localStorage.getItem("tinkers_cart_v1") || "[]");
 
-  if (!cart.length) {
-    alert("Cart empty");
-    return;
-  }
-
-  const name = document.getElementById("custName").value;
-  const phone = document.getElementById("custPhone").value;
-  const address = document.getElementById("custAddress").value;
-
+  const name = custName.value.trim();
+  const phone = custPhone.value.trim();
+  const email = custEmail.value.trim();
+  const address = custAddress.value.trim();
   const delivery = document.querySelector('input[name="delivery"]:checked')?.value;
 
-  if (!name || !phone) {
-    alert("Fill name and phone");
+  if (name.length < 3) {
+    alert("Enter your full name");
     return;
   }
 
-  if (delivery === "delivery" && !address) {
-    alert("Enter delivery address");
+  const phoneRegex = /^(\+27|0)[0-9]{9}$/;
+  if (!phoneRegex.test(phone)) {
+    alert("Invalid phone number format");
+    return;
+  }
+
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    alert("Invalid email");
+    return;
+  }
+
+  if (delivery === "delivery" && address.length < 10) {
+    alert("Enter full address");
     return;
   }
 
@@ -218,20 +244,15 @@ function payNow() {
 ================================ */
 function whatsappCart() {
 
-  const cart = JSON.parse(localStorage.getItem("tinkers_cart_v1") || "[]");
-
-  if (!cart.length) {
-    alert("Cart empty");
-    return;
-  }
-
-  const name = document.getElementById("custName").value;
-  const phone = document.getElementById("custPhone").value;
-  const address = document.getElementById("custAddress").value;
+  const name = custName.value;
+  const phone = custPhone.value;
+  const address = custAddress.value;
 
   let message = `Hi Tinkers,\n\nName: ${name}\nPhone: ${phone}\n\nOrder:\n`;
 
   let total = 0;
+
+  const cart = JSON.parse(localStorage.getItem("tinkers_cart_v1") || "[]");
 
   cart.forEach(item => {
     const p = window.__products.find(x => x.id === item.id);
@@ -259,27 +280,20 @@ function whatsappCart() {
   );
 }
 
-document.addEventListener("DOMContentLoaded", renderSummary);
-function toggleAddress() {
-  const delivery = document.querySelector('input[name="delivery"]:checked')?.value;
-  const addressBlock = document.getElementById("addressBlock");
+/* ===============================
+   INIT
+================================ */
+document.addEventListener("DOMContentLoaded", () => {
+  renderSummary();
+  toggleAddress();
+});
 
-  if (delivery === "delivery") {
-    addressBlock.style.display = "block";
-  } else {
-    addressBlock.style.display = "none";
-  }
-}
-
-// ✅ Run when page loads
-document.addEventListener("DOMContentLoaded", toggleAddress);
-
-// ✅ Run when delivery option changes
-document.addEventListener("change", function(e) {
+document.addEventListener("change", e => {
   if (e.target.name === "delivery") {
     toggleAddress();
+    renderSummary();
   }
-});  
+});
 
 </script>
 
