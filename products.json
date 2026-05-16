@@ -7,7 +7,7 @@
   "image": "African-Warrior-Shirt.jpg",
   "type": "retail",
   "stock": 5
-},
+}
 
   {
     "id": "ankara-suit",
@@ -15,56 +15,63 @@
     "category": "Apparel",
     "price": 1600,
     "image": "Ankara-Suit.jpg",
-    "type": "retail"
-  },
+    "type": "retail" ,
+    "stock": 5
+  }
   {
     "id": "beaded-giraffe",
     "name": "Beaded Giraffe Sculpture",
     "category": "Art",
     "price": 2500,
     "image": "Beaded-Giraffe.jpg",
-    "type": "retail"
-  },
+    "type": "retail" ,
+    "stock": 5
+  }
   {
     "id": "beaded-wallet",
     "name": "Beaded Wallet",
     "category": "Beadwork",
     "price": 650,
     "image": "Beaded-Wallet.jpg",
-    "type": "retail"
-  },
+    "type": "retail" ,
+     "stock": 5
+  }
   {
     "id": "summer-dress",
     "name": "Summer Dress",
     "category": "Apparel",
     "price": 750,
     "image": "Summer-Dress.jpg",
-    "type": "retail"
-  },
+    "type": "retail" ,
+     "stock": 5
+  }
   {
     "id": "zulu-mqhele",
     "name": "Zulu Mqhele Headpiece",
     "category": "Accessories",
     "price": 750,
     "image": "Zulu-Mqhele.jpg",
-    "type": "retail"
-  },
+    "type": "retail" ,
+     "stock": 5
+  }
   {
     "id": "africa-map-earrings",
     "name": "African Map Earrings",
     "category": "Accessories",
     "price": 300,
     "image": "africa-map-earrings.jpg",
-    "type": "retail"
-  },
+    "type": "retail",
+     "stock": 5
+  }
   {
     "id": "traditional-dress",
     "name": "Traditional African Dress",
     "category": "Apparel",
     "price": 1650,
     "image": "apparel-traditional-dress.jpg",
-    "type": "retail"
-  },
+    "type": "retail" ,
+     "stock": 5
+  }
   {
     "id": "beadwork-necklace",
     "name": "Handmade Beadwork Necklace",
@@ -72,5 +79,6 @@
     "price": 1500,
     "image": "beadwork-necklace.jpg",
     "type": "retail"
+     "stock": 5
   }
 ]
