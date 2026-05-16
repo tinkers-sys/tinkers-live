@@ -6,6 +6,15 @@
 const BASE_PATH = location.pathname.includes("/tinkers-live/") ? "/tinkers-live" : "";
 const PRODUCTS_URL = BASE_PATH + "/products.json";
 const CART_KEY = "tinkers_cart_v1";
+const SOLD_KEY = "tinkers_sold";
+
+function readSold() {
+  return JSON.parse(localStorage.getItem(SOLD_KEY) || "{}");
+}
+
+function writeSold(data) {
+  localStorage.setItem(SOLD_KEY, JSON.stringify(data));
+}
 
 /* ===============================
    CART HELPERS
@@ -75,24 +84,50 @@ function renderProducts(products, category = "All") {
   const grid = document.getElementById("products");
   if (!grid) return;
 
+  const soldData = readSold();
+
   const list =
     category === "All"
       ? products
       : products.filter(p => p.category === category);
 
-  grid.innerHTML = list
-    .map(
-      p => `
+  grid.innerHTML = list.map(p => {
+
+    const baseStock = typeof p.stock === "number" ? p.stock : Infinity;
+    const soldQty = soldData[p.id] || 0;
+    const availableStock = baseStock - soldQty;
+
+    let stockNote = "";
+    let buttonHTML = "";
+
+    if (availableStock === Infinity) {
+      // Unlimited stock (older products)
+      buttonHTML = `<button onclick="addToCart('${p.id}')">Add to cart</button>`;
+    } else if (availableStock <= 0) {
+      stockNote = "Out of stock";
+      buttonHTML = `<button disabled>Out of stock</button>`;
+    } else if (availableStock === 1) {
+      stockNote = "Only 1 left";
+      buttonHTML = `
+        <button onclick="whatsappProduct('${p.name}')">
+          Reserve via WhatsApp
+        </button>`;
+    } else {
+      stockNote = `Only ${availableStock} left`;
+      buttonHTML = `<button onclick="addToCart('${p.id}')">Add to cart</button>`;
+    }
+
+    return `
       <div class="card">
-       <img src="images/${p.image}" alt="${p.name}" loading="lazy">
+        <img src="images/${p.image}" alt="${p.name}" loading="lazy">
         <h3>${p.name}</h3>
         <p class="category">${p.category}</p>
         <p class="price">${moneyZAR(p.price)}</p>
-        <button onclick="addToCart('${p.id}')">Add to cart</button>
+        <p class="stock-note">${stockNote}</p>
+        ${buttonHTML}
       </div>
-    `
-    )
-    .join("");
+    `;
+  }).join("");
 }
 
 function wireCategoryLinks(products) {
@@ -108,16 +143,29 @@ function wireCategoryLinks(products) {
    CART ACTIONS
 ================================ */
 function addToCart(id) {
+  const product = window.__products.find(p => p.id === id);
+  if (!product) return;
+
+  const soldData = readSold();
+  const baseStock = typeof product.stock === "number" ? product.stock : Infinity;
+  const soldQty = soldData[id] || 0;
+
   const cart = readCart();
   const item = cart.find(i => i.id === id);
+  const qtyInCart = item ? item.qty : 0;
+
+  const availableStock = baseStock - soldQty;
+
+  if (qtyInCart >= availableStock) {
+    alert("Sorry, no more stock available for this item.");
+    return;
+  }
 
   if (item) item.qty += 1;
   else cart.push({ id, qty: 1 });
 
   writeCart(cart);
   updateCartCount();
-
-  const product = window.__products.find(p => p.id === id);
   showToast(`${product.name} added to cart`);
 }
 function updateQty(id, delta) {
@@ -189,6 +237,20 @@ function renderCheckout() {
   });
 
   totalEl.textContent = moneyZAR(total);
+}
+   function whatsappProduct(name) {
+
+  // ✅ Track GA4 event
+  if (typeof gtag !== "undefined") {
+    gtag('event', 'whatsapp_product_enquiry', {
+      product_name: name
+    });
+  }
+
+  window.open(
+    `https://wa.me/27682525454?text=Hi%20Tinkers,%20I%20want%20to%20reserve%20${encodeURIComponent(name)}`,
+    "_blank"
+  );
 }
 /* ===============================
    PAYFAST
