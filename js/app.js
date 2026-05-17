@@ -7,7 +7,7 @@ const PRODUCTS_URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSz
 const CART_KEY = "tinkers_cart_v1";
 
 /* ===============================
-   HELPERS
+   STORAGE
 ================================ */
 function readCart() {
   return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
@@ -17,36 +17,17 @@ function writeCart(cart) {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
 }
 
+/* ===============================
+   CART COUNT
+================================ */
 function updateCartCount() {
   const el = document.getElementById("cartCount");
   if (!el) return;
-  el.textContent = readCart().reduce((s, i) => s + i.qty, 0);
-}
-
-/* ✅ TOAST */
-function showToast(msg) {
-  let toast = document.getElementById("toast");
-
-  if (!toast) {
-    toast = document.createElement("div");
-    toast.id = "toast";
-    toast.style.cssText = `
-      position:fixed; bottom:20px; right:20px;
-      background:#c55a11; color:white;
-      padding:12px 16px; border-radius:6px;
-      z-index:9999;
-    `;
-    document.body.appendChild(toast);
-  }
-
-  toast.textContent = msg;
-  toast.style.display = "block";
-
-  setTimeout(() => toast.style.display = "none", 2000);
+  el.textContent = readCart().reduce((t, i) => t + i.qty, 0);
 }
 
 /* ===============================
-   PRODUCTS
+   LOAD PRODUCTS
 ================================ */
 async function loadProducts() {
   const res = await fetch(PRODUCTS_URL);
@@ -60,50 +41,7 @@ async function loadProducts() {
 }
 
 /* ===============================
-   RENDER PRODUCTS
-================================ */
-function renderProducts(products, category = "All") {
-
-  const grid = document.getElementById("products");
-  if (!grid) return;
-
-  grid.className = "product-grid";
-  grid.innerHTML = "";
-
-  const filtered = category === "All"
-    ? products
-    : products.filter(p => p.category === category);
-
-  filtered.forEach(p => {
-
-    const card = document.createElement("div");
-    card.className = "card";
-
-    card.innerHTML = `
-      <img src="images/${p.image}" alt="${p.name}">
-      <h3>${p.name}</h3>
-      <p>R${p.price}</p>
-      <button onclick="addToCart('${p.id}')">Add to cart</button>
-    `;
-
-    grid.appendChild(card);
-  });
-}
-
-/* ===============================
-   FILTER
-================================ */
-function wireCategoryLinks(products) {
-  document.querySelectorAll(".filters a").forEach(btn => {
-    btn.addEventListener("click", e => {
-      e.preventDefault();
-      renderProducts(products, btn.dataset.filter);
-    });
-  });
-}
-
-/* ===============================
-   CART
+   ADD TO CART
 ================================ */
 function addToCart(id) {
 
@@ -111,20 +49,20 @@ function addToCart(id) {
   if (!product) return;
 
   const cart = readCart();
+  const item = cart.find(i => i.id === id);
 
-  const existing = cart.find(i => i.id === id);
-
-  if (existing) {
-    existing.qty++;
-  } else {
-    cart.push({ id, qty: 1 });
-  }
+  if (item) item.qty++;
+  else cart.push({ id, qty: 1 });
 
   writeCart(cart);
   updateCartCount();
-  showToast(`${product.name} added ✅`);
+
+  alert(product.name + " added ✅");
 }
 
+/* ===============================
+   UPDATE QTY
+================================ */
 function updateQty(id, change) {
   const cart = readCart();
   const item = cart.find(i => i.id === id);
@@ -143,6 +81,9 @@ function updateQty(id, change) {
   updateCartCount();
 }
 
+/* ===============================
+   REMOVE ITEM
+================================ */
 function removeItem(id) {
   let cart = readCart();
   cart = cart.filter(i => i.id !== id);
@@ -152,6 +93,9 @@ function removeItem(id) {
   updateCartCount();
 }
 
+/* ===============================
+   CLEAR CART
+================================ */
 function clearCart() {
   localStorage.removeItem(CART_KEY);
   renderCheckout();
@@ -159,7 +103,7 @@ function clearCart() {
 }
 
 /* ===============================
-   CHECKOUT RENDER
+   CHECKOUT GRID
 ================================ */
 function renderCheckout() {
 
@@ -191,9 +135,8 @@ function renderCheckout() {
 
     grid.innerHTML += `
       <div class="checkout-card">
-
         <img class="checkout-img" src="images/${product.image}">
-
+        
         <div class="checkout-info">
           <h3>${product.name}</h3>
 
@@ -206,67 +149,16 @@ function renderCheckout() {
 
           <p>R${subtotal}</p>
         </div>
-
       </div>
     `;
   });
 
   totalEl.textContent = "R" + total;
+
+  /* ✅ FIX PAYFAST */
+  const pf = document.getElementById("payfastAmount");
+  if (pf) pf.value = total.toFixed(2);
 }
-function payflexCheckout() {
-
-  const cart = readCart();
-  if (!cart.length) {
-    alert("Cart is empty");
-    return;
-  }
-
-  let total = 0;
-  let summary = "";
-
-  cart.forEach(item => {
-    const product = window.__products.find(p => p.id === item.id);
-    const line = product.price * item.qty;
-    total += line;
-
-    summary += `${product.name} x${item.qty} - R${line}\n`;
-  });
-
-  const result = confirm(
-    "PAYFLEX SANDBOX DEMO\n\n" +
-    summary +
-    "\nTotal: R" + total +
-    "\n\nProceed with simulated payment?"
-  );
-
-  if (result) {
-    alert("✅ Payment successful (demo)\n\nOrder received!");
-    clearCart();
-  }
-}
-
-
-/* ===============================
-   WHATSAPP CHECKOUT
-================================ */
-function whatsappCart() {
-
-  const cart = readCart();
-  if (!cart.length) return alert("Cart empty");
-
-  let message = "Hello, I want to order:\n\n";
-
-  cart.forEach(item => {
-    const product = window.__products.find(p => p.id === item.id);
-    message += `${product.name} x${item.qty} - R${product.price * item.qty}\n`;
-  });
-
-  window.open(
-    "https://wa.me/27682525454?text=" + encodeURIComponent(message),
-    "_blank"
-  );
-}
-
 
 /* ===============================
    INIT
@@ -278,21 +170,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   updateCartCount();
 
-  if (document.getElementById("products")) {
-    renderProducts(products, "All");
-    wireCategoryLinks(products);
-  }
-
   if (document.getElementById("cart")) {
     renderCheckout();
   }
 });
-document.getElementById("payfastAmount").value = total;
-totalEl.textContent = "R" + total;
-
-// ✅ SEND TOTAL TO PAYFAST
-const payfastInput = document.getElementById("payfastAmount");
-if (payfastInput) {
-  payfastInput.value = total;
-}
-
