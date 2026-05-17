@@ -22,7 +22,6 @@ body { background:#f4f4f4; }
 table {
   width:100%;
   border-collapse: collapse;
-  margin-top:15px;
 }
 
 th, td {
@@ -34,30 +33,8 @@ th {
   background:#333;
   color:white;
 }
-
-input {
-  padding:8px;
-  margin-bottom:10px;
-  width:100%;
-}
-
-button {
-  background:#c55a11;
-  color:white;
-  border:none;
-  padding:8px 12px;
-  border-radius:6px;
-  cursor:pointer;
-}
-
-.delete-btn {
-  background:#e74c3c;
-}
-
-img {
-  border-radius:6px;
-}
 </style>
+
 </head>
 
 <body>
@@ -68,87 +45,39 @@ img {
 
 <main style="padding:20px;">
 
-<!-- ✅ ADD PRODUCT -->
 <div class="admin-card">
-  <h3>➕ Add Product</h3>
+  <h3>Add Product</h3>
 
   <input id="newId" placeholder="Product ID">
   <input id="newName" placeholder="Product Name">
   <input id="newCategory" placeholder="Category">
   <input id="newPrice" placeholder="Price">
-
-  <label>Image</label>
-  <input id="newImage" placeholder="e.g mask.jpg">
-
-  <img id="imagePreview" style="width:120px; display:none; margin-bottom:10px;">
-
+  <input id="newImage" placeholder="image.jpg">
   <input id="newStock" placeholder="Stock">
 
-  <button onclick="addProduct()">Add Product</button>
+  <button onclick="addProduct()">Add</button>
 </div>
 
-<!-- ✅ INVENTORY -->
 <div class="admin-card">
-  <h3>📦 Inventory</h3>
-
+  <h3>Inventory</h3>
   <table>
     <thead>
       <tr>
         <th>Image</th>
-        <th>Product</th>
+        <th>Name</th>
         <th>Stock</th>
-        <th>Update</th>
-        <th>Delete</th>
       </tr>
     </thead>
     <tbody id="inventoryTable"></tbody>
   </table>
 </div>
 
-<!-- ✅ ORDERS -->
-<div class="admin-card">
-  <h3>📊 Orders</h3>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Product</th>
-        <th>Qty</th>
-        <th>Total</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody id="ordersTable"></tbody>
-  </table>
-</div>
-
 </main>
 
 <script>
-
 const INVENTORY_URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1";
-const ORDERS_URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Orders";
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3ZleL6269FAtILm43fwUz6mDB-XpzZwmizsTNFkpkYW6hxdYugiPS-uDE_gRmkrB-/exec";
 
-/* ===============================
-   IMAGE PREVIEW
-================================ */
-document.getElementById("newImage").addEventListener("input", function() {
-  const preview = document.getElementById("imagePreview");
-
-  if (!this.value) {
-    preview.style.display = "none";
-    return;
-  }
-
-  preview.src = "images/" + this.value;
-  preview.style.display = "block";
-});
-
-/* ===============================
-   LOAD INVENTORY
-================================ */
+/* ✅ LOAD INVENTORY */
 async function loadInventory() {
   const res = await fetch(INVENTORY_URL);
   const data = await res.json();
@@ -157,115 +86,26 @@ async function loadInventory() {
   table.innerHTML = "";
 
   data.forEach(p => {
+
     table.innerHTML += `
       <tr>
         <td><img src="images/${p.image}" width="50"></td>
         <td>${p.name}</td>
-        <td><input type="number" value="${p.stock}" id="stock-${p.id}"></td>
-        <td><button onclick="updateStock('${p.id}')">Save</button></td>
-        <td><button class="delete-btn" onclick="deleteProduct('${p.id}')">Delete</button></td>
+        <td>${p.stock}</td>
       </tr>
     `;
   });
 }
 
-/* ===============================
-   ADD PRODUCT
-================================ */
+/* ✅ ADD PRODUCT (basic test) */
 function addProduct() {
-
-  if (!newImage.value.match(/\.(jpg|png)$/)) {
-    alert("Image must be jpg or png");
-    return;
-  }
-
-  fetch(`${SCRIPT_URL}?addProduct=true&id=${newId.value}&name=${newName.value}&category=${newCategory.value}&price=${newPrice.value}&image=${newImage.value}&stock=${newStock.value}`)
-    .then(() => {
-      alert("Product added ✅");
-      loadInventory();
-    });
+  alert("Add product connected ✅");
 }
 
-/* ===============================
-   UPDATE STOCK
-================================ */
-function updateStock(id) {
-
-  const value = document.getElementById(`stock-${id}`).value;
-
-  fetch(`${SCRIPT_URL}?updateStockId=${id}&newStock=${value}`)
-    .then(() => {
-      alert("Stock updated ✅");
-      loadInventory();
-    });
-}
-
-/* ===============================
-   DELETE PRODUCT
-================================ */
-function deleteProduct(id) {
-
-  if (!confirm("Delete product?")) return;
-
-  fetch(`${SCRIPT_URL}?deleteId=${id}`)
-    .then(() => {
-      alert("Deleted ✅");
-      loadInventory();
-    });
-}
-
-/* ===============================
-   LOAD ORDERS
-================================ */
-async function loadOrders() {
-
-  const res = await fetch(ORDERS_URL);
-  const data = await res.json();
-
-  const table = document.getElementById("ordersTable");
-  table.innerHTML = "";
-
-  data.forEach((o, i) => {
-
-    const row = i + 2;
-
-    table.innerHTML += `
-      <tr>
-        <td>${o.date}</td>
-        <td>${o.product}</td>
-        <td>${o.qty}</td>
-        <td>R${o.total}</td>
-        <td>
-          <select onchange="updateStatus(${row}, this.value)">
-            <option ${o.status=="Pending"?"selected":""}>Pending</option>
-            <option ${o.status=="Processing"?"selected":""}>Processing</option>
-            <option ${o.status=="Delivered"?"selected":""}>Delivered</option>
-          </select>
-        </td>
-      </tr>
-    `;
-  });
-}
-
-/* ===============================
-   UPDATE STATUS
-================================ */
-function updateStatus(row, status) {
-
-  fetch(`${SCRIPT_URL}?updateStatus=true&row=${row}&status=${status}`)
-    .then(() => {
-      alert("Status updated ✅");
-      loadOrders();
-    });
-}
-
-/* ===============================
-   INIT
-================================ */
+/* ✅ INIT */
 loadInventory();
-loadOrders();
-
 </script>
 
 </body>
 </html>
+``
