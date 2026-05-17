@@ -222,18 +222,19 @@ function whatsappCart() {
   const cart = readCart();
   if (!cart.length) return alert("Cart empty");
 
-  let msg = "Hello, I would like to order:\n\n";
+  let message = "Hello, I want to order:\n\n";
 
   cart.forEach(item => {
     const product = window.__products.find(p => p.id === item.id);
-    msg += `${product.name} x${item.qty} - R${product.price * item.qty}\n`;
+    message += `${product.name} x${item.qty} - R${product.price * item.qty}\n`;
   });
 
   window.open(
-    "https://wa.me/27682525454?text=" + encodeURIComponent(msg),
+    "https://wa.me/27682525454?text=" + encodeURIComponent(message),
     "_blank"
   );
 }
+
 
 /* ===============================
    INIT
