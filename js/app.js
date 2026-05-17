@@ -47,25 +47,35 @@ async function loadProducts() {
 ================================ */
 function addToCart(id) {
 
-  const product = window.__products.find(p => p.id == id);
+  console.log("Adding:", id);  // ✅ Debug check
+
+  const product = window.__products.find(p =>
+    (p.id || p.ID || p.product_id) == id
+  );
+
   if (!product) {
-    console.log("Product not found:", id);
+    console.log("❌ Product not found:", id);
     return;
   }
 
-  const cart = readCart();
-  const item = cart.find(i => i.id == id);
+  let cart = readCart();
 
-  if (item) {
-    item.qty++;
+  // ✅ Ensure type consistency
+  id = String(id);
+
+  const existing = cart.find(i => String(i.id) === id);
+
+  if (existing) {
+    existing.qty += 1;
   } else {
-    cart.push({ id: product.id, qty: 1 });
+    cart.push({ id: id, qty: 1 });
   }
 
   writeCart(cart);
   updateCartCount();
-}
 
+  console.log("✅ Cart updated:", cart); // ✅ Debug
+}
 /* ===============================
    PRODUCT GRID ✅ CLEAN
 ================================ */
@@ -90,7 +100,8 @@ function renderProducts(products, category = "All") {
       <img src="images/${p.image}" alt="${p.name}">
       <h3>${p.name}</h3>
       <p>R${p.price}</p>
-      <button onclick="addToCart('${p.id}')">Add to cart</button>
+     <button onclick="addToCart('${p.id || p.ID || p.product_id}')">
+      Add to cart</button>
     `;
 
     grid.appendChild(card);
