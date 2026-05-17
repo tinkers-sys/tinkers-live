@@ -216,17 +216,33 @@ function renderCheckout() {
 function payflexCheckout() {
 
   const cart = readCart();
-  if (!cart.length) return alert("Cart is empty");
+  if (!cart.length) {
+    alert("Cart is empty");
+    return;
+  }
 
   let total = 0;
+  let summary = "";
 
   cart.forEach(item => {
     const product = window.__products.find(p => p.id === item.id);
-    total += product.price * item.qty;
+    const line = product.price * item.qty;
+    total += line;
+
+    summary += `${product.name} x${item.qty} - R${line}\n`;
   });
 
-  alert("Payflex sandbox payment\n\nTotal: R" + total);
+  const result = confirm(
+    "PAYFLEX SANDBOX DEMO\n\n" +
+    summary +
+    "\nTotal: R" + total +
+    "\n\nProceed with simulated payment?"
+  );
 
+  if (result) {
+    alert("✅ Payment successful (demo)\n\nOrder received!");
+    clearCart();
+  }
 }
 
 
