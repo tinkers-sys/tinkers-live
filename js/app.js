@@ -23,33 +23,26 @@ function updateCartCount() {
   el.textContent = readCart().reduce((s, i) => s + i.qty, 0);
 }
 
-/* ✅ TOAST MESSAGE */
-function showToast(message) {
+/* ✅ TOAST */
+function showToast(msg) {
   let toast = document.getElementById("toast");
 
   if (!toast) {
     toast = document.createElement("div");
     toast.id = "toast";
     toast.style.cssText = `
-      position:fixed;
-      bottom:20px;
-      right:20px;
-      background:#c55a11;
-      color:white;
-      padding:12px 18px;
-      border-radius:6px;
+      position:fixed; bottom:20px; right:20px;
+      background:#c55a11; color:white;
+      padding:12px 16px; border-radius:6px;
       z-index:9999;
-      font-weight:600;
     `;
     document.body.appendChild(toast);
   }
 
-  toast.textContent = message;
+  toast.textContent = msg;
   toast.style.display = "block";
 
-  setTimeout(() => {
-    toast.style.display = "none";
-  }, 2000);
+  setTimeout(() => toast.style.display = "none", 2000);
 }
 
 /* ===============================
@@ -61,11 +54,14 @@ async function loadProducts() {
 
   return data.map(p => ({
     ...p,
-    price: Number(p.price)
+    price: Number(p.price),
+    stock: Number(p.stock)
   }));
 }
 
-/* ✅ FIXED GRID + RENDER */
+/* ===============================
+   RENDER PRODUCTS
+================================ */
 function renderProducts(products, category = "All") {
 
   const grid = document.getElementById("products");
@@ -76,10 +72,7 @@ function renderProducts(products, category = "All") {
 
   const filtered = category === "All"
     ? products
-    : products.filter(p =>
-        p.category &&
-        p.category.toLowerCase().trim() === category.toLowerCase().trim()
-      );
+    : products.filter(p => p.category === category);
 
   filtered.forEach(p => {
 
@@ -97,19 +90,15 @@ function renderProducts(products, category = "All") {
   });
 }
 
-/* ✅ FIXED FILTER */
+/* ===============================
+   FILTER
+================================ */
 function wireCategoryLinks(products) {
-
   document.querySelectorAll(".filters a").forEach(btn => {
-
-    btn.addEventListener("click", function (e) {
+    btn.addEventListener("click", e => {
       e.preventDefault();
-
-      const selected = this.dataset.filter || "All";
-
-      renderProducts(products, selected);
+      renderProducts(products, btn.dataset.filter);
     });
-
   });
 }
 
@@ -118,16 +107,122 @@ function wireCategoryLinks(products) {
 ================================ */
 function addToCart(id) {
 
-  const cart = readCart();
-  const item = cart.find(i => i.id === id);
+  const product = window.__products.find(p => p.id === id);
+  if (!product) return;
 
-  if (item) item.qty++;
-  else cart.push({ id, qty: 1 });
+  const cart = readCart();
+
+  const existing = cart.find(i => i.id === id);
+
+  if (existing) {
+    existing.qty++;
+  } else {
+    cart.push({ id, qty: 1 });
+  }
 
   writeCart(cart);
   updateCartCount();
+  showToast(`${product.name} added ✅`);
+}
 
-  showToast("Added to cart ✅");
+function updateQty(id, change) {
+  const cart = readCart();
+  const item = cart.find(i => i.id === id);
+
+  if (!item) return;
+
+  item.qty += change;
+
+  if (item.qty <= 0) {
+    removeItem(id);
+    return;
+  }
+
+  writeCart(cart);
+  renderCheckout();
+  updateCartCount();
+}
+
+function removeItem(id) {
+  let cart = readCart();
+  cart = cart.filter(i => i.id !== id);
+
+  writeCart(cart);
+  renderCheckout();
+  updateCartCount();
+}
+
+function clearCart() {
+  localStorage.removeItem(CART_KEY);
+  renderCheckout();
+  updateCartCount();
+}
+
+/* ===============================
+   CHECKOUT RENDER
+================================ */
+function renderCheckout() {
+
+  const cartEl = document.getElementById("cart");
+  const totalEl = document.getElementById("checkoutTotal");
+
+  if (!cartEl || !totalEl) return;
+
+  const cart = readCart();
+
+  if (!cart.length) {
+    cartEl.innerHTML = "<p>Your cart is empty</p>";
+    totalEl.textContent = "R0";
+    return;
+  }
+
+  let total = 0;
+  cartEl.innerHTML = "";
+
+  cart.forEach(item => {
+
+    const product = window.__products.find(p => p.id === item.id);
+    if (!product) return;
+
+    const subtotal = product.price * item.qty;
+    total += subtotal;
+
+    cartEl.innerHTML += `
+      <div class="card">
+        <h3>${product.name}</h3>
+        <p>
+          <button onclick="updateQty('${item.id}', -1)">−</button>
+          ${item.qty}
+          <button onclick="updateQty('${item.id}', 1)">+</button>
+        </p>
+        <p>R${subtotal}</p>
+        <button onclick="removeItem('${item.id}')">Remove</button>
+      </div>
+    `;
+  });
+
+  totalEl.textContent = "R" + total;
+}
+
+/* ===============================
+   WHATSAPP CHECKOUT
+================================ */
+function whatsappCart() {
+
+  const cart = readCart();
+  if (!cart.length) return alert("Cart empty");
+
+  let msg = "Hello, I would like to order:\n\n";
+
+  cart.forEach(item => {
+    const product = window.__products.find(p => p.id === item.id);
+    msg += `${product.name} x${item.qty} - R${product.price * item.qty}\n`;
+  });
+
+  window.open(
+    "https://wa.me/27682525454?text=" + encodeURIComponent(msg),
+    "_blank"
+  );
 }
 
 /* ===============================
@@ -140,7 +235,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   updateCartCount();
 
-  renderProducts(products, "All");
-  wireCategoryLinks(products);
+  if (document.getElementById("products")) {
+    renderProducts(products, "All");
+    wireCategoryLinks(products);
+  }
 
+  if (document.getElementById("cart")) {
+    renderCheckout();
+  }
 });
+``
