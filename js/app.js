@@ -1,4 +1,4 @@
-This is my app.js: "use strict";
+"use strict";
 
 /* ===============================
    CONFIG
@@ -7,6 +7,9 @@ const BASE_PATH = location.pathname.includes("/tinkers-live/") ? "/tinkers-live"
 const PRODUCTS_URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1";
 const CART_KEY = "tinkers_cart_v1";
 const SOLD_KEY = "tinkers_sold";
+
+// ✅ ✅ ADD THIS (FIX)
+const SCRIPT_URL = "PASTE_YOUR_REAL_SCRIPT_URL_HERE";
 
 /* ===============================
    SOLD HELPERS
@@ -123,7 +126,7 @@ function renderProducts(products, category = "All") {
       buttonHTML = `
         <button onclick="whatsappProduct('${p.name}')">
           Reserve via WhatsApp
-        </button>`;      
+        </button>`;
 
     } else if (availableStock <= 3) {
       stockNote = `Only ${availableStock} left`;
@@ -184,6 +187,8 @@ function addToCart(id) {
 
   writeCart(cart);
   updateCartCount();
+
+  // ✅ FIXED (no popup)
   showToast(`${product.name} added to cart`);
 }
 
@@ -275,15 +280,12 @@ function renderCheckout() {
    WHATSAPP
 ================================ */
 function whatsappProduct(name) {
-  if (typeof gtag !== "undefined") {
-    gtag('event', 'whatsapp_product_enquiry', { product_name: name });
-  }
-
   window.open(
-    `https://wa.me/27682525454?text=Hi%20Tinkers,%20I%20want%20to%20reserve%20${encodeURIComponent(name)}`,
+    `https://wa.me/27682525454?text=${encodeURIComponent(name)}`,
     "_blank"
   );
 }
+
 function whatsappCart() {
   const cart = readCart();
   if (!cart.length) {
@@ -294,8 +296,6 @@ function whatsappCart() {
   let message = "Hi Tinkers, I would like to order:\n\n";
   let total = 0;
 
-  const SCRIPT_URL = "YOUR_GOOGLE_SCRIPT_URL";
-
   cart.forEach(item => {
     const product = window.__products.find(p => p.id === item.id);
     if (!product) return;
@@ -305,7 +305,7 @@ function whatsappCart() {
 
     message += `• ${product.name} x${item.qty} - R${lineTotal}\n`;
 
-    // ✅ SEND TO GOOGLE SHEET
+    // ✅ FIXED (critical)
     fetch(`${SCRIPT_URL}?product=${encodeURIComponent(product.name)}&qty=${item.qty}&total=${lineTotal}`);
   });
 
