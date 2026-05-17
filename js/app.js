@@ -9,7 +9,7 @@ const CART_KEY = "tinkers_cart_v1";
 const SOLD_KEY = "tinkers_sold";
 
 // ✅ ✅ ADD THIS (FIX)
-const SCRIPT_URL = "PASTE_YOUR_REAL_SCRIPT_URL_HERE";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3ZleL6269FAtILm43fwUz6mDB-XpzZwmizsTNFkpkYW6hxdYugiPS-uDE_gRmkrB-/exec";
 
 /* ===============================
    SOLD HELPERS
