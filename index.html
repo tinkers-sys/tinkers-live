@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tinkers</title>
 
-  <!-- ✅ REQUIRED CSS -->
+  <!-- ✅ CSS -->
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/additions.css">
 </head>
@@ -15,43 +15,56 @@
 <!-- ✅ HEADER -->
 <header class="header">
   <div class="container">
+
     <h2>Tinkers</h2>
 
     <nav>
       <a href="index.html">Home</a>
-      <a href="checkout.html">View Cart (<span id="cartCount">0</span>)</a>
+      <a href="checkout.html">
+        View Cart (<span id="cartCount">0</span>)
+      </a>
     </nav>
+
   </div>
 </header>
 
-<!-- ✅ HERO / SHOP SECTION (RESTORED) -->
+<!-- ✅ HERO SECTION (FULLY RESTORED) -->
 <section class="hero">
-  <div class="container">
+  <div class="hero-overlay">
     <h1>Shop Our Collection</h1>
-    <p>Authentic African Handmade Products</p>
+    <p>From our hands to your heart</p>
     <a href="#products" class="primary-btn">Shop Now</a>
+  </div>
+</section>
+
+<!-- ✅ CATEGORY FILTERS (RESTORED) -->
+<section class="container" style="margin-top:20px;">
+  <div class="filters">
+    <a href="#" data-filter="All">All</a>
+    <a href="#" data-filter="Apparel">Apparel</a>
+    <a href="#" data-filter="Art">Art</a>
+    <a href="#" data-filter="Accessories">Accessories</a>
   </div>
 </section>
 
 <!-- ✅ MAIN CONTENT -->
 <main class="container">
 
-  <h2>Our Products</h2>
+  <h2 id="products">Our Products</h2>
 
-  <!-- ✅ PRODUCT GRID -->
+  <!-- ✅ GRID VIEW RESTORED -->
   <div id="products" class="product-grid"></div>
 
 </main>
 
 <!-- ✅ FOOTER -->
-<footer>
-  <div class="container">
-    <p>© Tinkers Curio Shop</p>
-  </div>
+<footer class="container">
+  <p>© Tinkers Curio Shop</p>
 </footer>
 
-<!-- ✅ REQUIRED JS -->
+<!-- ✅ JS -->
 <script src="js/app.js"></script>
 
 </body>
 </html>
+``
