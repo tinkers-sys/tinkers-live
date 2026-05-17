@@ -46,6 +46,20 @@
     <button class="btn-payflex" onclick="payflexCheckout()">
   Pay with Payflex (Sandbox)
 </button>
+ <form id="payfastForm" method="post" action="https://sandbox.payfast.co.za/eng/process">
+
+  <input type="hidden" name="merchant_id" value="YOUR_MERCHANT_ID">
+  <input type="hidden" name="merchant_key" value="YOUR_MERCHANT_KEY">
+
+  <input type="hidden" name="amount" id="payfastAmount">
+  <input type="hidden" name="item_name" value="Tinkers Order">
+
+  <button class="btn-payfast" type="submit">
+    Pay with Card (PayFast)
+  </button>
+
+</form>
+   
 
   </div>
 
