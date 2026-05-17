@@ -255,33 +255,43 @@ async function whatsappCart() {
   let message = "Hi Tinkers, I would like to order:\n\n";
   let total = 0;
 
+  let orderSummary = [];
+
+  cart.forEach(item => {
+    const product = window.__products.find(p => p.id === item.id);
+    if (!product) return;
+
+    const lineTotal = product.price * item.qty;
+    total += lineTotal;
+
+    message += `• ${product.name} x${item.qty} - R${lineTotal}\n`;
+
+    // ✅ build ONE order payload (very important)
+    orderSummary.push({
+      product: product.name,
+      qty: item.qty,
+      total: lineTotal
+    });
+  });
+
   try {
-
-    await Promise.all(cart.map(item => {
-      const product = window.__products.find(p => p.id === item.id);
-      if (!product) return Promise.resolve();
-
-      const lineTotal = product.price * item.qty;
-      total += lineTotal;
-
-      message += `• ${product.name} x${item.qty} - R${lineTotal}\n`;
-
-      // ✅ FIXED VERSION
-      return fetch(`${SCRIPT_URL}?product=${encodeURIComponent(product.name)}&qty=${item.qty}&total=${lineTotal}`);
-    }));
+    // ✅ SEND ONE REQUEST (not multiple fetch calls)
+    await fetch(`${SCRIPT_URL}?order=${encodeURIComponent(JSON.stringify(orderSummary))}`);
 
     message += `\nTotal: R${total}`;
 
+    // ✅ CLEAR CART ONLY AFTER SUCCESS
     clearCart();
 
+    // ✅ OPEN WHATSAPP LAST (important)
     window.open(
       `https://wa.me/27682525454?text=${encodeURIComponent(message)}`,
       "_blank"
     );
 
   } catch (err) {
-    console.error(err);
-    alert("Order could not be saved. Try again.");
+    console.error("Order failed:", err);
+    alert("Order could not be saved. Please try again.");
   }
 }
 
