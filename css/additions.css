@@ -478,3 +478,17 @@ nav a {
 .card button {
   width: auto !important;
 }
+/* ✅ PUSH RIGHT COMPLETELY */
+.nav-area {
+  margin-left: auto;
+}
+
+.top-nav {
+  justify-content: flex-end;
+  width: 100%;
+}
+
+.top-filters {
+  justify-content: flex-end;
+  width: 100%;
+}
