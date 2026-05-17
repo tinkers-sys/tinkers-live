@@ -286,12 +286,47 @@ function whatsappProduct(name) {
   );
 }
 
-function whatsappCart() {
+async function whatsappCart() {
   const cart = readCart();
+
   if (!cart.length) {
     alert("Your cart is empty");
     return;
   }
+
+  let message = "Hi Tinkers, I would like to order:\n\n";
+  let total = 0;
+
+  try {
+
+    await Promise.all(cart.map(item => {
+      const product = window.__products.find(p => p.id === item.id);
+      if (!product) return Promise.resolve();
+
+      const lineTotal = product.price * item.qty;
+      total += lineTotal;
+
+      message += `• ${product.name} x${item.qty} - R${lineTotal}\n`;
+
+      return fetch(`${SCRIPT_URL}?product=${encodeURIComponent(product.name)}&qty=${item.qty}&total=${lineTotal}`);
+    }));
+
+    message += `\nTotal: R${total}`;
+
+    // ✅ CLEAR CART AFTER SUCCESS
+    clearCart();
+
+    // ✅ OPEN WHATSAPP AFTER DATA IS SAVED
+    window.open(
+      `https://wa.me/27682525454?text=${encodeURIComponent(message)}`,
+      "_blank"
+    );
+
+  } catch (err) {
+    console.error("Order logging failed:", err);
+    alert("Order could not be saved. Try again.");
+  }
+}
 
   let message = "Hi Tinkers, I would like to order:\n\n";
   let total = 0;
