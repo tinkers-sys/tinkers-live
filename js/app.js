@@ -86,23 +86,40 @@ function renderProducts(products, category = "All") {
   const grid = document.getElementById("products");
   if (!grid) return;
 
-  const list = category === "All"
-    ? products
-    : products.filter(p => p.category === category);
+  const soldData = readSold();
+
+  const list =
+    category === "All"
+      ? products
+      : products.filter(p => p.category === category);
 
   grid.innerHTML = list.map(p => {
 
-    let badge = "";
-    let buttonHTML = `<button onclick="addToCart('${p.id}')">Add to cart</button>`;
+    const baseStock = typeof p.stock === "number" ? p.stock : Infinity;
+    const soldQty = soldData[p.id] || 0;
+    const availableStock = baseStock - soldQty;
 
-    if (p.stock <= 0) {
+    let stockNote = "";
+    let buttonHTML = "";
+    let badge = "";
+
+    if (availableStock <= 0) {
+      stockNote = "Out of stock";
       badge = `<div class="badge">OUT</div>`;
       buttonHTML = `<button disabled>Out of stock</button>`;
-    } else if (p.stock === 1) {
+
+    } else if (availableStock === 1) {
+      stockNote = "Only 1 left";
       badge = `<div class="badge">LAST ITEM</div>`;
       buttonHTML = `<button onclick="whatsappProduct('${p.name}')">Reserve</button>`;
-    } else if (p.stock <= 3) {
+
+    } else if (availableStock <= 3) {
+      stockNote = `Only ${availableStock} left`;
       badge = `<div class="badge">LOW STOCK</div>`;
+      buttonHTML = `<button onclick="addToCart('${p.id}')">Add to cart</button>`;
+
+    } else {
+      buttonHTML = `<button onclick="addToCart('${p.id}')">Add to cart</button>`;
     }
 
     return `
@@ -212,7 +229,7 @@ function renderCheckout() {
 }
 
 /* ===============================
-   WHATSAPP (SAFE VERSION ✅)
+   WHATSAPP (SAFE + STABLE)
 ================================ */
 function whatsappCart() {
   const cart = readCart();
@@ -244,7 +261,7 @@ function whatsappCart() {
 
   message += `\nTotal: R${total}`;
 
-  // ✅ reliable sender (not fetch)
+  // ✅ Reliable request sender
   const img = new Image();
   img.src = `${SCRIPT_URL}?order=${encodeURIComponent(JSON.stringify(payload))}`;
 
