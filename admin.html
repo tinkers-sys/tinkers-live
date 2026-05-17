@@ -9,10 +9,7 @@
 <link rel="stylesheet" href="css/additions.css">
 
 <style>
-body {
-  background:#f4f4f4;
-  font-family: Arial;
-}
+body { background:#f4f4f4; }
 
 .admin-card {
   background:white;
@@ -56,6 +53,10 @@ button {
 .delete-btn {
   background:#e74c3c;
 }
+
+img {
+  border-radius:6px;
+}
 </style>
 </head>
 
@@ -71,30 +72,36 @@ button {
 <div class="admin-card">
   <h3>➕ Add Product</h3>
 
-  <input id="newId" placeholder="Product ID (unique)">
+  <input id="newId" placeholder="Product ID">
   <input id="newName" placeholder="Product Name">
   <input id="newCategory" placeholder="Category">
   <input id="newPrice" placeholder="Price">
-  <input id="newImage" placeholder="Image filename (e.g mask.jpg)">
+
+  <label>Image</label>
+  <input id="newImage" placeholder="e.g mask.jpg">
+
+  <img id="imagePreview" style="width:120px; display:none; margin-bottom:10px;">
+
   <input id="newStock" placeholder="Stock">
 
   <button onclick="addProduct()">Add Product</button>
 </div>
 
-<!-- ✅ INVENTORY TABLE -->
+<!-- ✅ INVENTORY -->
 <div class="admin-card">
   <h3>📦 Inventory</h3>
 
-  <table id="inventoryTable">
+  <table>
     <thead>
       <tr>
+        <th>Image</th>
         <th>Product</th>
         <th>Stock</th>
         <th>Update</th>
         <th>Delete</th>
       </tr>
     </thead>
-    <tbody></tbody>
+    <tbody id="inventoryTable"></tbody>
   </table>
 </div>
 
@@ -102,7 +109,7 @@ button {
 <div class="admin-card">
   <h3>📊 Orders</h3>
 
-  <table id="ordersTable">
+  <table>
     <thead>
       <tr>
         <th>Date</th>
@@ -112,7 +119,7 @@ button {
         <th>Status</th>
       </tr>
     </thead>
-    <tbody></tbody>
+    <tbody id="ordersTable"></tbody>
   </table>
 </div>
 
@@ -122,7 +129,22 @@ button {
 
 const INVENTORY_URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1";
 const ORDERS_URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Orders";
-const SCRIPT_URL = "PASTE_YOUR_SCRIPT_URL_HERE";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3ZleL6269FAtILm43fwUz6mDB-XpzZwmizsTNFkpkYW6hxdYugiPS-uDE_gRmkrB-/exec";
+
+/* ===============================
+   IMAGE PREVIEW
+================================ */
+document.getElementById("newImage").addEventListener("input", function() {
+  const preview = document.getElementById("imagePreview");
+
+  if (!this.value) {
+    preview.style.display = "none";
+    return;
+  }
+
+  preview.src = "images/" + this.value;
+  preview.style.display = "block";
+});
 
 /* ===============================
    LOAD INVENTORY
@@ -131,27 +153,17 @@ async function loadInventory() {
   const res = await fetch(INVENTORY_URL);
   const data = await res.json();
 
-  const table = document.querySelector("#inventoryTable tbody");
+  const table = document.getElementById("inventoryTable");
   table.innerHTML = "";
 
   data.forEach(p => {
     table.innerHTML += `
       <tr>
+        <td><img src="images/${p.image}" width="50"></td>
         <td>${p.name}</td>
-
-        <td>
-          <input type="number" value="${p.stock}" id="stock-${p.id}">
-        </td>
-
-        <td>
-          <button onclick="updateStock('${p.id}')">Save</button>
-        </td>
-
-        <td>
-          <button class="delete-btn" onclick="deleteProduct('${p.id}')">
-            Delete
-          </button>
-        </td>
+        <td><input type="number" value="${p.stock}" id="stock-${p.id}"></td>
+        <td><button onclick="updateStock('${p.id}')">Save</button></td>
+        <td><button class="delete-btn" onclick="deleteProduct('${p.id}')">Delete</button></td>
       </tr>
     `;
   });
@@ -162,20 +174,12 @@ async function loadInventory() {
 ================================ */
 function addProduct() {
 
-  const id = newId.value;
-  const name = newName.value;
-  const category = newCategory.value;
-  const price = newPrice.value;
-  const image = newImage.value;
-  const stock = newStock.value;
-
-  if (!id || !name || !price) {
-    alert("Fill required fields");
+  if (!newImage.value.match(/\.(jpg|png)$/)) {
+    alert("Image must be jpg or png");
     return;
   }
 
-  fetch(`${SCRIPT_URL}?addProduct=true&id=${id}&name=${name}&category=${category}&price=${price}&image=${image}&stock=${stock}`)
-    .then(res => res.text())
+  fetch(`${SCRIPT_URL}?addProduct=true&id=${newId.value}&name=${newName.value}&category=${newCategory.value}&price=${newPrice.value}&image=${newImage.value}&stock=${newStock.value}`)
     .then(() => {
       alert("Product added ✅");
       loadInventory();
@@ -187,10 +191,9 @@ function addProduct() {
 ================================ */
 function updateStock(id) {
 
-  const newStockValue = document.getElementById(`stock-${id}`).value;
+  const value = document.getElementById(`stock-${id}`).value;
 
-  fetch(`${SCRIPT_URL}?updateStockId=${id}&newStock=${newStockValue}`)
-    .then(res => res.text())
+  fetch(`${SCRIPT_URL}?updateStockId=${id}&newStock=${value}`)
     .then(() => {
       alert("Stock updated ✅");
       loadInventory();
@@ -202,10 +205,9 @@ function updateStock(id) {
 ================================ */
 function deleteProduct(id) {
 
-  if (!confirm("Delete this product?")) return;
+  if (!confirm("Delete product?")) return;
 
   fetch(`${SCRIPT_URL}?deleteId=${id}`)
-    .then(res => res.text())
     .then(() => {
       alert("Deleted ✅");
       loadInventory();
@@ -220,7 +222,7 @@ async function loadOrders() {
   const res = await fetch(ORDERS_URL);
   const data = await res.json();
 
-  const table = document.querySelector("#ordersTable tbody");
+  const table = document.getElementById("ordersTable");
   table.innerHTML = "";
 
   data.forEach((o, i) => {
@@ -246,18 +248,20 @@ async function loadOrders() {
 }
 
 /* ===============================
-   UPDATE ORDER STATUS
+   UPDATE STATUS
 ================================ */
 function updateStatus(row, status) {
 
   fetch(`${SCRIPT_URL}?updateStatus=true&row=${row}&status=${status}`)
-    .then(res => res.text())
     .then(() => {
       alert("Status updated ✅");
       loadOrders();
     });
 }
 
+/* ===============================
+   INIT
+================================ */
 loadInventory();
 loadOrders();
 
@@ -265,4 +269,3 @@ loadOrders();
 
 </body>
 </html>
-``
