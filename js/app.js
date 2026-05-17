@@ -38,7 +38,6 @@ function moneyZAR(n) {
 function updateCartCount() {
   const el = document.getElementById("cartCount");
   if (!el) return;
-
   const totalQty = readCart().reduce((s, i) => s + i.qty, 0);
   el.textContent = totalQty;
 }
@@ -88,6 +87,8 @@ function renderProducts(products, category = "All") {
   const grid = document.getElementById("products");
   if (!grid) return;
 
+  const soldData = readSold();
+
   const list =
     category === "All"
       ? products
@@ -95,29 +96,54 @@ function renderProducts(products, category = "All") {
 
   grid.innerHTML = list.map(p => {
 
-    let badge = "";
-    let buttonHTML = `<button onclick="addToCart('${p.id}')">Add to cart</button>`;
+    const baseStock = typeof p.stock === "number" ? p.stock : Infinity;
+    const soldQty = soldData[p.id] || 0;
+    const availableStock = baseStock - soldQty;
 
-    if (p.stock <= 0) {
+    let stockNote = "";
+    let buttonHTML = "";
+    let badge = "";
+
+    if (availableStock <= 0) {
+      stockNote = "Out of stock";
       badge = `<div class="badge">OUT</div>`;
       buttonHTML = `<button disabled>Out of stock</button>`;
-    } else if (p.stock === 1) {
+
+    } else if (availableStock === 1) {
+      stockNote = "Only 1 left";
       badge = `<div class="badge">LAST ITEM</div>`;
       buttonHTML = `<button onclick="whatsappProduct('${p.name}')">Reserve via WhatsApp</button>`;
-    } else if (p.stock <= 3) {
+
+    } else if (availableStock <= 3) {
+      stockNote = `Only ${availableStock} left`;
       badge = `<div class="badge">LOW STOCK</div>`;
+      buttonHTML = `<button onclick="addToCart('${p.id}')">Add to cart</button>`;
+
+    } else {
+      buttonHTML = `<button onclick="addToCart('${p.id}')">Add to cart</button>`;
     }
 
     return `
       <div class="card">
         ${badge}
-        <img src="images/${p.image}" alt="${p.name}">
+        <img src="images/${p.image}" alt="${p.name}" loading="lazy">
         <h3>${p.name}</h3>
-        <p>${moneyZAR(p.price)}</p>
+        <p class="category">${p.category}</p>
+        <p class="price">${moneyZAR(p.price)}</p>
+        <p class="stock-note">${stockNote}</p>
         ${buttonHTML}
       </div>
     `;
   }).join("");
+}
+
+function wireCategoryLinks(products) {
+  document.querySelectorAll("nav a[data-filter]").forEach(a => {
+    a.addEventListener("click", e => {
+      e.preventDefault();
+      renderProducts(products, a.dataset.filter || "All");
+    });
+  });
 }
 
 /* ===============================
@@ -139,6 +165,32 @@ function addToCart(id) {
   showToast(`${product.name} added to cart`);
 }
 
+function updateQty(id, delta) {
+  const cart = readCart();
+  const item = cart.find(i => i.id === id);
+  if (!item) return;
+
+  if (item.qty + delta <= 0) {
+    removeFromCart(id);
+    return;
+  }
+
+  item.qty += delta;
+  writeCart(cart);
+  updateCartCount();
+  renderCheckout();
+}
+
+function removeFromCart(id) {
+  const updated = readCart().filter(i => i.id !== id);
+  writeCart(updated);
+  updateCartCount();
+  renderCheckout();
+}
+
+/* ===============================
+   CHECKOUT (RESTORED)
+================================ */
 function renderCheckout() {
   const cartEl = document.getElementById("cart");
   const totalEl = document.getElementById("checkoutTotal");
@@ -155,23 +207,27 @@ function renderCheckout() {
 
   let total = 0;
   cartEl.innerHTML = `<div class="checkout-grid"></div>`;
-
   const grid = cartEl.querySelector(".checkout-grid");
 
   cart.forEach(item => {
-    const p = window.__products.find(x => x.id === item.id);
-    if (!p) return;
+    const product = window.__products.find(p => p.id === item.id);
+    if (!product) return;
 
-    const lineTotal = p.price * item.qty;
+    const lineTotal = product.price * item.qty;
     total += lineTotal;
 
     grid.innerHTML += `
       <div class="checkout-card">
-        <img src="images/${p.image}">
-        <div>
-          ${p.name} x${item.qty}
-          <p>${moneyZAR(lineTotal)}</p>
-          <button onclick="removeFromCart('${p.id}')">Remove</button>
+        <img class="checkout-thumb" src="images/${product.image}">
+        <div class="checkout-info">
+          <strong>${product.name}</strong>
+          <div class="qty-row">
+            <button onclick="updateQty('${product.id}', -1)">−</button>
+            <span>${item.qty}</span>
+            <button onclick="updateQty('${product.id}', 1)">+</button>
+            <button class="remove-btn" onclick="removeFromCart('${product.id}')">Remove</button>
+          </div>
+          <div class="checkout-line">${moneyZAR(lineTotal)}</div>
         </div>
       </div>
     `;
@@ -180,23 +236,12 @@ function renderCheckout() {
   totalEl.textContent = moneyZAR(total);
 }
 
-function removeFromCart(id) {
-  const updated = readCart().filter(i => i.id !== id);
-  writeCart(updated);
-  updateCartCount();
-  renderCheckout();
-}
-
 /* ===============================
    WHATSAPP (FIXED ✅)
 ================================ */
 async function whatsappCart() {
   const cart = readCart();
-
-  if (!cart.length) {
-    alert("Your cart is empty");
-    return;
-  }
+  if (!cart.length) return alert("Your cart is empty");
 
   let message = "Hi Tinkers, I would like to order:\n\n";
   let total = 0;
@@ -217,10 +262,7 @@ async function whatsappCart() {
 
   clearCart();
 
-  window.open(
-    `https://wa.me/27682525454?text=${encodeURIComponent(message)}`,
-    "_blank"
-  );
+  window.open(`https://wa.me/27682525454?text=${encodeURIComponent(message)}`);
 }
 
 function whatsappProduct(name) {
@@ -235,6 +277,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   window.__products = products;
 
   updateCartCount();
-  renderProducts(products);
-  renderCheckout();
+
+  if (document.getElementById("products")) {
+    renderProducts(products, "All");
+    wireCategoryLinks(products);
+  }
+
+  if (document.getElementById("cart")) {
+    renderCheckout();
+  }
 });
