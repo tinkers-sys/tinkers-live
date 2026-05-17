@@ -29,19 +29,22 @@ function updateCartCount() {
 async function loadProducts() {
   const res = await fetch(PRODUCTS_URL);
   const data = await res.json();
+
   return data.map(p => ({
     ...p,
     price: Number(p.price)
   }));
 }
 
-/* ✅ CLEAN GRID RENDER (FIXED) */
+/* ✅ FINAL FIXED GRID RENDER */
 function renderProducts(products, category = "All") {
 
   const grid = document.getElementById("products");
   if (!grid) return;
 
+  // ✅ FORCE GRID CLASS (CRITICAL)
   grid.className = "product-grid";
+
   grid.innerHTML = "";
 
   const filtered = category === "All"
@@ -69,7 +72,7 @@ function renderProducts(products, category = "All") {
 }
 
 /* ===============================
-   FILTER (FIXED ✅)
+   FILTER (FINAL ✅)
 ================================ */
 function wireCategoryLinks(products) {
 
@@ -78,7 +81,7 @@ function wireCategoryLinks(products) {
     btn.addEventListener("click", function (e) {
       e.preventDefault();
 
-      const selected = this.dataset.filter || "All";
+      const selected = this.dataset.filter;
 
       renderProducts(products, selected);
     });
@@ -90,7 +93,6 @@ function wireCategoryLinks(products) {
    CART
 ================================ */
 function addToCart(id) {
-
   const cart = readCart();
   const item = cart.find(i => i.id === id);
 
@@ -111,7 +113,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   updateCartCount();
 
-  renderProducts(products);
+  renderProducts(products, "All");
   wireCategoryLinks(products);
 
 });
