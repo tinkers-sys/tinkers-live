@@ -35,12 +35,13 @@ async function loadProducts() {
   }));
 }
 
-/* ✅ FIXED GRID RENDER */
+/* ✅ CLEAN GRID RENDER (FIXED) */
 function renderProducts(products, category = "All") {
 
   const grid = document.getElementById("products");
   if (!grid) return;
 
+  grid.className = "product-grid";
   grid.innerHTML = "";
 
   const filtered = category === "All"
@@ -52,17 +53,21 @@ function renderProducts(products, category = "All") {
 
   filtered.forEach(p => {
 
-    grid.innerHTML += `
-      <div class="card">
-        <img src="images/${p.image}" alt="${p.name}">
-        <h3>${p.name}</h3>
-        <p>${p.category}</p>
-        <p>R${p.price}</p>
-        <button onclick="addToCart('${p.id}')">Add to cart</button>
-      </div>
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <img src="images/${p.image}" alt="${p.name}">
+      <h3>${p.name}</h3>
+      <p>${p.category}</p>
+      <p>R${p.price}</p>
+      <button onclick="addToCart('${p.id}')">Add to cart</button>
     `;
+
+    grid.appendChild(card);
   });
 }
+
 /* ===============================
    FILTER (FIXED ✅)
 ================================ */
@@ -70,22 +75,12 @@ function wireCategoryLinks(products) {
 
   document.querySelectorAll(".filters a").forEach(btn => {
 
-    btn.addEventListener("click", e => {
+    btn.addEventListener("click", function (e) {
       e.preventDefault();
 
-      const filter = btn.dataset.filter;
+      const selected = this.dataset.filter || "All";
 
-      if (!filter || filter === "All") {
-        renderProducts(products);
-        return;
-      }
-
-      const filtered = products.filter(p =>
-        p.category &&
-        p.category.toLowerCase().trim() === filter.toLowerCase().trim()
-      );
-
-      renderProducts(filtered);
+      renderProducts(products, selected);
     });
 
   });
