@@ -414,3 +414,39 @@ nav a {
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
   gap: 20px;
 }
+
+/* ✅ FORCE HEADER RIGHT CLEANLY */
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* LEFT SIDE */
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* RIGHT SIDE */
+.nav-area {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* NAV BUTTONS (TOP ROW) */
+.top-nav {
+  display: flex;
+  gap: 20px;
+  justify-content: flex-end;
+}
+
+/* CATEGORY BUTTONS (SECOND ROW) */
+.top-filters {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
