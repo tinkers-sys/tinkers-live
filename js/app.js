@@ -287,4 +287,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderCheckout();
   }
 });
-``
+document.getElementById("payfastAmount").value = total;
+totalEl.textContent = "R" + total;
+
+// ✅ SEND TOTAL TO PAYFAST
+const payfastInput = document.getElementById("payfastAmount");
+if (payfastInput) {
+  payfastInput.value = total;
+}
+
