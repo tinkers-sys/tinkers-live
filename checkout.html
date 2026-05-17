@@ -3,243 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tinkers Admin</title>
+<title>Tinkers Checkout</title>
 
 <link rel="stylesheet" href="css/styles.css">
 <link rel="stylesheet" href="css/additions.css">
-
-<style>
-body { background:#f4f4f4; font-family:Arial; }
-
-.admin-card {
-  background:white;
-  padding:20px;
-  margin-bottom:20px;
-  border-radius:8px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.1);
-}
-
-table {
-  width:100%;
-  border-collapse:collapse;
-  margin-top:15px;
-}
-
-th, td {
-  padding:10px;
-  border-bottom:1px solid #ddd;
-}
-
-th {
-  background:#333;
-  color:white;
-}
-
-input {
-  width:100%;
-  padding:8px;
-  margin-bottom:10px;
-}
-
-button {
-  background:#c55a11;
-  color:white;
-  border:none;
-  padding:8px 12px;
-  border-radius:6px;
-  cursor:pointer;
-}
-
-.delete-btn { background:#e74c3c; }
-
-img { border-radius:6px; }
-</style>
 </head>
 
 <body>
 
 <header class="header">
-  <h2>Tinkers Admin</h2>
+  <div class="container">
+    <h2>Tinkers Checkout</h2>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="index.html">Shop</a>
+    </nav>
+  </div>
 </header>
 
-<main style="padding:20px;">
+<main class="container">
 
-<!-- ✅ ADD PRODUCT -->
-<div class="admin-card">
-  <h3>Add Product</h3>
+  <h2>Your Cart</h2>
 
-  <input id="newId" placeholder="Product ID">
-  <input id="newName" placeholder="Product Name">
-  <input id="newCategory" placeholder="Category">
-  <input id="newPrice" placeholder="Price">
+  <div id="cart"></div>
 
-  <label>Image</label>
-  <input id="newImage" placeholder="e.g mask.jpg">
-  <img id="imagePreview" style="width:120px; display:none; margin-bottom:10px;">
+  <h3>Total: <span id="checkoutTotal">R0</span></h3>
 
-  <input id="newStock" placeholder="Stock">
-
-  <button onclick="addProduct()">Add Product</button>
-</div>
-
-<!-- ✅ INVENTORY -->
-<div class="admin-card">
-  <h3>Inventory</h3>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Image</th>
-        <th>Name</th>
-        <th>Stock</th>
-        <th>Update</th>
-        <th>Delete</th>
-      </tr>
-    </thead>
-    <tbody id="inventoryBody"></tbody>
-  </table>
-</div>
-
-<!-- ✅ ORDERS -->
-<div class="admin-card">
-  <h3>Orders</h3>
-
-  <table>
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Product</th>
-        <th>Qty</th>
-        <th>Total</th>
-      </tr>
-    </thead>
-    <tbody id="ordersBody"></tbody>
-  </table>
-</div>
+  <!-- ✅ ACTIONS -->
+  <div style="margin-top:20px;">
+    <button onclick="clearCart()">Clear Cart</button>
+  </div>
 
 </main>
 
-<script>
-
-const INVENTORY_URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1";
-const ORDERS_URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Orders";
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3ZleL6269FAtILm43fwUz6mDB-XpzZwmizsTNFkpkYW6hxdYugiPS-uDE_gRmkrB-/exec";
-
-/* ===============================
-   IMAGE PREVIEW
-================================ */
-document.getElementById("newImage").addEventListener("input", function() {
-  const preview = document.getElementById("imagePreview");
-
-  if (!this.value) {
-    preview.style.display = "none";
-    return;
-  }
-
-  preview.src = "images/" + this.value;
-  preview.style.display = "block";
-});
-
-/* ===============================
-   LOAD INVENTORY
-================================ */
-async function loadInventory() {
-  const res = await fetch(INVENTORY_URL);
-  const data = await res.json();
-
-  const tbody = document.getElementById("inventoryBody");
-  tbody.innerHTML = "";
-
-  data.forEach(p => {
-    tbody.innerHTML += `
-      <tr>
-        <td><img src="images/${p.image}" width="50"></td>
-        <td>${p.name}</td>
-        <td><input type="number" value="${p.stock}" id="stock-${p.id}"></td>
-        <td><button onclick="updateStock('${p.id}')">Save</button></td>
-        <td><button class="delete-btn" onclick="deleteProduct('${p.id}')">Delete</button></td>
-      </tr>
-    `;
-  });
-}
-
-/* ===============================
-   ADD PRODUCT
-================================ */
-function addProduct() {
-
-  if (!newId.value || !newName.value || !newPrice.value) {
-    alert("Fill required fields");
-    return;
-  }
-
-  fetch(`${SCRIPT_URL}?addProduct=true&id=${newId.value}&name=${newName.value}&category=${newCategory.value}&price=${newPrice.value}&image=${newImage.value}&stock=${newStock.value}`)
-    .then(() => {
-      alert("Product added ✅");
-      loadInventory();
-    });
-}
-
-/* ===============================
-   UPDATE STOCK
-================================ */
-function updateStock(id) {
-
-  const value = document.getElementById(`stock-${id}`).value;
-
-  fetch(`${SCRIPT_URL}?updateStockId=${id}&newStock=${value}`)
-    .then(() => {
-      alert("Stock updated ✅");
-      loadInventory();
-    });
-}
-
-/* ===============================
-   DELETE PRODUCT
-================================ */
-function deleteProduct(id) {
-
-  if (!confirm("Delete product?")) return;
-
-  fetch(`${SCRIPT_URL}?deleteId=${id}`)
-    .then(() => {
-      alert("Deleted ✅");
-      loadInventory();
-    });
-}
-
-/* ===============================
-   LOAD ORDERS
-================================ */
-async function loadOrders() {
-
-  const res = await fetch(ORDERS_URL);
-  const data = await res.json();
-
-  const tbody = document.getElementById("ordersBody");
-  tbody.innerHTML = "";
-
-  data.forEach(o => {
-    tbody.innerHTML += `
-      <tr>
-        <td>${o.date || ""}</td>
-        <td>${o.product}</td>
-        <td>${o.qty}</td>
-        <td>R${o.total}</td>
-      </tr>
-    `;
-  });
-}
-
-/* ===============================
-   INIT
-================================ */
-document.addEventListener("DOMContentLoaded", () => {
-  loadInventory();
-  loadOrders();
-});
-
-</script>
+<script src="js/app.js"></script>
 
 </body>
 </html>
