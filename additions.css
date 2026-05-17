@@ -23,3 +23,40 @@
   font-size: 12px;
   font-weight: bold;
 }
+/* ===============================
+   CHECKOUT BUTTONS
+================================ */
+
+.checkout-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+/* ✅ CLEAR CART (secondary button) */
+.checkout-actions .btn-clear {
+  background: white;
+  color: #c55a11;
+  border: 2px solid #c55a11;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+/* ✅ WHATSAPP CHECKOUT (primary button) */
+.checkout-actions .btn-whatsapp {
+  background: #25D366;
+  color: white;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+/* ✅ HOVER EFFECT */
+.checkout-actions button:hover {
+  opacity: 0.9;
+}
+
+
