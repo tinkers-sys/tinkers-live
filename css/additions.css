@@ -321,3 +321,48 @@ nav a {
   color: white;
   text-decoration: none;
 }
+/* ✅ HEADER LAYOUT */
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ✅ LOGO + TAGLINE */
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.tagline {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+/* ✅ RIGHT NAV AREA */
+.nav-area {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* ✅ TOP RIGHT FILTERS */
+.top-filters {
+  margin-top: 8px;
+}
+
+/* ✅ HERO STORY */
+.story-text {
+  margin-top: 25px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ✅ GRID FORCE FIX */
+.product-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+  gap: 20px;
+}
