@@ -36,15 +36,13 @@ async function loadProducts() {
   }));
 }
 
-/* ✅ FINAL FIXED GRID RENDER */
+/* ✅ FIXED GRID RENDER */
 function renderProducts(products, category = "All") {
 
   const grid = document.getElementById("products");
   if (!grid) return;
 
-  // ✅ FORCE GRID CLASS (CRITICAL)
   grid.className = "product-grid";
-
   grid.innerHTML = "";
 
   const filtered = category === "All"
@@ -72,7 +70,7 @@ function renderProducts(products, category = "All") {
 }
 
 /* ===============================
-   FILTER (FINAL ✅)
+   FILTER (FIXED ✅)
 ================================ */
 function wireCategoryLinks(products) {
 
@@ -81,7 +79,7 @@ function wireCategoryLinks(products) {
     btn.addEventListener("click", function (e) {
       e.preventDefault();
 
-      const selected = this.dataset.filter;
+      const selected = this.dataset.filter || "All";
 
       renderProducts(products, selected);
     });
