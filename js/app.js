@@ -152,12 +152,12 @@ function wireCategoryLinks(products) {
 
   document.querySelectorAll(".filters a").forEach(a => {
 
-    a.addEventListener("click", function (e) {
+    a.addEventListener("click", function(e) {
       e.preventDefault();
 
-      const filter = this.dataset.filter || "All";
+      const category = this.getAttribute("data-filter") || "All";
 
-      renderProducts(products, filter);
+      renderProducts(products, category);
     });
 
   });
