@@ -450,3 +450,20 @@ nav a {
   justify-content: flex-end;
   margin-top: 6px;
 }
+/* ✅ FINAL FORCE GRID FIX */
+#products.product-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 20px !important;
+}
+
+/* ✅ Card sizing fix */
+.card {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* ✅ Prevent full-width buttons */
+.card button {
+  width: auto !important;
+}
