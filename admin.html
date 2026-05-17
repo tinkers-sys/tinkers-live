@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard | Tinkers</title>
+
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/additions.css">
+
+<style>
+body {
+  background:#f5f5f5;
+}
+
+table {
+  width:100%;
+  border-collapse: collapse;
+  margin-top:20px;
+  background:white;
+}
+
+th, td {
+  padding:10px;
+  border-bottom:1px solid #ddd;
+  text-align:left;
+}
+
+th {
+  background:#333;
+  color:white;
+}
+
+input {
+  width:60px;
+  padding:5px;
+}
+
+button {
+  background:#c55a11;
+  color:white;
+  padding:6px 10px;
+  border:none;
+  border-radius:4px;
+}
+</style>
+
+</head>
+
+<body>
+
+<header class="header">
+  <h2>Tinkers Admin</h2>
+  <nav>
+    <a href="index.html">Back to Shop</a>
+  </nav>
+</header>
+
+<main style="padding:20px;">
+
+<h3>📦 Inventory</h3>
+
+<table id="inventoryTable">
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Stock</th>
+      <th>Update</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<h3 style="margin-top:40px;">📊 Orders</h3>
+
+<table id="ordersTable">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Product</th>
+      <th>Qty</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+</main>
+
+<script>
+
+// ✅ GOOGLE SHEET LINKS (YOURS)
+const INVENTORY_URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1";
+const ORDERS_URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Orders";
+
+// ✅ YOUR GOOGLE SCRIPT URL (IMPORTANT)
+// 👉 replace this with your real script URL
+const SCRIPT_URL = "PASTE_YOUR_SCRIPT_URL_HERE";
+
+
+/* ===============================
+   LOAD INVENTORY
+================================ */
+async function loadInventory() {
+  try {
+    const res = await fetch(INVENTORY_URL);
+    const data = await res.json();
+
+    const table = document.querySelector("#inventoryTable tbody");
+    table.innerHTML = "";
+
+    data.forEach(p => {
+      table.innerHTML += `
+        <tr>
+          <td>${p.name}</td>
+          <td>
+            <input type="number" value="${p.stock}" id="stock-${p.id}">
+          </td>
+          <td>
+            <button onclick="updateStock('${p.id}')">Save</button>
+          </td>
+        </tr>
+      `;
+    });
+
+  } catch (err) {
+    console.error("Inventory load error:", err);
+  }
+}
+
+
+/* ===============================
+   UPDATE STOCK
+================================ */
+function updateStock(id) {
+  const newStock = document.getElementById(`stock-${id}`).value;
+
+  fetch(`${SCRIPT_URL}?updateStockId=${id}&newStock=${newStock}`)
+    .then(res => res.text())
+    .then(() => {
+      alert("Stock updated ✅");
+      loadInventory();
+    })
+    .catch(err => {
+      console.error("Update error:", err);
+    });
+}
+
+
+/* ===============================
+   LOAD ORDERS
+================================ */
+async function loadOrders() {
+  try {
+    const res = await fetch(ORDERS_URL);
+    const data = await res.json();
+
+    const table = document.querySelector("#ordersTable tbody");
+    table.innerHTML = "";
+
+    data.forEach(o => {
+      table.innerHTML += `
+        <tr>
+          <td>${o.date}</td>
+          <td>${o.product}</td>
+          <td>${o.qty}</td>
+          <td>R${o.total}</td>
+        </tr>
+      `;
+    });
+
+  } catch (err) {
+    console.error("Orders load error:", err);
+  }
+}
+
+
+/* ===============================
+   INIT
+================================ */
+document.addEventListener("DOMContentLoaded", () => {
+  loadInventory();
+  loadOrders();
+});
+
+</script>
+
+</body>
+</html>
