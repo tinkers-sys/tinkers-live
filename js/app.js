@@ -36,30 +36,33 @@ async function loadProducts() {
 }
 
 /* ✅ FIXED GRID RENDER */
-function renderProducts(products) {
+function renderProducts(products, category = "All") {
 
   const grid = document.getElementById("products");
   if (!grid) return;
 
-  grid.innerHTML = ""; // clear first
+  grid.innerHTML = "";
 
-  products.forEach(p => {
+  const filtered = category === "All"
+    ? products
+    : products.filter(p =>
+        p.category &&
+        p.category.toLowerCase().trim() === category.toLowerCase().trim()
+      );
 
-    const card = document.createElement("div");
-    card.className = "card";
+  filtered.forEach(p => {
 
-    card.innerHTML = `
-      <img src="images/${p.image}" alt="${p.name}">
-      <h3>${p.name}</h3>
-      <p>${p.category}</p>
-      <p>R${p.price}</p>
-      <button onclick="addToCart('${p.id}')">Add to cart</button>
+    grid.innerHTML += `
+      <div class="card">
+        <img src="images/${p.image}" alt="${p.name}">
+        <h3>${p.name}</h3>
+        <p>${p.category}</p>
+        <p>R${p.price}</p>
+        <button onclick="addToCart('${p.id}')">Add to cart</button>
+      </div>
     `;
-
-    grid.appendChild(card);
   });
 }
-
 /* ===============================
    FILTER (FIXED ✅)
 ================================ */
