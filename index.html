@@ -5,38 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tinkers</title>
 
-  <!-- ✅ CORRECT CSS LINKS -->
+  <!-- ✅ REQUIRED CSS -->
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/additions.css">
 </head>
 
 <body>
 
+<!-- ✅ HEADER -->
 <header class="header">
-  <h2>Tinkers</h2>
+  <div class="container">
+    <h2>Tinkers</h2>
 
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="checkout.html">
-      View Cart (<span id="cartCount">0</span>)
-    </a>
-  </nav>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="checkout.html">View Cart (<span id="cartCount">0</span>)</a>
+    </nav>
+  </div>
 </header>
 
-<main>
+<!-- ✅ HERO / SHOP SECTION (RESTORED) -->
+<section class="hero">
+  <div class="container">
+    <h1>Shop Our Collection</h1>
+    <p>Authentic African Handmade Products</p>
+    <a href="#products" class="primary-btn">Shop Now</a>
+  </div>
+</section>
+
+<!-- ✅ MAIN CONTENT -->
+<main class="container">
 
   <h2>Our Products</h2>
 
-  <!-- ✅ THIS MUST MATCH YOUR ORIGINAL -->
-  <div id="products"></div>
+  <!-- ✅ PRODUCT GRID -->
+  <div id="products" class="product-grid"></div>
 
 </main>
 
-<footer style="text-align:center; margin-top:40px;">
-  <p>© Tinkers Curio Shop</p>
+<!-- ✅ FOOTER -->
+<footer>
+  <div class="container">
+    <p>© Tinkers Curio Shop</p>
+  </div>
 </footer>
 
-<!-- ✅ CORRECT JS LINK -->
+<!-- ✅ REQUIRED JS -->
 <script src="js/app.js"></script>
 
 </body>
