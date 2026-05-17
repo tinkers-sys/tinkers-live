@@ -232,3 +232,92 @@
   font-size: 12px;
   font-weight: 700;
 }
+/* ✅ HERO FIX */
+.hero {
+  position: relative;
+  height: 60vh;
+  background-size: cover;
+  background-position: center;
+}
+
+.hero-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white;
+}
+
+.hero-overlay h1 {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.hero-overlay p {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+/* ✅ SHOP BUTTON */
+.btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background: #c55a11;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+/* ✅ CATEGORY BUTTONS */
+.filters {
+  display: flex;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.filters a {
+  padding: 6px 12px;
+  background: #eee;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+}
+
+.filters a:hover {
+  background: #c55a11;
+  color: white;
+}
+
+/* ✅ PRODUCT GRID (VERY IMPORTANT) */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+/* ✅ PRODUCT CARD FIX */
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
+
+/* ✅ HEADER FIX */
+.header .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav {
+  display: flex;
+  gap: 20px;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+}
