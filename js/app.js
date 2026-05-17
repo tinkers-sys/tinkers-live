@@ -149,12 +149,19 @@ function renderProducts(products, category = "All") {
 }
 
 function wireCategoryLinks(products) {
-  document.querySelectorAll("nav a[data-filter]").forEach(a => {
-    a.addEventListener("click", e => {
+
+  document.querySelectorAll(".filters a").forEach(a => {
+
+    a.addEventListener("click", function (e) {
       e.preventDefault();
-      renderProducts(products, a.dataset.filter || "All");
+
+      const filter = this.dataset.filter || "All";
+
+      renderProducts(products, filter);
     });
+
   });
+
 }
 
 /* ===============================
