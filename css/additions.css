@@ -148,3 +148,35 @@
 .card button {
   width: auto !important;
 }
+.checkout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.checkout-card {
+  display: flex;
+  gap: 15px;
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  align-items: center;
+}
+
+.checkout-img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+}
+
+.checkout-info {
+  flex: 1;
+}
+
+.qty-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 10px 0;
+}
+
