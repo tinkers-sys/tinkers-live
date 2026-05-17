@@ -427,3 +427,15 @@
     position: static;
   }
 }
+/* ✅ BACK BUTTON STYLE */
+.btn-back {
+  display: inline-block;
+  margin-bottom: 15px;
+  color: #c55a11;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.btn-back:hover {
+  text-decoration: underline;
+}
