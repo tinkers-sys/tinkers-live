@@ -23,7 +23,7 @@ function writeCart(cart) {
 function updateCartCount() {
   const el = document.getElementById("cartCount");
   if (el) {
-    el.textContent = readCart().reduce((s, i) => s + i.qty, 0);
+    el.textContent = readCart().reduce((sum, item) => sum + item.qty, 0);
   }
 }
 
@@ -36,14 +36,14 @@ async function loadProducts() {
 
   return data.map(p => ({
     ...p,
-    id: p.id || p.ID || p.product_id,   // ✅ FIX ID MAPPING
+    id: p.id || p.ID || p.product_id, // ✅ SAFE ID FIX
     price: Number(p.price),
     stock: Number(p.stock)
   }));
 }
 
 /* ===============================
-   ADD TO CART ✅ FIXED
+   ADD TO CART ✅ CLEAN
 ================================ */
 function addToCart(id) {
 
@@ -56,25 +56,26 @@ function addToCart(id) {
   const cart = readCart();
   const item = cart.find(i => i.id == id);
 
-  if (item) item.qty++;
-  else cart.push({ id, qty: 1 });
+  if (item) {
+    item.qty++;
+  } else {
+    cart.push({ id: product.id, qty: 1 });
+  }
 
   writeCart(cart);
   updateCartCount();
-
-  alert(product.name + " added ✅");
 }
 
 /* ===============================
-   PRODUCT GRID ✅ FIXED HTML
+   PRODUCT GRID ✅ CLEAN
 ================================ */
 function renderProducts(products, category = "All") {
 
   const grid = document.getElementById("products");
   if (!grid) return;
 
-  grid.className = "product-grid";
   grid.innerHTML = "";
+  grid.className = "product-grid";
 
   const filtered = category === "All"
     ? products
@@ -97,11 +98,11 @@ function renderProducts(products, category = "All") {
 }
 
 /* ===============================
-   FILTER
+   FILTERS
 ================================ */
 function wireCategoryLinks(products) {
   document.querySelectorAll(".filters a").forEach(btn => {
-    btn.addEventListener("click", function(e) {
+    btn.addEventListener("click", function (e) {
       e.preventDefault();
       renderProducts(products, this.dataset.filter);
     });
@@ -109,7 +110,7 @@ function wireCategoryLinks(products) {
 }
 
 /* ===============================
-   CART FUNCTIONS
+   CART ACTIONS
 ================================ */
 function updateQty(id, change) {
   const cart = readCart();
@@ -118,28 +119,30 @@ function updateQty(id, change) {
 
   item.qty += change;
 
-  if (item.qty <= 0) return removeItem(id);
+  if (item.qty <= 0) {
+    return removeItem(id);
+  }
 
   writeCart(cart);
-  renderCheckout();
   updateCartCount();
+  renderCheckout();
 }
 
 function removeItem(id) {
   const cart = readCart().filter(i => i.id != id);
   writeCart(cart);
-  renderCheckout();
   updateCartCount();
+  renderCheckout();
 }
 
 function clearCart() {
   localStorage.removeItem(CART_KEY);
-  renderCheckout();
   updateCartCount();
+  renderCheckout();
 }
 
 /* ===============================
-   CHECKOUT ✅ WORKING
+   CHECKOUT GRID ✅ CLEAN
 ================================ */
 function renderCheckout() {
 
@@ -157,8 +160,8 @@ function renderCheckout() {
   }
 
   let total = 0;
-  cartEl.innerHTML = `<div class="checkout-grid"></div>`;
 
+  cartEl.innerHTML = `<div class="checkout-grid"></div>`;
   const grid = cartEl.querySelector(".checkout-grid");
 
   cart.forEach(item => {
@@ -172,8 +175,8 @@ function renderCheckout() {
     grid.innerHTML += `
       <div class="checkout-card">
         <img class="checkout-img" src="images/${product.image}">
-        <div class="checkout-info">
 
+        <div class="checkout-info">
           <h3>${product.name}</h3>
 
           <div class="qty-row">
@@ -184,7 +187,6 @@ function renderCheckout() {
           </div>
 
           <p>R${subtotal}</p>
-
         </div>
       </div>
     `;
@@ -192,6 +194,7 @@ function renderCheckout() {
 
   totalEl.textContent = "R" + total;
 
+  /* ✅ PAYFAST HOOK */
   const pf = document.getElementById("payfastAmount");
   if (pf) pf.value = total.toFixed(2);
 }
@@ -214,5 +217,4 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (document.getElementById("cart")) {
     renderCheckout();
   }
-
 });
