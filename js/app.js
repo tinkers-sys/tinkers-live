@@ -152,17 +152,24 @@ function wireCategoryLinks(products) {
 
   document.querySelectorAll(".filters a").forEach(a => {
 
-    a.addEventListener("click", function(e) {
+    a.addEventListener("click", function (e) {
       e.preventDefault();
 
-      const category = this.getAttribute("data-filter") || "All";
+      const selected = this.dataset.filter;
 
-      renderProducts(products, category);
+      if (!selected || selected === "All") {
+        renderProducts(products);
+      } else {
+        const filtered = products.filter(p => p.category === selected);
+        renderProducts(filtered);
+      }
+
     });
 
   });
 
 }
+
 
 /* ===============================
    CART ACTIONS
