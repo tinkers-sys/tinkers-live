@@ -246,33 +246,45 @@ function renderCheckout() {
 ================================ */
 async function whatsappCart() {
   const cart = readCart();
-  if (!cart.length) return alert("Your cart is empty");
+
+  if (!cart.length) {
+    alert("Your cart is empty");
+    return;
+  }
 
   let message = "Hi Tinkers, I would like to order:\n\n";
   let total = 0;
 
-  await Promise.all(cart.map(item => {
-    const product = window.__products.find(p => p.id === item.id);
-    if (!product) return;
+  try {
 
-    const lineTotal = product.price * item.qty;
-    total += lineTotal;
+    await Promise.all(cart.map(item => {
+      const product = window.__products.find(p => p.id === item.id);
+      if (!product) return Promise.resolve();
 
-    message += `• ${product.name} x${item.qty} - R${lineTotal}\n`;
+      const lineTotal = product.price * item.qty;
+      total += lineTotal;
 
-    return fetch(`${SCRIPT_URL}?product=${encodeURIComponent(product.name)}&qty=${item.qty}&total=${lineTotal}`);
-  }));
+      message += `• ${product.name} x${item.qty} - R${lineTotal}\n`;
 
-  message += `\nTotal: R${total}`;
+      // ✅ FIXED VERSION
+      return fetch(`${SCRIPT_URL}?product=${encodeURIComponent(product.name)}&qty=${item.qty}&total=${lineTotal}`);
+    }));
 
-  clearCart();
+    message += `\nTotal: R${total}`;
 
-  window.open(`https://wa.me/27682525454?text=${encodeURIComponent(message)}`);
+    clearCart();
+
+    window.open(
+      `https://wa.me/27682525454?text=${encodeURIComponent(message)}`,
+      "_blank"
+    );
+
+  } catch (err) {
+    console.error(err);
+    alert("Order could not be saved. Try again.");
+  }
 }
 
-function whatsappProduct(name) {
-  window.open(`https://wa.me/27682525454?text=${encodeURIComponent(name)}`);
-}
 
 /* ===============================
    INIT
