@@ -213,6 +213,22 @@ function renderCheckout() {
 
   totalEl.textContent = "R" + total;
 }
+function payflexCheckout() {
+
+  const cart = readCart();
+  if (!cart.length) return alert("Cart is empty");
+
+  let total = 0;
+
+  cart.forEach(item => {
+    const product = window.__products.find(p => p.id === item.id);
+    total += product.price * item.qty;
+  });
+
+  alert("Payflex sandbox payment\n\nTotal: R" + total);
+
+}
+
 
 /* ===============================
    WHATSAPP CHECKOUT
