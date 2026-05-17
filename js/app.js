@@ -7,7 +7,7 @@ const PRODUCTS_URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSz
 const CART_KEY = "tinkers_cart_v1";
 
 /* ===============================
-   STORAGE
+   HELPERS
 ================================ */
 function readCart() {
   return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
@@ -17,13 +17,10 @@ function writeCart(cart) {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
 }
 
-/* ===============================
-   CART COUNT
-================================ */
 function updateCartCount() {
   const el = document.getElementById("cartCount");
   if (!el) return;
-  el.textContent = readCart().reduce((t, i) => t + i.qty, 0);
+  el.textContent = readCart().reduce((s, i) => s + i.qty, 0);
 }
 
 /* ===============================
@@ -61,12 +58,54 @@ function addToCart(id) {
 }
 
 /* ===============================
-   UPDATE QTY
+   PRODUCT GRID (FIXED)
+================================ */
+function renderProducts(products, category = "All") {
+
+  const grid = document.getElementById("products");
+  if (!grid) return;
+
+  grid.className = "product-grid";
+  grid.innerHTML = "";
+
+  const filtered = category === "All"
+    ? products
+    : products.filter(p => p.category === category);
+
+  filtered.forEach(p => {
+
+    const card = document.createElement("div");
+    card.className = "card";
+
+    card.innerHTML = `
+      <img src="images/${p.image}" alt="${p.name}">
+      <h3>${p.name}</h3>
+      <p>R${p.price}</p>
+      <button onclick="addToCart('${p.id}')">Add to cart</button>
+    `;
+
+    grid.appendChild(card);
+  });
+}
+
+/* ===============================
+   FILTER
+================================ */
+function wireCategoryLinks(products) {
+  document.querySelectorAll(".filters a").forEach(btn => {
+    btn.addEventListener("click", e => {
+      e.preventDefault();
+      renderProducts(products, btn.dataset.filter);
+    });
+  });
+}
+
+/* ===============================
+   CART FUNCTIONS
 ================================ */
 function updateQty(id, change) {
   const cart = readCart();
   const item = cart.find(i => i.id === id);
-
   if (!item) return;
 
   item.qty += change;
@@ -81,21 +120,13 @@ function updateQty(id, change) {
   updateCartCount();
 }
 
-/* ===============================
-   REMOVE ITEM
-================================ */
 function removeItem(id) {
-  let cart = readCart();
-  cart = cart.filter(i => i.id !== id);
-
+  let cart = readCart().filter(i => i.id !== id);
   writeCart(cart);
   renderCheckout();
   updateCartCount();
 }
 
-/* ===============================
-   CLEAR CART
-================================ */
 function clearCart() {
   localStorage.removeItem(CART_KEY);
   renderCheckout();
@@ -103,7 +134,7 @@ function clearCart() {
 }
 
 /* ===============================
-   CHECKOUT GRID
+   CHECKOUT GRID (FIXED)
 ================================ */
 function renderCheckout() {
 
@@ -155,7 +186,6 @@ function renderCheckout() {
 
   totalEl.textContent = "R" + total;
 
-  /* ✅ FIX PAYFAST */
   const pf = document.getElementById("payfastAmount");
   if (pf) pf.value = total.toFixed(2);
 }
@@ -170,7 +200,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   updateCartCount();
 
+  if (document.getElementById("products")) {
+    renderProducts(products, "All");
+    wireCategoryLinks(products);
+  }
+
   if (document.getElementById("cart")) {
     renderCheckout();
   }
 });
+``
