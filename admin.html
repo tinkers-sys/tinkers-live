@@ -184,7 +184,27 @@ async function loadOrders() {
     console.error("Orders load error:", err);
   }
 }
+function addProduct() {
 
+  const id = document.getElementById("newId").value;
+  const name = document.getElementById("newName").value;
+  const category = document.getElementById("newCategory").value;
+  const price = document.getElementById("newPrice").value;
+  const image = document.getElementById("newImage").value;
+  const stock = document.getElementById("newStock").value;
+
+  if (!id || !name || !price || !stock) {
+    alert("Please fill required fields");
+    return;
+  }
+
+  fetch(`${SCRIPT_URL}?addProduct=true&id=${id}&name=${name}&category=${category}&price=${price}&image=${image}&stock=${stock}`)
+    .then(res => res.text())
+    .then(() => {
+      alert("Product added ✅");
+      loadInventory();
+    });
+}
 
 /* ===============================
    INIT
