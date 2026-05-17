@@ -3,289 +3,241 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Checkout | Tinkers</title>
+<title>Tinkers Admin</title>
 
 <link rel="stylesheet" href="css/styles.css">
 <link rel="stylesheet" href="css/additions.css">
 
 <style>
-input, textarea {
-  width:100%;
-  padding:10px;
-  margin-bottom:10px;
-  border-radius:6px;
-  border:1px solid #ddd;
+body { background:#f4f4f4; font-family:Arial; }
+
+.admin-card {
+  background:white;
+  padding:20px;
+  margin-bottom:20px;
+  border-radius:8px;
+  box-shadow:0 2px 6px rgba(0,0,0,0.1);
 }
 
-label {
-  font-weight:600;
-  font-size:14px;
+table {
+  width:100%;
+  border-collapse:collapse;
+  margin-top:15px;
+}
+
+th, td {
+  padding:10px;
+  border-bottom:1px solid #ddd;
+}
+
+th {
+  background:#333;
+  color:white;
+}
+
+input {
+  width:100%;
+  padding:8px;
+  margin-bottom:10px;
 }
 
 button {
+  background:#c55a11;
+  color:white;
+  border:none;
+  padding:8px 12px;
+  border-radius:6px;
   cursor:pointer;
 }
 
-.clear-btn {
-  background:#e74c3c;
-  color:white;
-  padding:10px 16px;
-  border:none;
-  border-radius:6px;
-  margin-top:10px;
-}
+.delete-btn { background:#e74c3c; }
+
+img { border-radius:6px; }
 </style>
 </head>
 
 <body>
 
 <header class="header">
-  <h2>Tinkers</h2>
-  <nav>
-    <a href="index.html">Back to shop</a>
-  </nav>
+  <h2>Tinkers Admin</h2>
 </header>
 
-<main class="checkout-wrap">
+<main style="padding:20px;">
 
-<h2>Checkout</h2>
+<!-- ✅ ADD PRODUCT -->
+<div class="admin-card">
+  <h3>Add Product</h3>
 
-<!-- ✅ CART -->
-<div id="cart"></div>
-<h3>Total: <span id="checkoutTotal">R0</span></h3>
+  <input id="newId" placeholder="Product ID">
+  <input id="newName" placeholder="Product Name">
+  <input id="newCategory" placeholder="Category">
+  <input id="newPrice" placeholder="Price">
 
-<!-- ✅ CLEAR CART -->
-<button onclick="clearCart()" class="clear-btn">
-  Clear Cart
-</button>
+  <label>Image</label>
+  <input id="newImage" placeholder="e.g mask.jpg">
+  <img id="imagePreview" style="width:120px; display:none; margin-bottom:10px;">
 
-<!-- ✅ DELIVERY -->
-<div style="margin-top:20px;">
-  <strong>Delivery Option</strong><br>
+  <input id="newStock" placeholder="Stock">
 
-  <label>
-    <input type="radio" name="delivery" value="collection" checked>
-    Collection (Free)
-  </label><br>
-
-  <label>
-    <input type="radio" name="delivery" value="delivery">
-    Delivery (+R100)
-  </label>
+  <button onclick="addProduct()">Add Product</button>
 </div>
 
-<!-- ✅ CUSTOMER DETAILS -->
-<div style="margin-top:20px;">
-  <h3>Customer Details</h3>
+<!-- ✅ INVENTORY -->
+<div class="admin-card">
+  <h3>Inventory</h3>
 
-  <label>Full Name</label>
-  <input type="text" id="custName">
-
-  <label>Phone Number</label>
-  <input type="tel" id="custPhone" placeholder="0821234567 or +27821234567">
-
-  <label>Email (optional)</label>
-  <input type="email" id="custEmail">
-
-  <div id="addressBlock" style="display:none;">
-    <label>Delivery Address</label>
-    <textarea id="custAddress"></textarea>
-  </div>
-
-  <label>Notes</label>
-  <textarea id="custNotes"></textarea>
+  <table>
+    <thead>
+      <tr>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Stock</th>
+        <th>Update</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody id="inventoryBody"></tbody>
+  </table>
 </div>
 
-<!-- ✅ ORDER SUMMARY -->
-<div style="margin-top:20px; padding:15px; background:#f7f7f7; border-radius:8px;">
-  <h3>Order Summary</h3>
-  <div id="summaryItems"></div>
-  <p><strong>Total: <span id="summaryTotal">R0</span></strong></p>
+<!-- ✅ ORDERS -->
+<div class="admin-card">
+  <h3>Orders</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Product</th>
+        <th>Qty</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody id="ordersBody"></tbody>
+  </table>
 </div>
-
-<!-- ✅ PAYFAST -->
-<form id="payfastForm" action="https://sandbox.payfast.co.za/eng/process" method="post">
-
-  <input type="hidden" name="merchant_id" value="10000100">
-  <input type="hidden" name="merchant_key" value="46f0cd694581a">
-
-  <input type="hidden" name="amount" id="pf_amount">
-  <input type="hidden" name="item_name" id="pf_item_name">
-
-  <input type="hidden" name="return_url" value="https://tinkers-sys.github.io/tinkers-live/thank-you.html">
-  <input type="hidden" name="cancel_url" value="https://tinkers-sys.github.io/tinkers-live/checkout.html">
-
-  <button type="button" onclick="payNow()" class="primary-btn">
-    Pay Now
-  </button>
-
-</form>
-
-<!-- ✅ WHATSAPP -->
-<button onclick="whatsappCart()" style="
-  background:#25D366;
-  color:white;
-  padding:14px;
-  border:none;
-  border-radius:8px;
-  margin-top:10px;
-  width:100%;
-">
-💬 Checkout via WhatsApp
-</button>
 
 </main>
 
-<script src="js/app.js"></script>
-
 <script>
 
-/* ✅ TOGGLE ADDRESS */
-function toggleAddress() {
-  const delivery = document.querySelector('input[name="delivery"]:checked').value;
-  document.getElementById("addressBlock").style.display =
-    (delivery === "delivery") ? "block" : "none";
-}
+const INVENTORY_URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1";
+const ORDERS_URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Orders";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3ZleL6269FAtILm43fwUz6mDB-XpzZwmizsTNFkpkYW6hxdYugiPS-uDE_gRmkrB-/exec";
 
-/* ✅ SUMMARY */
-function renderSummary() {
-  const cart = JSON.parse(localStorage.getItem("tinkers_cart_v1") || "[]");
+/* ===============================
+   IMAGE PREVIEW
+================================ */
+document.getElementById("newImage").addEventListener("input", function() {
+  const preview = document.getElementById("imagePreview");
 
-  let total = 0;
-  const container = document.getElementById("summaryItems");
-  const totalEl = document.getElementById("summaryTotal");
+  if (!this.value) {
+    preview.style.display = "none";
+    return;
+  }
 
-  container.innerHTML = "";
+  preview.src = "images/" + this.value;
+  preview.style.display = "block";
+});
 
-  cart.forEach(item => {
-    const p = window.__products?.find(x => x.id === item.id);
-    if (!p) return;
+/* ===============================
+   LOAD INVENTORY
+================================ */
+async function loadInventory() {
+  const res = await fetch(INVENTORY_URL);
+  const data = await res.json();
 
-    const lineTotal = p.price * item.qty;
-    total += lineTotal;
+  const tbody = document.getElementById("inventoryBody");
+  tbody.innerHTML = "";
 
-    container.innerHTML += `<p>${p.name} × ${item.qty} = R${lineTotal}</p>`;
+  data.forEach(p => {
+    tbody.innerHTML += `
+      <tr>
+        <td><img src="images/${p.image}" width="50"></td>
+        <td>${p.name}</td>
+        <td><input type="number" value="${p.stock}" id="stock-${p.id}"></td>
+        <td><button onclick="updateStock('${p.id}')">Save</button></td>
+        <td><button class="delete-btn" onclick="deleteProduct('${p.id}')">Delete</button></td>
+      </tr>
+    `;
   });
-
-  const delivery = document.querySelector('input[name="delivery"]:checked').value;
-  if (delivery === "delivery") total += 100;
-
-  totalEl.textContent = "R" + total;
 }
 
-/* ✅ PHONE FORMAT */
+/* ===============================
+   ADD PRODUCT
+================================ */
+function addProduct() {
+
+  if (!newId.value || !newName.value || !newPrice.value) {
+    alert("Fill required fields");
+    return;
+  }
+
+  fetch(`${SCRIPT_URL}?addProduct=true&id=${newId.value}&name=${newName.value}&category=${newCategory.value}&price=${newPrice.value}&image=${newImage.value}&stock=${newStock.value}`)
+    .then(() => {
+      alert("Product added ✅");
+      loadInventory();
+    });
+}
+
+/* ===============================
+   UPDATE STOCK
+================================ */
+function updateStock(id) {
+
+  const value = document.getElementById(`stock-${id}`).value;
+
+  fetch(`${SCRIPT_URL}?updateStockId=${id}&newStock=${value}`)
+    .then(() => {
+      alert("Stock updated ✅");
+      loadInventory();
+    });
+}
+
+/* ===============================
+   DELETE PRODUCT
+================================ */
+function deleteProduct(id) {
+
+  if (!confirm("Delete product?")) return;
+
+  fetch(`${SCRIPT_URL}?deleteId=${id}`)
+    .then(() => {
+      alert("Deleted ✅");
+      loadInventory();
+    });
+}
+
+/* ===============================
+   LOAD ORDERS
+================================ */
+async function loadOrders() {
+
+  const res = await fetch(ORDERS_URL);
+  const data = await res.json();
+
+  const tbody = document.getElementById("ordersBody");
+  tbody.innerHTML = "";
+
+  data.forEach(o => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${o.date || ""}</td>
+        <td>${o.product}</td>
+        <td>${o.qty}</td>
+        <td>R${o.total}</td>
+      </tr>
+    `;
+  });
+}
+
+/* ===============================
+   INIT
+================================ */
 document.addEventListener("DOMContentLoaded", () => {
-  const phoneInput = document.getElementById("custPhone");
-
-  phoneInput.addEventListener("input", function () {
-    let value = this.value.replace(/\D/g, "");
-    if (value.startsWith("0")) {
-      value = "+27" + value.substring(1);
-    }
-    this.value = value;
-  });
-
-  toggleAddress();
-  renderSummary();
+  loadInventory();
+  loadOrders();
 });
-
-/* ✅ DELIVERY CHANGE */
-document.addEventListener("change", function(e) {
-  if (e.target.name === "delivery") {
-    toggleAddress();
-    renderSummary();
-  }
-});
-
-/* ✅ PAYNOW */
-function payNow() {
-
-  const cart = JSON.parse(localStorage.getItem("tinkers_cart_v1") || "[]");
-
-  const name = custName.value.trim();
-  const phone = custPhone.value.trim();
-  const email = custEmail.value.trim();
-  const address = custAddress.value.trim();
-
-  const delivery = document.querySelector('input[name="delivery"]:checked').value;
-
-  // ✅ VALIDATION
-  if (name.length < 3) return alert("Enter full name");
-
-  const phoneRegex = /^(\+27|0)[0-9]{9}$/;
-  if (!phoneRegex.test(phone)) return alert("Invalid SA phone number");
-
-  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
-    return alert("Invalid email");
-
-  if (delivery === "delivery" && address.length < 10)
-    return alert("Enter full address");
-
-  let total = 0;
-  let items = [];
-
-  cart.forEach(item => {
-    const p = window.__products.find(x => x.id === item.id);
-    if (!p) return;
-
-    total += p.price * item.qty;
-    items.push(`${p.name} x${item.qty}`);
-  });
-
-  if (delivery === "delivery") {
-    total += 100;
-    items.push("Delivery");
-  }
-
-  items.push(`Name: ${name}`);
-  items.push(`Phone: ${phone}`);
-
-  document.getElementById("pf_amount").value = total.toFixed(2);
-  document.getElementById("pf_item_name").value = items.join(", ");
-
-  document.getElementById("payfastForm").submit();
-}
-
-/* ✅ WHATSAPP */
-function whatsappCart() {
-
-  const cart = JSON.parse(localStorage.getItem("tinkers_cart_v1") || "[]");
-
-  if (!cart.length) return alert("Cart empty");
-
-  const name = custName.value;
-  const phone = custPhone.value;
-  const address = custAddress.value;
-
-  let message = `Hi Tinkers,\n\nName: ${name}\nPhone: ${phone}\n\nOrder:\n`;
-
-  let total = 0;
-
-  cart.forEach(item => {
-    const p = window.__products.find(x => x.id === item.id);
-    if (!p) return;
-
-    const lineTotal = p.price * item.qty;
-    total += lineTotal;
-
-    message += `• ${p.name} x${item.qty} - R${lineTotal}\n`;
-  });
-
-  const delivery = document.querySelector('input[name="delivery"]:checked').value;
-
-  if (delivery === "delivery") {
-    total += 100;
-    message += "• Delivery - R100\n";
-    message += `Address: ${address}\n`;
-  }
-
-  message += `\nTotal: R${total}`;
-
-  window.open(
-    `https://wa.me/27682525454?text=${encodeURIComponent(message)}`,
-    "_blank"
-  );
-}
 
 </script>
 
