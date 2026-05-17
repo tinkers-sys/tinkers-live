@@ -202,4 +202,118 @@
   border-radius: 8px;
   font-weight: 600;
 }
+/* ===============================
+   CHECKOUT UPGRADE
+================================ */
+
+.checkout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.checkout-card {
+  background: white;
+  padding: 18px;
+  border-radius: 12px;
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  transition: transform 0.2s ease;
+}
+
+.checkout-card:hover {
+  transform: translateY(-3px);
+}
+
+.checkout-img {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  background: #f5f5f5;
+  border-radius: 10px;
+  padding: 8px;
+}
+
+.checkout-info h3 {
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+
+.checkout-info p {
+  margin: 4px 0;
+  font-weight: 600;
+}
+
+.qty-row button {
+  background: #ddd;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.qty-row button:hover {
+  background: #c55a11;
+  color: white;
+}
+
+/* ✅ TOTAL STYLE */
+#checkoutTotal {
+  color: #c55a11;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+/* ===============================
+   BUTTONS (UPGRADED)
+================================ */
+
+.checkout-actions {
+  margin-top: 25px;
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.btn-clear {
+  background: #fff;
+  border: 2px solid #c55a11;
+  color: #c55a11;
+  padding: 12px 22px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.btn-clear:hover {
+  background: #c55a11;
+  color: white;
+}
+
+/* ✅ WHATSAPP BUTTON */
+.btn-whatsapp {
+  background: #25D366;
+  padding: 12px 22px;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+}
+
+.btn-whatsapp:hover {
+  background: #1ebe5d;
+}
+
+/* ✅ PAYFLEX STYLE */
+.btn-payflex {
+  background: #6c5ce7;
+  padding: 12px 22px;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+}
+
+.btn-payflex:hover {
+  background: #574bcb;
+}
 
