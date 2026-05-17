@@ -177,7 +177,9 @@ function renderCheckout() {
   }
 
   let total = 0;
-  cartEl.innerHTML = "";
+
+  cartEl.innerHTML = `<div class="checkout-grid"></div>`;
+  const grid = cartEl.querySelector(".checkout-grid");
 
   cart.forEach(item => {
 
@@ -187,16 +189,24 @@ function renderCheckout() {
     const subtotal = product.price * item.qty;
     total += subtotal;
 
-    cartEl.innerHTML += `
-      <div class="card">
-        <h3>${product.name}</h3>
-        <p>
-          <button onclick="updateQty('${item.id}', -1)">−</button>
-          ${item.qty}
-          <button onclick="updateQty('${item.id}', 1)">+</button>
-        </p>
-        <p>R${subtotal}</p>
-        <button onclick="removeItem('${item.id}')">Remove</button>
+    grid.innerHTML += `
+      <div class="checkout-card">
+
+        <img class="checkout-img" src="images/${product.image}">
+
+        <div class="checkout-info">
+          <h3>${product.name}</h3>
+
+          <div class="qty-row">
+            <button onclick="updateQty('${item.id}', -1)">−</button>
+            <span>${item.qty}</span>
+            <button onclick="updateQty('${item.id}', 1)">+</button>
+            <button onclick="removeItem('${item.id}')">Remove</button>
+          </div>
+
+          <p>R${subtotal}</p>
+        </div>
+
       </div>
     `;
   });
