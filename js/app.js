@@ -7,7 +7,7 @@ const PRODUCTS_URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSz
 const CART_KEY = "tinkers_cart_v1";
 
 /* ===============================
-   HELPERS
+   STORAGE
 ================================ */
 function readCart() {
   return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
@@ -17,10 +17,14 @@ function writeCart(cart) {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
 }
 
+/* ===============================
+   CART COUNT
+================================ */
 function updateCartCount() {
   const el = document.getElementById("cartCount");
-  if (!el) return;
-  el.textContent = readCart().reduce((s, i) => s + i.qty, 0);
+  if (el) {
+    el.textContent = readCart().reduce((s, i) => s + i.qty, 0);
+  }
 }
 
 /* ===============================
@@ -32,21 +36,25 @@ async function loadProducts() {
 
   return data.map(p => ({
     ...p,
+    id: p.id || p.ID || p.product_id,   // ✅ FIX ID MAPPING
     price: Number(p.price),
     stock: Number(p.stock)
   }));
 }
 
 /* ===============================
-   ADD TO CART
+   ADD TO CART ✅ FIXED
 ================================ */
 function addToCart(id) {
 
-  const product = window.__products.find(p => p.id === id);
-  if (!product) return;
+  const product = window.__products.find(p => p.id == id);
+  if (!product) {
+    console.log("Product not found:", id);
+    return;
+  }
 
   const cart = readCart();
-  const item = cart.find(i => i.id === id);
+  const item = cart.find(i => i.id == id);
 
   if (item) item.qty++;
   else cart.push({ id, qty: 1 });
@@ -58,7 +66,7 @@ function addToCart(id) {
 }
 
 /* ===============================
-   PRODUCT GRID (FIXED)
+   PRODUCT GRID ✅ FIXED HTML
 ================================ */
 function renderProducts(products, category = "All") {
 
@@ -93,9 +101,9 @@ function renderProducts(products, category = "All") {
 ================================ */
 function wireCategoryLinks(products) {
   document.querySelectorAll(".filters a").forEach(btn => {
-    btn.addEventListener("click", e => {
+    btn.addEventListener("click", function(e) {
       e.preventDefault();
-      renderProducts(products, btn.dataset.filter);
+      renderProducts(products, this.dataset.filter);
     });
   });
 }
@@ -105,15 +113,12 @@ function wireCategoryLinks(products) {
 ================================ */
 function updateQty(id, change) {
   const cart = readCart();
-  const item = cart.find(i => i.id === id);
+  const item = cart.find(i => i.id == id);
   if (!item) return;
 
   item.qty += change;
 
-  if (item.qty <= 0) {
-    removeItem(id);
-    return;
-  }
+  if (item.qty <= 0) return removeItem(id);
 
   writeCart(cart);
   renderCheckout();
@@ -121,7 +126,7 @@ function updateQty(id, change) {
 }
 
 function removeItem(id) {
-  let cart = readCart().filter(i => i.id !== id);
+  const cart = readCart().filter(i => i.id != id);
   writeCart(cart);
   renderCheckout();
   updateCartCount();
@@ -134,7 +139,7 @@ function clearCart() {
 }
 
 /* ===============================
-   CHECKOUT GRID (FIXED)
+   CHECKOUT ✅ WORKING
 ================================ */
 function renderCheckout() {
 
@@ -152,13 +157,13 @@ function renderCheckout() {
   }
 
   let total = 0;
-
   cartEl.innerHTML = `<div class="checkout-grid"></div>`;
+
   const grid = cartEl.querySelector(".checkout-grid");
 
   cart.forEach(item => {
 
-    const product = window.__products.find(p => p.id === item.id);
+    const product = window.__products.find(p => p.id == item.id);
     if (!product) return;
 
     const subtotal = product.price * item.qty;
@@ -167,8 +172,8 @@ function renderCheckout() {
     grid.innerHTML += `
       <div class="checkout-card">
         <img class="checkout-img" src="images/${product.image}">
-        
         <div class="checkout-info">
+
           <h3>${product.name}</h3>
 
           <div class="qty-row">
@@ -179,6 +184,7 @@ function renderCheckout() {
           </div>
 
           <p>R${subtotal}</p>
+
         </div>
       </div>
     `;
@@ -208,5 +214,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (document.getElementById("cart")) {
     renderCheckout();
   }
+
 });
-``
