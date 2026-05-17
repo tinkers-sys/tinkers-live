@@ -193,7 +193,13 @@
   border-radius: 8px;
   font-weight: 600;
 }
-
+.btn-back {
+  display: inline-block;
+  margin-bottom: 15px;
+  color: #c55a11;
+  font-weight: 600;
+  text-decoration: none;
+}
 .btn-whatsapp {
   background: #25D366;
   color: white;
