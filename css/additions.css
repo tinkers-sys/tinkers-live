@@ -408,11 +408,22 @@ nav a {
   margin-right: auto;
 }
 
-/* ✅ GRID FORCE FIX */
-.product-grid {
+/* ✅ HARD GRID FIX */
+#products.product-grid {
   display: grid !important;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
-  gap: 20px;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 20px !important;
+}
+
+/* ✅ FORCE CARD SIZE */
+.card {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* ✅ FIX BUTTON STRETCH */
+.card button {
+  width: auto !important;
 }
 
 /* ✅ FORCE HEADER RIGHT CLEANLY */
