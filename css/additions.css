@@ -202,6 +202,19 @@
   border-radius: 8px;
   font-weight: 600;
 }
+.btn-payfast {
+  background: #2e86de;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+}
+
+.btn-payfast:hover {
+  background: #1b4f72;
+}
+
 /* ===============================
    CHECKOUT UPGRADE
 ================================ */
