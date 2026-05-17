@@ -1,78 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
- 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tinkers | African Curio Shop</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tinkers Store</title>
 
-<link rel="stylesheet" href="css/styles.css">
-<link rel="stylesheet" href="css/additions.css?v=final-tuning">
-   <!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id= G-5GFFP9FW2T"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', ' G-5GFFP9FW2T');
-</script>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/additions.css">
 </head>
 
 <body>
 
 <header class="header">
-  <h1>Tinkers – From our hands to your heart</h1>
-  <nav>
-    <a href="#products" data-filter="All">All</a>
-    <a href="#products" data-filter="Art">Art</a>
-    <a href="#products" data-filter="Apparel">Apparel</a>
-    <a href="#products" data-filter="Beadwork">Beadwork</a>
-    <a href="#products" data-filter="Accessories">Accessories</a>
+  <h1>Tinkers</h1>
 
-    <a href="checkout.html" class="cart-link">
-      Checkout (<span id="cartCount">0</span>)
-    </a>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="checkout.html">View Cart (<span id="cartCount">0</span>)</a>
+    <!-- ✅ Admin NOT linked publicly -->
+    <!-- <a href="admin.html">Admin</a> -->
   </nav>
 </header>
-<section class="hero">
-  <div class="hero-content">
-    <h1>Artisanal African Treasures, Curated for You</h1>
 
-    <p>
-      Discover handcrafted African art, traditional apparel, beadwork
-      and accessories inspired by heritage and made to last.
-    </p>
-<meta name="description"
-      content="Tinkers is a South African curio shop offering handcrafted African art, apparel, beadwork and accessories inspired by heritage.">
+<main>
 
-<meta name="keywords"
-      content="African art, African crafts, traditional apparel, beadwork, curio shop, handmade gifts">
+  <h2>Our Products</h2>
 
-<meta property="og:title" content="Tinkers | Artisanal African Treasures">
-<meta property="og:description"
-      content="Discover handcrafted African art, apparel, beadwork and accessories inspired by heritage.">
-<meta property="og:image" content="https://tinkers-sys.github.io/tinkers-live/images/tinkers-theme.jpg">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://tinkers-sys.github.io/tinkers-live/">
+  <!-- ✅ Product Grid -->
+  <div id="products" class="product-grid"></div>
 
-<link rel="canonical" href="https://tinkers-sys.github.io/tinkers-live/">
-    <div class="hero-actions">
-      <a href="#products" class="primary-btn">
-        Shop the Collection
-      </a>
+</main>
 
-      <a href="checkout.html" class="secondary-btn">
-        View Cart
-      </a>
-    </div>
-  </div>
-</section>
-<section class="grid" id="products"></section>
+<footer style="text-align:center; margin-top:40px;">
+  <p>© Tinkers Curio Shop</p>
+</footer>
 
+<!-- ✅ Scripts -->
 <script src="js/app.js"></script>
+
 </body>
 </html>
-<footer style="text-align:center; padding:30px; font-size:14px;">
-  <a href="privacy.html">Privacy Policy</a> ·
-  <a href="terms.html">Terms & Conditions</a>
-</footer>
