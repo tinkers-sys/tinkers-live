@@ -38,7 +38,6 @@ function moneyZAR(n) {
 function updateCartCount() {
   const el = document.getElementById("cartCount");
   if (!el) return;
-
   const totalQty = readCart().reduce((s, i) => s + i.qty, 0);
   el.textContent = totalQty;
 }
@@ -58,7 +57,6 @@ function showToast(message) {
       padding:12px 18px;
       border-radius:6px;
       z-index:9999;
-      font-weight:600;
     `;
     document.body.appendChild(toast);
   }
@@ -88,67 +86,39 @@ function renderProducts(products, category = "All") {
   const grid = document.getElementById("products");
   if (!grid) return;
 
-  const soldData = readSold();
-
-  const list =
-    category === "All"
-      ? products
-      : products.filter(p => p.category === category);
+  const list = category === "All"
+    ? products
+    : products.filter(p => p.category === category);
 
   grid.innerHTML = list.map(p => {
 
-    const baseStock = typeof p.stock === "number" ? p.stock : Infinity;
-    const soldQty = soldData[p.id] || 0;
-    const availableStock = baseStock - soldQty;
-
-    let stockNote = "";
-    let buttonHTML = "";
     let badge = "";
+    let buttonHTML = `<button onclick="addToCart('${p.id}')">Add to cart</button>`;
 
-    if (availableStock <= 0) {
-      stockNote = "Out of stock";
+    if (p.stock <= 0) {
       badge = `<div class="badge">OUT</div>`;
       buttonHTML = `<button disabled>Out of stock</button>`;
-
-    } else if (availableStock === 1) {
-      stockNote = "Only 1 left";
+    } else if (p.stock === 1) {
       badge = `<div class="badge">LAST ITEM</div>`;
-      buttonHTML = `<button onclick="whatsappProduct('${p.name}')">Reserve via WhatsApp</button>`;
-
-    } else if (availableStock <= 3) {
-      stockNote = `Only ${availableStock} left`;
+      buttonHTML = `<button onclick="whatsappProduct('${p.name}')">Reserve</button>`;
+    } else if (p.stock <= 3) {
       badge = `<div class="badge">LOW STOCK</div>`;
-      buttonHTML = `<button onclick="addToCart('${p.id}')">Add to cart</button>`;
-
-    } else {
-      buttonHTML = `<button onclick="addToCart('${p.id}')">Add to cart</button>`;
     }
 
     return `
       <div class="card">
         ${badge}
-        <img src="images/${p.image}" alt="${p.name}" loading="lazy">
+        <img src="images/${p.image}" alt="${p.name}">
         <h3>${p.name}</h3>
-        <p class="category">${p.category}</p>
-        <p class="price">${moneyZAR(p.price)}</p>
-        <p class="stock-note">${stockNote}</p>
+        <p>${moneyZAR(p.price)}</p>
         ${buttonHTML}
       </div>
     `;
   }).join("");
 }
 
-function wireCategoryLinks(products) {
-  document.querySelectorAll("nav a[data-filter]").forEach(a => {
-    a.addEventListener("click", e => {
-      e.preventDefault();
-      renderProducts(products, a.dataset.filter || "All");
-    });
-  });
-}
-
 /* ===============================
-   CART ACTIONS
+   CART
 ================================ */
 function addToCart(id) {
   const product = window.__products.find(p => p.id === id);
@@ -162,7 +132,6 @@ function addToCart(id) {
 
   writeCart(cart);
   updateCartCount();
-
   showToast(`${product.name} added to cart`);
 }
 
@@ -179,7 +148,6 @@ function updateQty(id, delta) {
   }
 
   item.qty = newQty;
-
   writeCart(cart);
   updateCartCount();
   renderCheckout();
@@ -193,7 +161,7 @@ function removeFromCart(id) {
 }
 
 /* ===============================
-   CHECKOUT (FIXED)
+   CHECKOUT (RESTORED ✅)
 ================================ */
 function renderCheckout() {
   const cartEl = document.getElementById("cart");
@@ -215,24 +183,26 @@ function renderCheckout() {
   const grid = cartEl.querySelector(".checkout-grid");
 
   cart.forEach(item => {
-    const product = window.__products.find(p => p.id === item.id);
-    if (!product) return;
+    const p = window.__products.find(x => x.id === item.id);
+    if (!p) return;
 
-    const lineTotal = product.price * item.qty;
+    const lineTotal = p.price * item.qty;
     total += lineTotal;
 
     grid.innerHTML += `
       <div class="checkout-card">
-        <img class="checkout-thumb" src="images/${product.image}" alt="${product.name}">
+        <img class="checkout-thumb" src="images/${p.image}">
         <div class="checkout-info">
-          <strong>${product.name}</strong>
+          <strong>${p.name}</strong>
+
           <div class="qty-row">
-            <button onclick="updateQty('${product.id}', -1)">−</button>
+            <button onclick="updateQty('${p.id}', -1)">−</button>
             <span>${item.qty}</span>
-            <button onclick="updateQty('${product.id}', 1)">+</button>
-            <button class="remove-btn" onclick="removeFromCart('${product.id}')">Remove</button>
+            <button onclick="updateQty('${p.id}', 1)">+</button>
+            <button onclick="removeFromCart('${p.id}')">Remove</button>
           </div>
-          <div class="checkout-line">${moneyZAR(lineTotal)}</div>
+
+          <div>${moneyZAR(lineTotal)}</div>
         </div>
       </div>
     `;
@@ -242,11 +212,10 @@ function renderCheckout() {
 }
 
 /* ===============================
-   WHATSAPP (FIXED)
+   WHATSAPP (SAFE VERSION ✅)
 ================================ */
-async function whatsappCart() {
+function whatsappCart() {
   const cart = readCart();
-
   if (!cart.length) {
     alert("Your cart is empty");
     return;
@@ -255,46 +224,38 @@ async function whatsappCart() {
   let message = "Hi Tinkers, I would like to order:\n\n";
   let total = 0;
 
-  let orderSummary = [];
+  const payload = [];
 
   cart.forEach(item => {
-    const product = window.__products.find(p => p.id === item.id);
-    if (!product) return;
+    const p = window.__products.find(x => x.id === item.id);
+    if (!p) return;
 
-    const lineTotal = product.price * item.qty;
+    const lineTotal = p.price * item.qty;
     total += lineTotal;
 
-    message += `• ${product.name} x${item.qty} - R${lineTotal}\n`;
+    message += `• ${p.name} x${item.qty} - R${lineTotal}\n`;
 
-    // ✅ build ONE order payload (very important)
-    orderSummary.push({
-      product: product.name,
+    payload.push({
+      product: p.name,
       qty: item.qty,
       total: lineTotal
     });
   });
 
-  try {
-    // ✅ SEND ONE REQUEST (not multiple fetch calls)
-    await fetch(`${SCRIPT_URL}?order=${encodeURIComponent(JSON.stringify(orderSummary))}`);
+  message += `\nTotal: R${total}`;
 
-    message += `\nTotal: R${total}`;
+  // ✅ reliable sender (not fetch)
+  const img = new Image();
+  img.src = `${SCRIPT_URL}?order=${encodeURIComponent(JSON.stringify(payload))}`;
 
-    // ✅ CLEAR CART ONLY AFTER SUCCESS
-    clearCart();
+  clearCart();
 
-    // ✅ OPEN WHATSAPP LAST (important)
-    window.open(
-      `https://wa.me/27682525454?text=${encodeURIComponent(message)}`,
-      "_blank"
-    );
-
-  } catch (err) {
-    console.error("Order failed:", err);
-    alert("Order could not be saved. Please try again.");
-  }
+  window.open(`https://wa.me/27682525454?text=${encodeURIComponent(message)}`);
 }
 
+function whatsappProduct(name) {
+  window.open(`https://wa.me/27682525454?text=${encodeURIComponent(name)}`);
+}
 
 /* ===============================
    INIT
@@ -307,7 +268,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (document.getElementById("products")) {
     renderProducts(products, "All");
-    wireCategoryLinks(products);
   }
 
   if (document.getElementById("cart")) {
