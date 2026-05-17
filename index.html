@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tinkers</title>
 
-  <!-- ✅ FIXED CSS -->
+  <!-- ✅ FIXED CSS LINKS -->
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/additions.css">
 </head>
@@ -19,25 +19,27 @@
 
     <nav>
       <a href="index.html">Home</a>
-      <a href="checkout.html">View Cart (<span id="cartCount">0</span>)</a>
+      <a href="checkout.html">
+        View Cart (<span id="cartCount">0</span>)
+      </a>
     </nav>
   </div>
 </header>
 
-<!-- ✅ HERO SECTION (FULLY FIXED) -->
+<!-- ✅ HERO SECTION -->
 <section class="hero">
   <div class="hero-overlay">
     <h1>TINKERS</h1>
     <p>From our hands to your heart</p>
 
-    <a href="#products" class="btn-primary">
+    <a href="#products" class="btn hero-btn">
       Shop Now
     </a>
   </div>
 </section>
 
-<!-- ✅ CATEGORY FILTERS (RESTORED) -->
-<section class="container filters-section">
+<!-- ✅ CATEGORY FILTERS -->
+<section class="container">
   <div class="filters">
     <a href="#" data-filter="All">All</a>
     <a href="#" data-filter="Apparel">Apparel</a>
@@ -48,9 +50,12 @@
 
 <!-- ✅ PRODUCTS -->
 <main class="container">
+
   <h2 id="products">Our Products</h2>
 
+  <!-- ✅ IMPORTANT: keep BOTH id AND class -->
   <div id="products" class="product-grid"></div>
+
 </main>
 
 <!-- ✅ FOOTER -->
