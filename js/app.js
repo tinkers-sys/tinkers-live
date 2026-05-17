@@ -38,6 +38,7 @@ function moneyZAR(n) {
 function updateCartCount() {
   const el = document.getElementById("cartCount");
   if (!el) return;
+
   const totalQty = readCart().reduce((s, i) => s + i.qty, 0);
   el.textContent = totalQty;
 }
@@ -147,7 +148,7 @@ function wireCategoryLinks(products) {
 }
 
 /* ===============================
-   CART
+   CART ACTIONS
 ================================ */
 function addToCart(id) {
   const product = window.__products.find(p => p.id === id);
@@ -156,7 +157,7 @@ function addToCart(id) {
   const cart = readCart();
   const item = cart.find(i => i.id === id);
 
-  if (item) item.qty++;
+  if (item) item.qty += 1;
   else cart.push({ id, qty: 1 });
 
   writeCart(cart);
@@ -170,12 +171,15 @@ function updateQty(id, delta) {
   const item = cart.find(i => i.id === id);
   if (!item) return;
 
-  if (item.qty + delta <= 0) {
+  const newQty = item.qty + delta;
+
+  if (newQty <= 0) {
     removeFromCart(id);
     return;
   }
 
-  item.qty += delta;
+  item.qty = newQty;
+
   writeCart(cart);
   updateCartCount();
   renderCheckout();
@@ -189,7 +193,7 @@ function removeFromCart(id) {
 }
 
 /* ===============================
-   CHECKOUT (RESTORED)
+   CHECKOUT (FIXED)
 ================================ */
 function renderCheckout() {
   const cartEl = document.getElementById("cart");
@@ -206,6 +210,7 @@ function renderCheckout() {
   }
 
   let total = 0;
+
   cartEl.innerHTML = `<div class="checkout-grid"></div>`;
   const grid = cartEl.querySelector(".checkout-grid");
 
@@ -218,7 +223,7 @@ function renderCheckout() {
 
     grid.innerHTML += `
       <div class="checkout-card">
-        <img class="checkout-thumb" src="images/${product.image}">
+        <img class="checkout-thumb" src="images/${product.image}" alt="${product.name}">
         <div class="checkout-info">
           <strong>${product.name}</strong>
           <div class="qty-row">
@@ -237,7 +242,7 @@ function renderCheckout() {
 }
 
 /* ===============================
-   WHATSAPP (FIXED ✅)
+   WHATSAPP (FIXED)
 ================================ */
 async function whatsappCart() {
   const cart = readCart();
