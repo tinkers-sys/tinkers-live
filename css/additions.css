@@ -1,15 +1,15 @@
-/* ================= BASE LAYOUT ================= */
+/* ===== LAYOUT ===== */
 .container {
   width: 90%;
   max-width: 1100px;
   margin: auto;
 }
 
-/* ================= HEADER ================= */
+/* ===== HEADER ===== */
 .header {
   background: #24333a;
   color: white;
-  padding: 12px 0;
+  padding: 10px 0;
 }
 
 .header-row {
@@ -18,7 +18,6 @@
   align-items: center;
 }
 
-/* LEFT */
 .logo-area {
   display: flex;
   align-items: center;
@@ -30,14 +29,13 @@
   opacity: 0.8;
 }
 
-/* RIGHT */
+/* RIGHT SIDE */
 .nav-area {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
 }
 
-/* NAV */
 .top-nav {
   display: flex;
   gap: 20px;
@@ -46,7 +44,6 @@
 .top-nav a {
   color: white;
   text-decoration: none;
-  font-weight: 500;
 }
 
 /* CATEGORY BUTTONS */
@@ -60,9 +57,8 @@
   padding: 6px 12px;
   background: #eee;
   border-radius: 6px;
-  text-decoration: none;
   color: #333;
-  font-weight: 600;
+  text-decoration: none;
 }
 
 .top-filters a:hover {
@@ -70,9 +66,9 @@
   color: white;
 }
 
-/* ================= HERO ================= */
+/* ===== HERO ===== */
 .hero {
-  height: 65vh;
+  height: 60vh;
   background: linear-gradient(rgba(36,51,58,.82), rgba(36,51,58,.82)),
               url("../images/tinkers-theme.jpg") center/cover no-repeat;
   display: flex;
@@ -86,17 +82,6 @@
   max-width: 800px;
 }
 
-.hero h1 {
-  font-size: 44px;
-  margin-bottom: 10px;
-}
-
-.hero p {
-  font-size: 18px;
-  margin: 10px 0 20px;
-}
-
-/* HERO BUTTONS */
 .hero-actions {
   display: flex;
   justify-content: center;
@@ -106,37 +91,27 @@
 .primary-btn {
   background: #c55a11;
   color: white;
-  padding: 12px 22px;
-  border-radius: 8px;
+  padding: 10px 20px;
+  border-radius: 6px;
   text-decoration: none;
 }
 
 .secondary-btn {
   background: white;
   color: #333;
-  padding: 12px 22px;
-  border-radius: 8px;
+  padding: 10px 20px;
+  border-radius: 6px;
   text-decoration: none;
 }
 
-/* STORY */
-.story-text {
-  margin-top: 15px;
-  font-size: 15px;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* ================= PRODUCT GRID ================= */
-.product-grid {
+/* ===== GRID FIX (CRITICAL) ===== */
+#products {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  margin-top: 20px;
 }
 
-/* CARD */
+/* PRODUCT CARD */
 .card {
   background: white;
   padding: 14px;
@@ -150,59 +125,11 @@
   object-fit: contain;
 }
 
-.card h3 {
-  margin: 10px 0;
-}
-
 .card button {
   margin-top: 10px;
-  padding: 10px 16px;
+  padding: 10px;
   background: #c55a11;
   border: none;
   color: white;
   border-radius: 6px;
-}
-
-/* BADGE */
-.badge {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  background: #c55a11;
-  color: white;
-  padding: 5px 8px;
-  border-radius: 5px;
-  font-size: 12px;
-}
-
-/* ================= MOBILE ================= */
-@media (max-width: 768px) {
-
-  .header-row {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .nav-area {
-    align-items: flex-start;
-    width: 100%;
-  }
-
-  .top-nav {
-    justify-content: flex-start;
-  }
-
-  .top-filters {
-    flex-wrap: wrap;
-    justify-content: flex-start;
-  }
-
-  .product-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .hero {
-    height: auto;
-    padding: 60px 20px;
-  }
 }
