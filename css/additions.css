@@ -312,6 +312,38 @@
   align-items: center;
 }
 
+/* ✅ LEFT SIDE (logo + tagline) */
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ✅ RIGHT SIDE (push everything right) */
+.nav-area {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+/* ✅ TOP NAV (Home, Cart, Checkout) */
+.top-nav {
+  display: flex;
+  gap: 20px;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+/* ✅ CATEGORY BUTTONS (tight right alignment) */
+.top-filters {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  width: 100%;
+  margin-top: 6px;
+}
+
+
 nav {
   display: flex;
   gap: 20px;
