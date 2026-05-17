@@ -329,4 +329,101 @@
 .btn-payflex:hover {
   background: #574bcb;
 }
+/* ===============================
+   FULL CHECKOUT LAYOUT
+================================ */
+.checkout-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 30px;
+  margin-top: 20px;
+}
 
+/* LEFT SIDE */
+.checkout-left {
+  background: #fafafa;
+  padding: 20px;
+  border-radius: 12px;
+}
+
+/* RIGHT SIDE */
+.checkout-right {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  height: fit-content;
+  position: sticky;
+  top: 20px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* TOTAL BOX */
+.total-box {
+  font-size: 22px;
+  font-weight: bold;
+  color: #c55a11;
+  margin: 15px 0;
+}
+
+/* ===============================
+   BUTTON STACK
+================================ */
+.checkout-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* CLEAR */
+.btn-clear {
+  background: #fff;
+  border: 2px solid #c55a11;
+  color: #c55a11;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+/* WHATSAPP */
+.btn-whatsapp {
+  background: #25D366;
+  color: white;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+/* PAYFLEX */
+.btn-payflex {
+  background: linear-gradient(45deg, #6c5ce7, #8e7dff);
+  color: white;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+/* PAYFAST */
+.btn-payfast {
+  background: #2e86de;
+  color: white;
+  padding: 12px;
+  border-radius: 10px;
+  font-weight: 600;
+  width: 100%;
+}
+
+/* HOVER EFFECT */
+.checkout-actions button:hover {
+  opacity: 0.9;
+}
+
+/* MOBILE */
+@media (max-width: 900px) {
+  .checkout-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-right {
+    position: static;
+  }
+}
