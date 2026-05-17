@@ -345,6 +345,22 @@ nav a {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  justify-content: flex-end;
+}
+
+/* ✅ FORCE TOP ROW RIGHT ALIGN */
+.top-nav {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+}
+
+/* ✅ FORCE FILTERS ALSO RIGHT */
+.top-filters {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
 }
 
 /* ✅ TOP RIGHT FILTERS */
