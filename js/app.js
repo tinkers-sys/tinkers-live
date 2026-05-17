@@ -23,6 +23,35 @@ function updateCartCount() {
   el.textContent = readCart().reduce((s, i) => s + i.qty, 0);
 }
 
+/* ✅ TOAST MESSAGE (RESTORED) */
+function showToast(message) {
+  let toast = document.getElementById("toast");
+
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "toast";
+    toast.style.cssText = `
+      position:fixed;
+      bottom:20px;
+      right:20px;
+      background:#c55a11;
+      color:white;
+      padding:12px 18px;
+      border-radius:6px;
+      z-index:9999;
+      font-weight:600;
+    `;
+    document.body.appendChild(toast);
+  }
+
+  toast.textContent = message;
+  toast.style.display = "block";
+
+  setTimeout(() => {
+    toast.style.display = "none";
+  }, 2000);
+}
+
 /* ===============================
    PRODUCTS
 ================================ */
@@ -36,7 +65,7 @@ async function loadProducts() {
   }));
 }
 
-/* ✅ FIXED GRID RENDER */
+/* ✅ GRID + CLEAN PRODUCT VIEW */
 function renderProducts(products, category = "All") {
 
   const grid = document.getElementById("products");
@@ -60,7 +89,6 @@ function renderProducts(products, category = "All") {
     card.innerHTML = `
       <img src="images/${p.image}" alt="${p.name}">
       <h3>${p.name}</h3>
-      <p>${p.category}</p>
       <p>R${p.price}</p>
       <button onclick="addToCart('${p.id}')">Add to cart</button>
     `;
@@ -70,7 +98,7 @@ function renderProducts(products, category = "All") {
 }
 
 /* ===============================
-   FILTER (FIXED ✅)
+   FILTER
 ================================ */
 function wireCategoryLinks(products) {
 
@@ -91,6 +119,7 @@ function wireCategoryLinks(products) {
    CART
 ================================ */
 function addToCart(id) {
+
   const cart = readCart();
   const item = cart.find(i => i.id === id);
 
@@ -99,6 +128,8 @@ function addToCart(id) {
 
   writeCart(cart);
   updateCartCount();
+
+  showToast("Added to cart ✅");
 }
 
 /* ===============================
