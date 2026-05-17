@@ -328,18 +328,6 @@ async function whatsappCart() {
   }
 }
 
-  let message = "Hi Tinkers, I would like to order:\n\n";
-  let total = 0;
-
-  cart.forEach(item => {
-    const product = window.__products.find(p => p.id === item.id);
-    if (!product) return;
-
-    const lineTotal = product.price * item.qty;
-    total += lineTotal;
-
-    message += `• ${product.name} x${item.qty} - R${lineTotal}\n`;
-
     // ✅ FIXED (critical)
     fetch(`${SCRIPT_URL}?product=${encodeURIComponent(product.name)}&qty=${item.qty}&total=${lineTotal}`);
   });
