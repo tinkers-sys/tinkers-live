@@ -133,3 +133,18 @@
   color: white;
   border-radius: 6px;
 }
+/* ✅ FINAL GRID OVERRIDE */
+#products {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 20px !important;
+}
+
+.card {
+  width: 100% !important;
+  display: block !important;
+}
+
+.card button {
+  width: auto !important;
+}
