@@ -5,59 +5,62 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tinkers</title>
 
-  <!-- ✅ Correct CSS -->
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/additions.css">
+  css/styles.css
+  css/additions.css
 </head>
 
 <body>
 
 <!-- ✅ HEADER -->
 <header class="header">
-  <div class="container">
-    <h2>Tinkers</h2>
+  <div class="container header-row">
 
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="checkout.html">
-        🛒 View Cart (<span id="cartCount">0</span>)
-      </a>
-    </nav>
-  </div>
-</header>
+    <!-- ✅ LEFT SIDE -->
+    <div class="logo-area">
+      <h2>Tinkers</h2>
+      <span class="tagline">From our hands to your heart</span>
+    </div>
 
-<!-- ✅ HERO (MATCHES YOUR CSS EXACTLY) -->
-<section class="hero">
-  <div class="hero-content">
+    <!-- ✅ RIGHT SIDE -->
+    <div class="nav-area">
 
-    <h1>TINKERS</h1>
+      <nav>
+        index.htmlHome</a>
+        checkout.html🛒 View Cart (<span id="cartCount">0</span>)</a>
+        checkout.htmlCheckout</a>
+      </nav>
 
-    <p>From our hands to your heart</p>
+      <!-- ✅ CATEGORY BUTTONS ON TOP RIGHT -->
+      <div class="filters top-filters">
+        #All</a>
+        #Apparel</a>
+        #Art</a>
+        #Accessories</a>
+        #Beadwork</a>
+      </div>
 
-    <!-- ✅ ACTION BUTTONS -->
-    <div class="hero-actions">
-      <a href="#products" class="primary-btn">Shop Our Collection</a>
-      <a href="#products" class="secondary-btn">Explore</a>
     </div>
 
   </div>
-</section>
+</header>
 
-<!-- ✅ STORY -->
-<section class="container" style="margin-top:30px;">
-  <p style="text-align:center;">
-    We bring you authentic African craftsmanship, celebrating culture,
-    tradition, and creativity in every piece.
-  </p>
-</section>
+<!-- ✅ HERO -->
+<section class="hero">
+  <div class="hero-overlay">
 
-<!-- ✅ CATEGORY FILTERS (FIXED STRUCTURE) -->
-<section class="container">
-  <div class="filters">
-    <a href="#" data-filter="All">All</a>
-    <a href="#" data-filter="Apparel">Apparel</a>
-    <a href="#" data-filter="Art">Art</a>
-    <a href="#" data-filter="Accessories">Accessories</a>
+    <h1>TINKERS</h1>
+
+    <div class="hero-actions">
+      #productsShop Our Collection</a>
+      #productsExplore</a>
+    </div>
+
+    <!-- ✅ STORY DIRECTLY UNDER BUTTONS -->
+    <p class="story-text">
+      We bring you authentic African craftsmanship, celebrating culture,
+      tradition, and creativity in every piece.
+    </p>
+
   </div>
 </section>
 
@@ -70,13 +73,11 @@
 
 </main>
 
-<!-- ✅ FOOTER -->
 <footer class="container">
   <p>© Tinkers Curio Shop</p>
 </footer>
 
-<!-- ✅ JS -->
-<script src="js/app.js"></script>
+js/app.jsscript>
 
 </body>
 </html>
