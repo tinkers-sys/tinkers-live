@@ -3,24 +3,15 @@
 /* ===============================
    CONFIG
 ================================ */
-const BASE_PATH = location.pathname.includes("/tinkers-live/") ? "/tinkers-live" : "";
 const PRODUCTS_URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1";
 const CART_KEY = "tinkers_cart_v1";
 const SOLD_KEY = "tinkers_sold";
 
-/* ===============================
-   SOLD HELPERS
-================================ */
-function readSold() {
-  return JSON.parse(localStorage.getItem(SOLD_KEY) || "{}");
-}
-
-function writeSold(data) {
-  localStorage.setItem(SOLD_KEY, JSON.stringify(data));
-}
+// ✅ PUT YOUR SCRIPT URL HERE
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3ZleL6269FAtILm43fwUz6mDB-XpzZwmizsTNFkpkYW6hxdYugiPS-uDE_gRmkrB-/exec";
 
 /* ===============================
-   CART HELPERS
+   HELPERS
 ================================ */
 function readCart() {
   return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
@@ -31,47 +22,23 @@ function writeCart(cart) {
 }
 
 function clearCart() {
+  if (!confirm("Clear cart?")) return;
+
   localStorage.removeItem(CART_KEY);
   updateCartCount();
-  if (document.getElementById("cart")) renderCheckout();
-}
-
-/* ===============================
-   UI HELPERS
-================================ */
-function moneyZAR(n) {
-  return "R" + Number(n || 0).toLocaleString("en-ZA");
+  renderCheckout();
 }
 
 function updateCartCount() {
   const el = document.getElementById("cartCount");
   if (!el) return;
+
   const totalQty = readCart().reduce((s, i) => s + i.qty, 0);
   el.textContent = totalQty;
 }
 
-function showToast(message) {
-  let toast = document.getElementById("toast");
-  if (!toast) {
-    toast = document.createElement("div");
-    toast.id = "toast";
-    toast.style.cssText = `
-      position:fixed;
-      bottom:20px;
-      right:20px;
-      background:#c55a11;
-      color:#fff;
-      padding:12px 18px;
-      border-radius:6px;
-      z-index:9999;
-      font-weight:600;
-    `;
-    document.body.appendChild(toast);
-  }
-  toast.textContent = message;
-  toast.style.display = "block";
-  clearTimeout(toast._t);
-  toast._t = setTimeout(() => (toast.style.display = "none"), 2000);
+function money(n) {
+  return "R" + Number(n || 0).toLocaleString("en-ZA");
 }
 
 /* ===============================
@@ -81,232 +48,143 @@ async function loadProducts() {
   const res = await fetch(PRODUCTS_URL);
   const data = await res.json();
 
-  return data.map(p => ({
+  window.__products = data.map(p => ({
     ...p,
     price: Number(p.price),
     stock: Number(p.stock)
   }));
 }
 
-function renderProducts(products, category = "All") {
-  const grid = document.getElementById("products");
-  if (!grid) return;
+function renderProducts(list = window.__products) {
+  const el = document.getElementById("products");
+  if (!el) return;
 
-  const soldData = readSold();
-
-  const list =
-    category === "All"
-      ? products
-      : products.filter(p => p.category === category);
-
-  grid.innerHTML = list.map(p => {
-
-    const baseStock = typeof p.stock === "number" ? p.stock : Infinity;
-    const soldQty = soldData[p.id] || 0;
-    const availableStock = baseStock - soldQty;
-
-    let stockNote = "";
-    let buttonHTML = "";
+  el.innerHTML = list.map(p => {
     let badge = "";
+    let btn = `<button onclick="addToCart('${p.id}')">Add to cart</button>`;
 
-    if (availableStock === Infinity) {
-      buttonHTML = `<button onclick="addToCart('${p.id}')">Add to cart</button>`;
-
-    } else if (availableStock <= 0) {
-      stockNote = "Out of stock";
+    if (p.stock <= 0) {
       badge = `<div class="badge">OUT</div>`;
-      buttonHTML = `<button disabled>Out of stock</button>`;
-
-    } else if (availableStock <= 1) {
-      stockNote = "Only 1 left";
+      btn = `<button disabled>Out of stock</button>`;
+    } else if (p.stock === 1) {
       badge = `<div class="badge">LAST ITEM</div>`;
-      buttonHTML = `
-        <button onclick="whatsappProduct('${p.name}')">
-          Reserve via WhatsApp
-        </button>`;      
-
-    } else if (availableStock <= 3) {
-      stockNote = `Only ${availableStock} left`;
+      btn = `<button onclick="whatsappProduct('${p.name}')">Reserve</button>`;
+    } else if (p.stock <= 3) {
       badge = `<div class="badge">LOW STOCK</div>`;
-      buttonHTML = `<button onclick="addToCart('${p.id}')">Add to cart</button>`;
-
-    } else {
-      buttonHTML = `<button onclick="addToCart('${p.id}')">Add to cart</button>`;
     }
 
     return `
       <div class="card">
         ${badge}
-        <img src="images/${p.image}" alt="${p.name}" loading="lazy">
+        <img src="images/${p.image}" alt="${p.name}">
         <h3>${p.name}</h3>
-        <p class="category">${p.category}</p>
-        <p class="price">${moneyZAR(p.price)}</p>
-        <p class="stock-note">${stockNote}</p>
-        ${buttonHTML}
+        <p>${money(p.price)}</p>
+        ${btn}
       </div>
     `;
   }).join("");
 }
 
-function wireCategoryLinks(products) {
-  document.querySelectorAll("nav a[data-filter]").forEach(a => {
-    a.addEventListener("click", e => {
-      e.preventDefault();
-      renderProducts(products, a.dataset.filter || "All");
-    });
-  });
-}
-
 /* ===============================
-   CART ACTIONS
+   CART
 ================================ */
 function addToCart(id) {
-  const product = window.__products.find(p => p.id === id);
-  if (!product) return;
-
-  const soldData = readSold();
-  const baseStock = typeof product.stock === "number" ? product.stock : Infinity;
-  const soldQty = soldData[id] || 0;
-
   const cart = readCart();
-  const item = cart.find(i => i.id === id);
-  const qtyInCart = item ? item.qty : 0;
+  const existing = cart.find(i => i.id === id);
 
-  const availableStock = baseStock - soldQty;
-
-  if (qtyInCart >= availableStock) {
-    alert("Sorry, no more stock available.");
-    return;
-  }
-
-  if (item) item.qty += 1;
+  if (existing) existing.qty++;
   else cart.push({ id, qty: 1 });
 
   writeCart(cart);
   updateCartCount();
-  showToast(`${product.name} added to cart`);
+  alert("Added to cart");
 }
 
-function updateQty(id, delta) {
-  const product = window.__products.find(p => p.id === id);
-  if (!product) return;
-
-  const soldData = readSold();
-  const baseStock = typeof product.stock === "number" ? product.stock : Infinity;
-  const soldQty = soldData[id] || 0;
-
-  const cart = readCart();
-  const item = cart.find(i => i.id === id);
-  if (!item) return;
-
-  const availableStock = baseStock - soldQty;
-  const newQty = item.qty + delta;
-
-  if (newQty > availableStock) {
-    alert("No more stock available.");
-    return;
-  }
-
-  if (newQty <= 0) {
-    removeFromCart(id);
-    return;
-  }
-
-  item.qty = newQty;
-  writeCart(cart);
-
-  updateCartCount();
-  renderCheckout();
-}
-
-function removeFromCart(id) {
-  const updated = readCart().filter(i => i.id !== id);
-  writeCart(updated);
-  updateCartCount();
-  renderCheckout();
-}
-
-/* ===============================
-   CHECKOUT
-================================ */
 function renderCheckout() {
   const cartEl = document.getElementById("cart");
   const totalEl = document.getElementById("checkoutTotal");
   if (!cartEl || !totalEl) return;
 
   const cart = readCart();
+
   if (!cart.length) {
-    cartEl.innerHTML = "<p>Your cart is empty.</p>";
+    cartEl.innerHTML = "<p>Your cart is empty</p>";
     totalEl.textContent = "R0";
     return;
   }
 
   let total = 0;
-  cartEl.innerHTML = `<div class="checkout-grid"></div>`;
+
+  cartEl.innerHTML = `
+    <div class="checkout-grid"></div>
+  `;
+
   const grid = cartEl.querySelector(".checkout-grid");
 
   cart.forEach(item => {
-    const product = window.__products.find(p => p.id === item.id);
-    if (!product) return;
+    const p = window.__products.find(x => x.id === item.id);
+    if (!p) return;
 
-    const lineTotal = product.price * item.qty;
+    const lineTotal = p.price * item.qty;
     total += lineTotal;
 
     grid.innerHTML += `
       <div class="checkout-card">
-        <img class="checkout-thumb" src="images/${product.image}" alt="${product.name}">
-        <div class="checkout-info">
-          <strong>${product.name}</strong>
-          <div class="qty-row">
-            <button onclick="updateQty('${product.id}', -1)">−</button>
-            <span>${item.qty}</span>
-            <button onclick="updateQty('${product.id}', 1)">+</button>
-            <button class="remove-btn" onclick="removeFromCart('${product.id}')">Remove</button>
-          </div>
-          <div class="checkout-line">${moneyZAR(lineTotal)}</div>
+        <img src="images/${p.image}">
+        <div>
+          <strong>${p.name}</strong>
+          <p>${money(lineTotal)}</p>
+          <button onclick="removeFromCart('${p.id}')">Remove</button>
         </div>
-      </div>`;
+      </div>
+    `;
   });
 
-  totalEl.textContent = moneyZAR(total);
+  totalEl.textContent = money(total);
+}
+
+function removeFromCart(id) {
+  const cart = readCart().filter(i => i.id !== id);
+  writeCart(cart);
+  updateCartCount();
+  renderCheckout();
 }
 
 /* ===============================
-   WHATSAPP
+   WHATSAPP PRODUCT
 ================================ */
 function whatsappProduct(name) {
-  if (typeof gtag !== "undefined") {
-    gtag('event', 'whatsapp_product_enquiry', { product_name: name });
-  }
-
   window.open(
-    `https://wa.me/27682525454?text=Hi%20Tinkers,%20I%20want%20to%20reserve%20${encodeURIComponent(name)}`,
+    `https://wa.me/27682525454?text=${encodeURIComponent("Hi, I want " + name)}`,
     "_blank"
   );
 }
+
+/* ===============================
+   WHATSAPP CART (FIXED ✅)
+================================ */
 function whatsappCart() {
+
   const cart = readCart();
   if (!cart.length) {
-    alert("Your cart is empty");
+    alert("Cart empty");
     return;
   }
 
   let message = "Hi Tinkers, I would like to order:\n\n";
   let total = 0;
 
-  const SCRIPT_URL = "YOUR_GOOGLE_SCRIPT_URL";
-
   cart.forEach(item => {
-    const product = window.__products.find(p => p.id === item.id);
-    if (!product) return;
+    const p = window.__products.find(x => x.id === item.id);
+    if (!p) return;
 
-    const lineTotal = product.price * item.qty;
+    const lineTotal = p.price * item.qty;
     total += lineTotal;
 
-    message += `• ${product.name} x${item.qty} - R${lineTotal}\n`;
+    message += `• ${p.name} x${item.qty} - R${lineTotal}\n`;
 
-    // ✅ SEND TO GOOGLE SHEET
-    fetch(`${SCRIPT_URL}?product=${encodeURIComponent(product.name)}&qty=${item.qty}&total=${lineTotal}`);
+    // ✅ SEND TO GOOGLE SHEET (FIXED)
+    fetch(`${SCRIPT_URL}?product=${encodeURIComponent(p.name)}&qty=${item.qty}&total=${lineTotal}`);
   });
 
   message += `\nTotal: R${total}`;
@@ -323,7 +201,7 @@ function whatsappCart() {
 function payNow() {
   const cart = readCart();
   if (!cart.length) {
-    alert("Your cart is empty");
+    alert("Cart empty");
     return;
   }
 
@@ -333,6 +211,7 @@ function payNow() {
   cart.forEach(item => {
     const p = window.__products.find(x => x.id === item.id);
     if (!p) return;
+
     total += p.price * item.qty;
     items.push(`${p.name} x${item.qty}`);
   });
@@ -347,17 +226,8 @@ function payNow() {
    INIT
 ================================ */
 document.addEventListener("DOMContentLoaded", async () => {
-  const products = await loadProducts();
-  window.__products = products;
-
+  await loadProducts();
+  renderProducts();
   updateCartCount();
-
-  if (document.getElementById("products")) {
-    renderProducts(products, "All");
-    wireCategoryLinks(products);
-  }
-
-  if (document.getElementById("cart")) {
-    renderCheckout();
-  }
+  renderCheckout();
 });
