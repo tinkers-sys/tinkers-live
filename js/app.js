@@ -8,15 +8,23 @@ const PRODUCTS_URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSz
 const CART_KEY = "tinkers_cart_v1";
 const SOLD_KEY = "tinkers_sold";
 
+// ✅ Keep script URL (used later when you fix WhatsApp)
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3ZleL6269FAtILm43fwUz6mDB-XpzZwmizsTNFkpkYW6hxdYugiPS-uDE_gRmkrB-/exec";
 
 /* ===============================
-   HELPERS
+   SOLD HELPERS
 ================================ */
 function readSold() {
   return JSON.parse(localStorage.getItem(SOLD_KEY) || "{}");
 }
 
+function writeSold(data) {
+  localStorage.setItem(SOLD_KEY, JSON.stringify(data));
+}
+
+/* ===============================
+   CART HELPERS
+================================ */
 function readCart() {
   return JSON.parse(localStorage.getItem(CART_KEY) || "[]");
 }
@@ -31,6 +39,9 @@ function clearCart() {
   if (document.getElementById("cart")) renderCheckout();
 }
 
+/* ===============================
+   UI HELPERS
+================================ */
 function moneyZAR(n) {
   return "R" + Number(n || 0).toLocaleString("en-ZA");
 }
@@ -57,6 +68,7 @@ function showToast(message) {
       padding:12px 18px;
       border-radius:6px;
       z-index:9999;
+      font-weight:600;
     `;
     document.body.appendChild(toast);
   }
@@ -111,7 +123,7 @@ function renderProducts(products, category = "All") {
     } else if (availableStock === 1) {
       stockNote = "Only 1 left";
       badge = `<div class="badge">LAST ITEM</div>`;
-      buttonHTML = `<button onclick="whatsappProduct('${p.name}')">Reserve</button>`;
+      buttonHTML = `<button onclick="whatsappProduct('${p.name}')">Reserve via WhatsApp</button>`;
 
     } else if (availableStock <= 3) {
       stockNote = `Only ${availableStock} left`;
@@ -125,17 +137,28 @@ function renderProducts(products, category = "All") {
     return `
       <div class="card">
         ${badge}
-        <img src="images/${p.image}" alt="${p.name}">
+        <img src="images/${p.image}" alt="${p.name}" loading="lazy">
         <h3>${p.name}</h3>
-        <p>${moneyZAR(p.price)}</p>
+        <p class="category">${p.category}</p>
+        <p class="price">${moneyZAR(p.price)}</p>
+        <p class="stock-note">${stockNote}</p>
         ${buttonHTML}
       </div>
     `;
   }).join("");
 }
 
+function wireCategoryLinks(products) {
+  document.querySelectorAll("nav a[data-filter]").forEach(a => {
+    a.addEventListener("click", e => {
+      e.preventDefault();
+      renderProducts(products, a.dataset.filter || "All");
+    });
+  });
+}
+
 /* ===============================
-   CART
+   CART ACTIONS
 ================================ */
 function addToCart(id) {
   const product = window.__products.find(p => p.id === id);
@@ -166,6 +189,7 @@ function updateQty(id, delta) {
 
   item.qty = newQty;
   writeCart(cart);
+
   updateCartCount();
   renderCheckout();
 }
@@ -200,26 +224,26 @@ function renderCheckout() {
   const grid = cartEl.querySelector(".checkout-grid");
 
   cart.forEach(item => {
-    const p = window.__products.find(x => x.id === item.id);
-    if (!p) return;
+    const product = window.__products.find(p => p.id === item.id);
+    if (!product) return;
 
-    const lineTotal = p.price * item.qty;
+    const lineTotal = product.price * item.qty;
     total += lineTotal;
 
     grid.innerHTML += `
       <div class="checkout-card">
-        <img class="checkout-thumb" src="images/${p.image}">
+        <img class="checkout-thumb" src="images/${product.image}" alt="${product.name}">
         <div class="checkout-info">
-          <strong>${p.name}</strong>
+          <strong>${product.name}</strong>
 
           <div class="qty-row">
-            <button onclick="updateQty('${p.id}', -1)">−</button>
+            <button onclick="updateQty('${product.id}', -1)">−</button>
             <span>${item.qty}</span>
-            <button onclick="updateQty('${p.id}', 1)">+</button>
-            <button onclick="removeFromCart('${p.id}')">Remove</button>
+            <button onclick="updateQty('${product.id}', 1)">+</button>
+            <button class="remove-btn" onclick="removeFromCart('${product.id}')">Remove</button>
           </div>
 
-          <div>${moneyZAR(lineTotal)}</div>
+          <div class="checkout-line">${moneyZAR(lineTotal)}</div>
         </div>
       </div>
     `;
@@ -229,10 +253,11 @@ function renderCheckout() {
 }
 
 /* ===============================
-   WHATSAPP (SAFE + STABLE)
+   WHATSAPP (SAFE — NO BREAKAGE)
 ================================ */
 function whatsappCart() {
   const cart = readCart();
+
   if (!cart.length) {
     alert("Your cart is empty");
     return;
@@ -241,37 +266,30 @@ function whatsappCart() {
   let message = "Hi Tinkers, I would like to order:\n\n";
   let total = 0;
 
-  const payload = [];
-
   cart.forEach(item => {
-    const p = window.__products.find(x => x.id === item.id);
-    if (!p) return;
+    const product = window.__products.find(p => p.id === item.id);
+    if (!product) return;
 
-    const lineTotal = p.price * item.qty;
+    const lineTotal = product.price * item.qty;
     total += lineTotal;
 
-    message += `• ${p.name} x${item.qty} - R${lineTotal}\n`;
-
-    payload.push({
-      product: p.name,
-      qty: item.qty,
-      total: lineTotal
-    });
+    message += `• ${product.name} x${item.qty} - R${lineTotal}\n`;
   });
 
   message += `\nTotal: R${total}`;
 
-  // ✅ Reliable request sender
-  const img = new Image();
-  img.src = `${SCRIPT_URL}?order=${encodeURIComponent(JSON.stringify(payload))}`;
-
-  clearCart();
-
-  window.open(`https://wa.me/27682525454?text=${encodeURIComponent(message)}`);
+  // ✅ Keep simple (no breaking code)
+  window.open(
+    `https://wa.me/27682525454?text=${encodeURIComponent(message)}`,
+    "_blank"
+  );
 }
 
 function whatsappProduct(name) {
-  window.open(`https://wa.me/27682525454?text=${encodeURIComponent(name)}`);
+  window.open(
+    `https://wa.me/27682525454?text=${encodeURIComponent(name)}`,
+    "_blank"
+  );
 }
 
 /* ===============================
@@ -285,6 +303,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (document.getElementById("products")) {
     renderProducts(products, "All");
+    wireCategoryLinks(products);
   }
 
   if (document.getElementById("cart")) {
