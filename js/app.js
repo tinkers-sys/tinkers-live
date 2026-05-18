@@ -17,7 +17,7 @@ function writeCart(cart) {
 }
 
 /* ===============================
-   UI: COUNT + TOAST (no irritating alert)
+   UI: COUNT + TOAST (no annoying OK popup)
 ================================ */
 function updateCartCount() {
   const el = document.getElementById("cartCount");
@@ -58,7 +58,6 @@ function normalizeId(p) {
 async function loadProducts() {
   const res = await fetch(PRODUCTS_URL, { cache: "no-store" });
   const data = await res.json();
-
   return (Array.isArray(data) ? data : []).map(p => ({
     ...p,
     id: normalizeId(p),
@@ -68,7 +67,7 @@ async function loadProducts() {
 }
 
 /* ===============================
-   STOCK HELPERS
+   STOCK HELPERS (cart-based stock display)
 ================================ */
 function qtyInCart(id) {
   const cart = readCart();
@@ -129,7 +128,6 @@ function wireCategoryLinks(products) {
   document.querySelectorAll(".filters a").forEach(btn => {
     btn.addEventListener("click", function (e) {
       e.preventDefault();
-      // optional active state
       document.querySelectorAll(".filters a").forEach(x => x.classList.remove("active"));
       this.classList.add("active");
 
@@ -152,7 +150,6 @@ function addToCart(id) {
     return;
   }
 
-  // stock enforcement
   const avail = availableStock(product);
   if (avail !== Infinity && avail <= 0) {
     showToast("Out of stock");
@@ -169,13 +166,10 @@ function addToCart(id) {
   updateCartCount();
   showToast(`${product.name} added ✅`);
 
-  // update stock labels immediately on shop page
   if (document.getElementById("products")) {
     const active = document.querySelector(".filters a.active")?.dataset?.filter || "All";
     renderProducts(window.__products, active);
   }
-
-  // if on checkout page, update it
   if (document.getElementById("cart")) renderCheckout();
 }
 
@@ -194,7 +188,6 @@ function updateQty(id, change) {
     return;
   }
 
-  // stock enforcement
   if (product && product.stock !== Infinity && next > Number(product.stock)) {
     showToast("No more stock available");
     return;
@@ -278,7 +271,6 @@ function renderCheckout() {
 
   totalEl.textContent = "R" + total;
 
-  // PayFast amount hook (if present)
   const pf = document.getElementById("payfastAmount");
   if (pf) pf.value = total.toFixed(2);
 }
@@ -307,10 +299,7 @@ function whatsappCart() {
   window.open("https://wa.me/27682525454?text=" + encodeURIComponent(msg), "_blank");
 }
 
-/* optional demo */
-function payflexCheckout() {
-  showToast("Payflex demo clicked");
-}
+function payflexCheckout() { showToast("Payflex demo clicked"); }
 
 /* ===============================
    INIT
