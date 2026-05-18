@@ -1,30 +1,27 @@
-/* ✅ RESTORE MAIN CONTAINER */
+/* ==================================
+   LAYOUT FIXES
+================================== */
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
 }
 
-/* ✅ FIX HEADER LAYOUT */
-.header {
-  display: flex;
-  flex-direction: column;
-}
-
+/* HEADER */
 .header .container {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-/* ✅ FIX NAV LINKS */
+/* NAV */
 nav {
   display: flex;
   gap: 15px;
   align-items: center;
 }
 
-/* ✅ FIX FILTER BUTTONS */
+/* FILTERS */
 .filters {
   display: flex;
   gap: 10px;
@@ -35,31 +32,27 @@ nav {
   padding: 6px 10px;
   background: #eee;
   border-radius: 6px;
-  text-decoration: none;
   color: #333;
+  text-decoration: none;
 }
 
 .filters a:hover {
   background: #c55a11;
-  color: white;
+  color: #fff;
 }
+
 /* ==================================
-   GENERAL BUTTONS / BACK LINK
+   BUTTON
 ================================== */
 .btn-back {
   display: inline-block;
   margin-bottom: 15px;
   color: #c55a11;
   font-weight: 600;
-  text-decoration: none;
-}
-
-.btn-back:hover {
-  text-decoration: underline;
 }
 
 /* ==================================
-   PRODUCT GRID (HOME PAGE)
+   PRODUCT GRID
 ================================== */
 .product-grid {
   display: grid;
@@ -67,9 +60,7 @@ nav {
   gap: 25px;
 }
 
-/* ==================================
-   PRODUCT CARD (HOME PAGE)
-================================== */
+/* PRODUCT CARD */
 .card {
   background: #fff;
   border-radius: 14px;
@@ -88,40 +79,32 @@ nav {
   width: 100%;
   height: 180px;
   object-fit: contain;
-  margin-bottom: 12px;
 }
 
 .card h3 {
-  font-size: 16px;
-  margin: 6px 0;
+  font-size: 15px;
+  margin: 8px 0;
 }
 
 .card .price {
   font-weight: bold;
   color: #c55a11;
-  margin-bottom: 6px;
 }
 
 /* ==================================
-   STOCK TEXT (FIXED SMALL SIZE)
+   STOCK TEXT + BADGES
 ================================== */
 .stock-note {
-  font-size: 12px;          /* ✅ smaller */
-  font-weight: 500;
+  font-size: 12px;
   color: #666;
-  margin-top: 4px;
 }
 
-/* ==================================
-   BADGES (LOW STOCK / OUT)
-================================== */
 .badge {
-  font-size: 10px;          /* ✅ FIXED smaller */
-  font-weight: 500;
+  font-size: 10px;
   padding: 3px 6px;
   border-radius: 6px;
-  margin-bottom: 5px;
   display: inline-block;
+  margin-bottom: 5px;
 }
 
 .badge.low {
@@ -135,16 +118,16 @@ nav {
 }
 
 /* ==================================
-   CHECKOUT GRID (FIXED PROPERLY)
+   CHECKOUT GRID (FIXED)
 ================================== */
 #cart .checkout-grid {
   display: grid !important;
-  grid-template-columns: repeat(3, 1fr) !important;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
   width: 100%;
 }
 
-/* ✅ RESPONSIVE BREAKPOINTS */
+/* RESPONSIVE */
 @media (max-width: 900px) {
   #cart .checkout-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -158,49 +141,39 @@ nav {
 }
 
 /* ==================================
-   CHECKOUT CARD (ALIGNED PERFECTLY)
+   CHECKOUT CARD
 ================================== */
 .checkout-card {
   background: #fff;
-  border-radius: 14px;
-  padding: 16px;
-  text-align: center;
+  border-radius: 12px;
+  padding: 15px;
 
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 
-  height: 100%;              /* ✅ IMPORTANT for equal height */
-
+  height: 100%;
   box-shadow: 0 6px 15px rgba(0,0,0,0.06);
 }
 
-/* ==================================
-   CHECKOUT IMAGE
-================================== */
+/* IMAGE */
 .checkout-img {
   width: 100%;
   height: 140px;
   object-fit: contain;
-  margin-bottom: 10px;
 }
 
-/* ==================================
-   CHECKOUT TEXT
-================================== */
+/* TEXT */
 .checkout-card h3 {
   font-size: 14px;
-  margin: 6px 0;
 }
 
 .checkout-card .price {
-  font-weight: bold;
   color: #c55a11;
+  font-weight: bold;
 }
 
-/* ==================================
-   QUANTITY CONTROLS
-================================== */
+/* QTY */
 .qty-row {
   display: flex;
   justify-content: center;
@@ -208,56 +181,29 @@ nav {
   margin-top: 8px;
 }
 
-.qty-row button {
-  padding: 4px 10px;
-  border: none;
-  background: #ddd;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.qty-row button:hover {
-  background: #c55a11;
-  color: white;
-}
-
-/* ==================================
-   REMOVE BUTTON
-================================== */
+/* REMOVE */
 .remove-btn {
   margin-top: 10px;
-  background: #ffeaea;
-  border: none;
   padding: 6px 12px;
   border-radius: 6px;
-  color: #c55a11;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-/* ==================================
-   CHECKOUT SUMMARY
-================================== */
-.total-box {
-  font-size: 22px;
-  font-weight: bold;
+  background: #ffeaea;
   color: #c55a11;
 }
 
 /* ==================================
-   CHECKOUT ACTION BUTTONS
+   SUMMARY BUTTONS
 ================================== */
 .checkout-actions {
   margin-top: 20px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
-.btn-clear {
-  background: white;
-  border: 2px solid #c55a11;
-  color: #c55a11;
+.btn-clear,
+.btn-whatsapp,
+.btn-payflex,
+.btn-payfast {
   padding: 12px;
   border-radius: 10px;
 }
@@ -265,51 +211,14 @@ nav {
 .btn-whatsapp {
   background: #25D366;
   color: white;
-  padding: 12px;
-  border-radius: 10px;
 }
 
 .btn-payflex {
   background: linear-gradient(45deg, #6c5ce7, #8e7dff);
   color: white;
-  padding: 12px;
-  border-radius: 10px;
 }
 
 .btn-payfast {
   background: #2e86de;
   color: white;
-  padding: 12px;
-  border-radius: 10px;
 }
-/* ✅ FIX PRODUCTS GRID ALIGNMENT */
-.product-grid {
-  display: grid !important;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 25px;
-}
-
-/* ✅ ENSURE CARDS ALIGN */
-.card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-}
-/* ✅ FIX BADGE WIDTH */
-.badge {
-  display: inline-block;
-  width: fit-content;   /* ✅ prevents stretching */
-  align-self: center;
-
-  font-size: 10px;
-  padding: 3px 6px;
-  border-radius: 6px;
-}
-/* ✅ CHECKOUT ONLY GRID */
-#cart .checkout-grid {
-  display: grid !important;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
