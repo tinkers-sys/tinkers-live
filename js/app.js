@@ -252,22 +252,27 @@ function renderCheckout() {
     const subtotal = product.price * qty;
     total += subtotal;
 
-    grid.innerHTML += `
-      <div class="checkout-card">
-        <img class="checkout-img" src="images/${product.image}" alt="${product.name}">
-        <div class="checkout-info">
-          <strong>${product.name}</strong>
-          <div class="qty-row">
-            <button onclick="updateQty('${id}', -1)">−</button>
-            <span>${qty}</span>
-            <button onclick="updateQty('${id}', 1)">+</button>
-            <button class="remove-btn" onclick="removeItem('${id}')">Remove</button>
-          </div>
-          <div class="checkout-line">R${subtotal}</div>
-        </div>
-      </div>
-    `;
-  });
+   grid.innerHTML += `
+  <div class="checkout-card">
+
+    <img class="checkout-img" src="images/${product.image}" />
+
+    <h3>${product.name}</h3>
+
+    <p class="price">R${product.price}</p>
+
+    <div class="qty-row">
+      <button onclick="updateQty('${id}', -1)">−</button>
+      <span>${qty}</span>
+      <button onclick="updateQty('${id}', 1)">+</button>
+    </div>
+
+    <button class="remove-btn" onclick="removeItem('${id}')">
+      Remove
+    </button>
+
+  </div>
+`;
 
   totalEl.textContent = "R" + total;
 
