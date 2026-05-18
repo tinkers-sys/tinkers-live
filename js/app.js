@@ -3,7 +3,8 @@
 /* ===============================
    CONFIG
 ================================ */
-const PRODUCTS_URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1";
+const PRODUCTS_URL =
+  "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1";
 const CART_KEY = "tinkers_cart_v1";
 
 /* ===============================
@@ -17,15 +18,8 @@ function writeCart(cart) {
 }
 
 /* ===============================
-   UI: COUNT + TOAST (no annoying OK popup)
+   TOAST (NO ALERT POPUPS)
 ================================ */
-function updateCartCount() {
-  const el = document.getElementById("cartCount");
-  if (!el) return;
-  const qty = readCart().reduce((sum, item) => sum + (Number(item.qty) || 0), 0);
-  el.textContent = String(qty);
-}
-
 function showToast(message) {
   let toast = document.getElementById("toast");
   if (!toast) {
@@ -48,40 +42,50 @@ function showToast(message) {
 }
 
 /* ===============================
-   PRODUCTS (LOAD + NORMALIZE IDS)
+   CART COUNT
+================================ */
+function updateCartCount() {
+  const el = document.getElementById("cartCount");
+  if (!el) return;
+  const qty = readCart().reduce((sum, item) => sum + (Number(item.qty) || 0), 0);
+  el.textContent = String(qty);
+}
+
+/* ===============================
+   PRODUCTS (LOAD + NORMALIZE)
 ================================ */
 function normalizeId(p) {
-  const raw = p.id ?? p.ID ?? p.product_id ?? p.ProductID ?? p.ProductId ?? p.Id;
+  const raw =
+    p.id ?? p.ID ?? p.product_id ?? p.ProductID ?? p.ProductId ?? p.Id;
   return raw == null ? "" : String(raw);
 }
 
 async function loadProducts() {
   const res = await fetch(PRODUCTS_URL, { cache: "no-store" });
   const data = await res.json();
-  return (Array.isArray(data) ? data : []).map(p => ({
+  return (Array.isArray(data) ? data : []).map((p) => ({
     ...p,
     id: normalizeId(p),
     price: Number(p.price) || 0,
-    stock: (p.stock === "" || p.stock == null) ? Infinity : Number(p.stock)
+    stock: p.stock === "" || p.stock == null ? Infinity : Number(p.stock),
   }));
 }
 
 /* ===============================
-   STOCK HELPERS (cart-based stock display)
+   STOCK HELPERS (cart-limited)
 ================================ */
 function qtyInCart(id) {
   const cart = readCart();
-  const item = cart.find(i => String(i.id) === String(id));
+  const item = cart.find((i) => String(i.id) === String(id));
   return item ? Number(item.qty) || 0 : 0;
 }
-
 function availableStock(product) {
   if (product.stock === Infinity) return Infinity;
   return Math.max(0, Number(product.stock) - qtyInCart(product.id));
 }
 
 /* ===============================
-   RENDER: PRODUCTS
+   RENDER: PRODUCTS GRID
 ================================ */
 function renderProducts(products, category = "All") {
   const grid = document.getElementById("products");
@@ -90,11 +94,16 @@ function renderProducts(products, category = "All") {
   grid.className = "product-grid";
   grid.innerHTML = "";
 
-  const filtered = category === "All"
-    ? products
-    : products.filter(p => (p.category || "").trim().toLowerCase() === String(category).trim().toLowerCase());
+  const filtered =
+    category === "All"
+      ? products
+      : products.filter(
+          (p) =>
+            (p.category || "").trim().toLowerCase() ===
+            String(category).trim().toLowerCase()
+        );
 
-  filtered.forEach(p => {
+  filtered.forEach((p) => {
     const avail = availableStock(p);
 
     let badge = "";
@@ -102,9 +111,17 @@ function renderProducts(products, category = "All") {
     let disabled = "";
 
     if (avail !== Infinity) {
-      if (avail <= 0) { badge = `<div class="badge out">OUT</div>`; stockNote = "Out of stock"; disabled = "disabled"; }
-      else if (avail === 1) { badge = `<div class="badge low">LAST ITEM</div>`; stockNote = "Only 1 left"; }
-      else if (avail <= 3) { badge = `<div class="badge low">LOW STOCK</div>`; stockNote = `Only ${avail} left`; }
+      if (avail <= 0) {
+        badge = `<div class="badge out">OUT</div>`;
+        stockNote = "Out of stock";
+        disabled = "disabled";
+      } else if (avail === 1) {
+        badge = `<div class="badge low">LAST ITEM</div>`;
+        stockNote = "Only 1 left";
+      } else if (avail <= 3) {
+        badge = `<div class="badge low">LOW STOCK</div>`;
+        stockNote = `Only ${avail} left`;
+      }
     }
 
     const card = document.createElement("div");
@@ -122,13 +139,15 @@ function renderProducts(products, category = "All") {
 }
 
 /* ===============================
-   FILTERS
+   FILTERS (All/Apparel/Art/Accessories/Beadwork)
 ================================ */
 function wireCategoryLinks(products) {
-  document.querySelectorAll(".filters a").forEach(btn => {
+  document.querySelectorAll(".filters a").forEach((btn) => {
     btn.addEventListener("click", function (e) {
       e.preventDefault();
-      document.querySelectorAll(".filters a").forEach(x => x.classList.remove("active"));
+
+      // optional active highlight
+      document.querySelectorAll(".filters a").forEach((x) => x.classList.remove("active"));
       this.classList.add("active");
 
       const selected = this.dataset.filter || "All";
@@ -138,12 +157,12 @@ function wireCategoryLinks(products) {
 }
 
 /* ===============================
-   CART ACTIONS (FIXED ID MATCH)
+   CART ACTIONS
 ================================ */
 function addToCart(id) {
   id = String(id);
 
-  const product = window.__products.find(p => String(p.id) === id);
+  const product = window.__products.find((p) => String(p.id) === id);
   if (!product) {
     console.log("Product not found for id:", id);
     showToast("Could not add item");
@@ -157,7 +176,7 @@ function addToCart(id) {
   }
 
   const cart = readCart();
-  const item = cart.find(i => String(i.id) === id);
+  const item = cart.find((i) => String(i.id) === id);
 
   if (item) item.qty = (Number(item.qty) || 0) + 1;
   else cart.push({ id, qty: 1 });
@@ -166,28 +185,29 @@ function addToCart(id) {
   updateCartCount();
   showToast(`${product.name} added ✅`);
 
+  // Refresh stock labels on shop page
   if (document.getElementById("products")) {
     const active = document.querySelector(".filters a.active")?.dataset?.filter || "All";
     renderProducts(window.__products, active);
   }
+
+  // Refresh checkout if present
   if (document.getElementById("cart")) renderCheckout();
 }
 
 function updateQty(id, change) {
   id = String(id);
   const cart = readCart();
-  const item = cart.find(i => String(i.id) === id);
+  const item = cart.find((i) => String(i.id) === id);
   if (!item) return;
 
-  const product = window.__products.find(p => String(p.id) === id);
+  const product = window.__products.find((p) => String(p.id) === id);
   const current = Number(item.qty) || 0;
   const next = current + change;
 
-  if (next <= 0) {
-    removeItem(id);
-    return;
-  }
+  if (next <= 0) return removeItem(id);
 
+  // Stock enforcement
   if (product && product.stock !== Infinity && next > Number(product.stock)) {
     showToast("No more stock available");
     return;
@@ -201,7 +221,7 @@ function updateQty(id, change) {
 
 function removeItem(id) {
   id = String(id);
-  const cart = readCart().filter(i => String(i.id) !== id);
+  const cart = readCart().filter((i) => String(i.id) !== id);
   writeCart(cart);
   updateCartCount();
   renderCheckout();
@@ -215,7 +235,7 @@ function clearCart() {
 }
 
 /* ===============================
-   CHECKOUT RENDER (GRID + IMAGES)
+   CHECKOUT RENDER (GRID + IMAGES + +/- + Remove)
 ================================ */
 function renderCheckout() {
   const cartEl = document.getElementById("cart");
@@ -242,40 +262,36 @@ function renderCheckout() {
   cartEl.innerHTML = `<div class="checkout-grid"></div>`;
   const grid = cartEl.querySelector(".checkout-grid");
 
-  cart.forEach(item => {
+  cart.forEach((item) => {
     const id = String(item.id);
     const qty = Number(item.qty) || 0;
 
-    const product = window.__products.find(p => String(p.id) === id);
+    const product = window.__products.find((p) => String(p.id) === id);
     if (!product) return;
 
     const subtotal = product.price * qty;
     total += subtotal;
 
-   grid.innerHTML += `
-  <div class="checkout-card">
-
-    <img class="checkout-img" src="images/${product.image}" />
-
-    <h3>${product.name}</h3>
-
-    <p class="price">R${product.price}</p>
-
-    <div class="qty-row">
-      <button onclick="updateQty('${id}', -1)">−</button>
-      <span>${qty}</span>
-      <button onclick="updateQty('${id}', 1)">+</button>
-    </div>
-
-    <button class="remove-btn" onclick="removeItem('${id}')">
-      Remove
-    </button>
-
-  </div>
-`;
+    grid.innerHTML += `
+      <div class="checkout-card">
+        <img class="checkout-img" src="images/${product.image}" alt="${product.name}">
+        <div class="checkout-info">
+          <strong>${product.name}</strong>
+          <div class="qty-row">
+            <button onclick="updateQty('${id}', -1)">−</button>
+            <span>${qty}</span>
+            <button onclick="updateQty('${id}', 1)">+</button>
+            <button class="remove-btn" onclick="removeItem('${id}')">Remove</button>
+          </div>
+          <div class="checkout-line">R${subtotal}</div>
+        </div>
+      </div>
+    `;
+  });
 
   totalEl.textContent = "R" + total;
 
+  // PayFast amount hook (if present)
   const pf = document.getElementById("payfastAmount");
   if (pf) pf.value = total.toFixed(2);
 }
@@ -290,21 +306,27 @@ function whatsappCart() {
   let msg = "Hi Tinkers, I would like to order:\n\n";
   let total = 0;
 
-  cart.forEach(item => {
+  cart.forEach((item) => {
     const id = String(item.id);
     const qty = Number(item.qty) || 0;
-    const product = window.__products.find(p => String(p.id) === id);
+    const product = window.__products.find((p) => String(p.id) === id);
     if (!product) return;
+
     const line = product.price * qty;
     total += line;
     msg += `• ${product.name} x${qty} - R${line}\n`;
   });
 
   msg += `\nTotal: R${total}`;
-  window.open("https://wa.me/27682525454?text=" + encodeURIComponent(msg), "_blank");
+  window.open(
+    "https://wa.me/27682525454?text=" + encodeURIComponent(msg),
+    "_blank"
+  );
 }
 
-function payflexCheckout() { showToast("Payflex demo clicked"); }
+function payflexCheckout() {
+  showToast("Payflex demo clicked");
+}
 
 /* ===============================
    INIT
