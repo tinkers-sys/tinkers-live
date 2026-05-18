@@ -1,553 +1,75 @@
-/* ===== LAYOUT ===== */
-.container {
-  width: 90%;
-  max-width: 1100px;
-  margin: auto;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tinkers Checkout</title>
 
-/* ===== HEADER ===== */
-.header {
-  background: #24333a;
-  color: white;
-  padding: 10px 0;
-}
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/additions.css">
+</head>
 
-.header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+<body>
 
-.logo-area {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+<header class="header">
+  <div class="container">
+    <h2>Checkout</h2>
 
-.tagline {
-  font-size: 14px;
-  opacity: 0.8;
-}
+    <nav>
+      <a href="index.html">Home</a>
+    </nav>
+  </div>
+</header>
 
-/* RIGHT SIDE */
-.nav-area {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
+<main class="container">
 
-.top-nav {
-  display: flex;
-  gap: 20px;
-}
+  <!-- ✅ BACK BUTTON -->
+  <a href="index.html" class="btn-back">← Back to Shopping</a>
 
-.top-nav a {
-  color: white;
-  text-decoration: none;
-}
+  <h2>Your Cart</h2>
 
-/* CATEGORY BUTTONS */
-.top-filters {
-  display: flex;
-  gap: 8px;
-  margin-top: 6px;
-}
+  <!-- ✅ GRID CONTAINER -->
+  <div id="cart">
+    <!-- JS renders checkout-grid here -->
+  </div>
 
-.top-filters a {
-  padding: 6px 12px;
-  background: #eee;
-  border-radius: 6px;
-  color: #333;
-  text-decoration: none;
-}
+  <!-- ✅ TOTAL -->
+  <h3 class="total-box">
+    Total: <span id="checkoutTotal">R0</span>
+  </h3>
 
-.top-filters a:hover {
-  background: #c55a11;
-  color: white;
-}
+  <!-- ✅ ACTIONS -->
+  <div class="checkout-actions">
 
-/* ===== HERO ===== */
-.hero {
-  height: 60vh;
-  background: linear-gradient(rgba(36,51,58,.82), rgba(36,51,58,.82)),
-              url("../images/tinkers-theme.jpg") center/cover no-repeat;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  color: white;
-}
+    <button class="btn-clear" onclick="clearCart()">Clear Cart</button>
 
-.hero-content {
-  max-width: 800px;
-}
+    <button class="btn-whatsapp" onclick="whatsappCart()">
+      WhatsApp Order
+    </button>
 
-.hero-actions {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-}
+    <button class="btn-payflex" onclick="payflexCheckout()">
+      Payflex Demo
+    </button>
 
-.primary-btn {
-  background: #c55a11;
-  color: white;
-  padding: 10px 20px;
-  border-radius: 6px;
-  text-decoration: none;
-}
+    <!-- ✅ PAYFAST -->
+    <form action="https://sandbox.payfast.co.za/eng/process" method="post">
 
-.secondary-btn {
-  background: white;
-  color: #333;
-  padding: 10px 20px;
-  border-radius: 6px;
-  text-decoration: none;
-}
+      <input type="hidden" name="merchant_id" value="10000100">
+      <input type="hidden" name="merchant_key" value="46f0cd694581a">
+      <input type="hidden" name="amount" id="payfastAmount" value="0">
+      <input type="hidden" name="item_name" value="Tinkers Order">
 
-/* ===== GRID FIX (CRITICAL) ===== */
-#products {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
+      <button class="btn-payfast" type="submit">
+        Pay with Card
+      </button>
 
-/* PRODUCT CARD */
-.card {
-  background: white;
-  padding: 14px;
-  border-radius: 10px;
-  text-align: center;
-}
+    </form>
 
-.card img {
-  width: 100%;
-  height: 200px;
-  object-fit: contain;
-}
+  </div>
 
-.card button {
-  margin-top: 10px;
-  padding: 10px;
-  background: #c55a11;
-  border: none;
-  color: white;
-  border-radius: 6px;
-}
-/* ✅ FINAL GRID OVERRIDE */
-#products {
-  display: grid !important;
-  grid-template-columns: repeat(3, 1fr) !important;
-  gap: 20px !important;
-}
+</main>
 
-.card {
-  width: 100% !important;
-  display: block !important;
-}
+<script src="js/app.js"></script>
 
-.card button {
-  width: auto !important;
-}
-.checkout-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-}
-
-.checkout-card {
-  display: flex;
-  gap: 15px;
-  background: white;
-  padding: 15px;
-  border-radius: 10px;
-  align-items: center;
-}
-
-.checkout-img {
-  width: 100px;
-  height: 100px;
-  object-fit: contain;
-}
-
-.checkout-info {
-  flex: 1;
-}
-
-.qty-row {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  margin: 10px 0;
-}
-.checkout-actions {
-  margin-top: 20px;
-  display: flex;
-  gap: 15px;
-}
-
-.btn-clear {
-  background: white;
-  color: #c55a11;
-  border: 2px solid #c55a11;
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-weight: 600;
-}
-.btn-back {
-  display: inline-block;
-  margin-bottom: 15px;
-  color: #c55a11;
-  font-weight: 600;
-  text-decoration: none;
-}
-.btn-whatsapp {
-  background: #25D366;
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-weight: 600;
-}
-.btn-payfast {
-  background: #2e86de;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 8px;
-  border: none;
-  font-weight: 600;
-}
-
-.btn-payfast:hover {
-  background: #1b4f72;
-}
-
-/* ===============================
-   CHECKOUT UPGRADE
-================================ */
-
-.checkout-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-}
-
-.checkout-card {
-  background: white;
-  padding: 18px;
-  border-radius: 12px;
-  display: flex;
-  gap: 15px;
-  align-items: center;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-  transition: transform 0.2s ease;
-}
-
-.checkout-card:hover {
-  transform: translateY(-3px);
-}
-
-.checkout-img {
-  width: 90px;
-  height: 90px;
-  object-fit: contain;
-  background: #f5f5f5;
-  border-radius: 10px;
-  padding: 8px;
-}
-
-.checkout-info h3 {
-  font-size: 16px;
-  margin-bottom: 6px;
-}
-
-.checkout-info p {
-  margin: 4px 0;
-  font-weight: 600;
-}
-
-.qty-row button {
-  background: #ddd;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.qty-row button:hover {
-  background: #c55a11;
-  color: white;
-}
-
-/* ✅ TOTAL STYLE */
-#checkoutTotal {
-  color: #c55a11;
-  font-size: 22px;
-  font-weight: bold;
-}
-
-/* ===============================
-   BUTTONS (UPGRADED)
-================================ */
-
-.checkout-actions {
-  margin-top: 25px;
-  display: flex;
-  gap: 15px;
-  flex-wrap: wrap;
-}
-
-.btn-clear {
-  background: #fff;
-  border: 2px solid #c55a11;
-  color: #c55a11;
-  padding: 12px 22px;
-  border-radius: 10px;
-  font-weight: 600;
-}
-
-.btn-clear:hover {
-  background: #c55a11;
-  color: white;
-}
-
-/* ✅ WHATSAPP BUTTON */
-.btn-whatsapp {
-  background: #25D366;
-  padding: 12px 22px;
-  border-radius: 10px;
-  color: white;
-  font-weight: 600;
-}
-
-.btn-whatsapp:hover {
-  background: #1ebe5d;
-}
-
-/* ✅ PAYFLEX STYLE */
-.btn-payflex {
-  background: #6c5ce7;
-  padding: 12px 22px;
-  border-radius: 10px;
-  color: white;
-  font-weight: 600;
-}
-
-.btn-payflex:hover {
-  background: #574bcb;
-}
-/* ===============================
-   FULL CHECKOUT LAYOUT
-================================ */
-.checkout-layout {
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 30px;
-  margin-top: 20px;
-}
-
-/* LEFT SIDE */
-.checkout-left {
-  background: #fafafa;
-  padding: 20px;
-  border-radius: 12px;
-}
-
-/* RIGHT SIDE */
-.checkout-right {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  height: fit-content;
-  position: sticky;
-  top: 20px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-}
-
-/* TOTAL BOX */
-.total-box {
-  font-size: 22px;
-  font-weight: bold;
-  color: #c55a11;
-  margin: 15px 0;
-}
-
-/* ===============================
-   BUTTON STACK
-================================ */
-.checkout-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* CLEAR */
-.btn-clear {
-  background: #fff;
-  border: 2px solid #c55a11;
-  color: #c55a11;
-  padding: 12px;
-  border-radius: 10px;
-  font-weight: 600;
-}
-
-/* WHATSAPP */
-.btn-whatsapp {
-  background: #25D366;
-  color: white;
-  padding: 12px;
-  border-radius: 10px;
-  font-weight: 600;
-}
-
-/* PAYFLEX */
-.btn-payflex {
-  background: linear-gradient(45deg, #6c5ce7, #8e7dff);
-  color: white;
-  padding: 12px;
-  border-radius: 10px;
-  font-weight: bold;
-}
-
-/* PAYFAST */
-.btn-payfast {
-  background: #2e86de;
-  color: white;
-  padding: 12px;
-  border-radius: 10px;
-  font-weight: 600;
-  width: 100%;
-}
-
-/* HOVER EFFECT */
-.checkout-actions button:hover {
-  opacity: 0.9;
-}
-
-/* MOBILE */
-@media (max-width: 900px) {
-  .checkout-layout {
-    grid-template-columns: 1fr;
-  }
-
-  .checkout-right {
-    position: static;
-  }
-}
-/* ✅ BACK BUTTON STYLE */
-.btn-back {
-  display: inline-block;
-  margin:10px 0 18px; 
-  color: #c55a11;
-  font-weight: 600;
-  text-decoration: none;
-}
-
-.btn-back:hover {
-  text-decoration: underline;
-}
-/* ✅ CHECKOUT GRID VIEW */
-.checkout-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 20px;
-}
-
-/* ✅ CARD STYLE */
-.checkout-card {
-  background: white;
-  border-radius: 12px;
-  padding: 16px;
-  text-align: center;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
-}
-
-/* ✅ IMAGE */
-.checkout-img {
-  width: 100%;
-  height: 140px;
-  object-fit: contain;
-  margin-bottom: 10px;
-}
-
-/* ✅ TEXT */
-.checkout-card h3 {
-  font-size: 15px;
-  margin: 6px 0;
-}
-
-.checkout-card .price {
-  font-weight: bold;
-  color: #c55a11;
-  margin-bottom: 6px;
-}
-/* ✅ QTY */
-.qty-row {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.qty-row button {
-  padding: 4px 10px;
-  border: none;
-  background: #ddd;
-  border-radius: 6px;
-}
-
-/* ✅ REMOVE BUTTON */
-.remove-btn {
-  margin-top: 10px;
-  background: #ffeaea;
-  border: none;
-  padding: 6px 12px;
-  color: #c55a11;
-  border-radius: 6px;
-  font-weight: 600;
-}
-/* ✅ FORCE REAL GRID LAYOUT */
-#cart .checkout-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  width: 100%;
-}
-
-/* ✅ CARD STYLING */
-.checkout-card {
-  background: white;
-  border-radius: 12px;
-  padding: 15px;
-  text-align: center;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.06);
-}
-
-/* ✅ IMAGE SIZE */
-.checkout-img {
-  width: 100%;
-  height: 130px;
-  object-fit: contain;
-  margin-bottom: 10px;
-}
-/* ✅ CLEAN SMALL BADGE */
-.badge {
-  display: inline-block;
-  font-size: 10px;
-  font-weight: 500;
-  padding: 4px 8px;
-  border-radius: 6px;
-  margin-bottom: 6px;
-  letter-spacing: 0.3px;
-}
-
-/* ✅ COLORS */
-.badge.low {
-  background: #ffe5cc;
-  color: #c55a11;
-}
-
-.badge.out {
-  background: #f8d7da;
-  color: #a94442;
-}
-
+</body>
+</html>
