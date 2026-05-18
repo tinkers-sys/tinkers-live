@@ -1,3 +1,48 @@
+/* ✅ RESTORE MAIN CONTAINER */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* ✅ FIX HEADER LAYOUT */
+.header {
+  display: flex;
+  flex-direction: column;
+}
+
+.header .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ✅ FIX NAV LINKS */
+nav {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+}
+
+/* ✅ FIX FILTER BUTTONS */
+.filters {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.filters a {
+  padding: 6px 10px;
+  background: #eee;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #333;
+}
+
+.filters a:hover {
+  background: #c55a11;
+  color: white;
+}
 /* ==================================
    GENERAL BUTTONS / BACK LINK
 ================================== */
@@ -237,3 +282,34 @@
   padding: 12px;
   border-radius: 10px;
 }
+/* ✅ FIX PRODUCTS GRID ALIGNMENT */
+.product-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 25px;
+}
+
+/* ✅ ENSURE CARDS ALIGN */
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+/* ✅ FIX BADGE WIDTH */
+.badge {
+  display: inline-block;
+  width: fit-content;   /* ✅ prevents stretching */
+  align-self: center;
+
+  font-size: 10px;
+  padding: 3px 6px;
+  border-radius: 6px;
+}
+/* ✅ CHECKOUT ONLY GRID */
+#cart .checkout-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
