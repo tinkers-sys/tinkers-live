@@ -104,9 +104,15 @@ function setupFilters(products){
 
       } else {
 
-        filtered = products.filter(p =>
-          (p.category || "").toLowerCase().trim() === selected
-        );
+     filtered = products.filter(p =>
+  (p.category || "")
+    .toLowerCase()
+    .trim()
+    .includes(selected)
+);
+        if(filtered.length === 0){
+  console.log("No products found for:", selected);
+} 
 
         // ✅ HIDE OTHER SECTIONS
         if(featuredSection) featuredSection.style.display = "none";
