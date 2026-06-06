@@ -81,24 +81,58 @@ function render(id, products) {
 ================================ */
 function setupFilters(products){
 
+  const featuredSection = document.querySelector(".featured");
+  const trendingSection = document.querySelector(".trending");
+
   document.querySelectorAll(".filters a").forEach(btn => {
 
     btn.addEventListener("click", function(e){
       e.preventDefault();
 
       const selected = this.dataset.filter
-        .trim()
-        .toLowerCase();
+        .toLowerCase()
+        .trim();
 
       let filtered;
 
       if(selected === "all"){
         filtered = products;
+
+        // ✅ SHOW ALL SECTIONS AGAIN
+        if(featuredSection) featuredSection.style.display = "block";
+        if(trendingSection) trendingSection.style.display = "block";
+
       } else {
+
         filtered = products.filter(p =>
-          (p.category || "").trim().toLowerCase() === selected
+          (p.category || "").toLowerCase().trim() === selected
         );
+
+        // ✅ HIDE OTHER SECTIONS
+        if(featuredSection) featuredSection.style.display = "none";
+        if(trendingSection) trendingSection.style.display = "none";
       }
+
+      render("products", filtered);
+
+      // ✅ Update heading
+      const title = document.getElementById("sectionTitle");
+      if(title){
+        title.innerText =
+          selected === "all"
+            ? "Our Collection"
+            : "Showing: " + this.dataset.filter;
+      }
+
+      // ✅ Scroll to results
+      document.getElementById("products")
+        .scrollIntoView({ behavior: "smooth" });
+
+    });
+
+  });
+
+}
 
       // ✅ replace ALL products shown
       render("products", filtered);
