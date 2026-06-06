@@ -24,12 +24,12 @@
 
 <main class="container">
 
-  <!-- ✅ BACK TO SHOPPING -->
+  <!-- ✅ BACK BUTTON -->
   <a href="index.html" class="btn-back">← Back to Shopping</a>
 
   <h2>Your Cart</h2>
 
-  <!-- ✅ CART GRID -->
+  <!-- ✅ CART -->
   <div id="cart"></div>
 
   <!-- ✅ TOTAL -->
@@ -37,7 +37,7 @@
     Total: <span id="checkoutTotal">R0</span>
   </h3>
 
-  <!-- ✅ ACTION BUTTONS -->
+  <!-- ✅ ACTIONS -->
   <div class="checkout-actions">
 
     <button class="btn-clear" onclick="clearCart()">Clear Cart</button>
@@ -50,21 +50,17 @@
       Payflex Demo
     </button>
 
-    <!-- ✅ PAYFAST FORM -->
+    <!-- ✅ PAYFAST -->
     <form action="https://sandbox.payfast.co.za/eng/process" method="post">
 
-      <!-- ✅ TEST MERCHANT -->
       <input type="hidden" name="merchant_id" value="10000100">
       <input type="hidden" name="merchant_key" value="46f0cd694581a">
 
-      <!-- ✅ IMPORTANT: SUCCESS + RETURN -->
-   <input type="hidden" name="return_url" value="https://tinkers-sys.github.io/tinkers-live/success.html">
-  <input type="hidden" name="cancel_url" value="https://tinkers-sys.github.io/tinkers-live/checkout.html">
+      <!-- ✅ CORRECT URL (FIXED) -->
+      <input type="hidden" name="return_url" value="https://tinkers-sys.github.io/tinkers-live/success.html">
+      <input type="hidden" name="cancel_url" value="https://tinkers-sys.github.io/tinkers-live/checkout.html">
 
-
-      <!-- ✅ AUTO TOTAL -->
       <input type="hidden" name="amount" id="payfastAmount" value="0">
-
       <input type="hidden" name="item_name" value="Tinkers Order">
 
       <button class="btn-payfast" type="submit">
@@ -77,7 +73,6 @@
 
 </main>
 
-<!-- ✅ JS -->
 <script src="js/app.js"></script>
 
 </body>
