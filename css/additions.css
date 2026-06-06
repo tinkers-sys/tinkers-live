@@ -135,3 +135,19 @@ button[onclick="payflexCheckout()"] {
   border-radius: 6px;
   border: 1px solid #ccc;
 }
+.card,
+.checkout-card {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+button:hover {
+  transform: translateY(-1px);
+}
+.header nav {
+  display: flex;
+  align-items: center;
+}
+.checkout-container {
+  max-width: 1000px;
+  margin: auto;
+  padding: 20px;
+}
