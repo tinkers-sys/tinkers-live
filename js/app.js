@@ -3,7 +3,7 @@
 const URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1";
 
 /* ===============================
-   CART
+   CART SYSTEM
 ================================ */
 function readCart(){
   return JSON.parse(localStorage.getItem("cart") || "[]");
@@ -17,7 +17,7 @@ function updateCartCount(){
   const el = document.getElementById("cartCount");
   if(!el) return;
 
-  const total = readCart().reduce((s,i) => s + i.qty, 0);
+  const total = readCart().reduce((sum, item) => sum + item.qty, 0);
   el.textContent = total;
 }
 
@@ -42,17 +42,18 @@ async function loadProducts(){
 ================================ */
 function addToCart(id){
   let cart = readCart();
+
   const item = cart.find(i => i.id === id);
 
   if(item) item.qty++;
-  else cart.push({id, qty:1});
+  else cart.push({ id, qty:1 });
 
   writeCart(cart);
   updateCartCount();
 }
 
 /* ===============================
-   CARD
+   PRODUCT CARD
 ================================ */
 function buildCard(p){
   return `
@@ -66,68 +67,66 @@ function buildCard(p){
 }
 
 /* ===============================
-   RENDER
+   RENDER FUNCTION
 ================================ */
-function render(id, products){
-  const el = document.getElementById(id);
+function render(targetId, products){
+  const el = document.getElementById(targetId);
   if(!el) return;
 
   el.innerHTML = products.map(buildCard).join("");
 }
 
 /* ===============================
-   FILTER (FINAL FIX ✅)
+   FILTER FUNCTION ✅ FINAL FIX
 ================================ */
-function setupFilters(){
-
-  const shopProducts = window.__shopProducts;
+function setupFilters(products){
 
   document.querySelectorAll(".filters a").forEach(btn => {
 
-    btn.addEventListener("click", e=>{
+    btn.addEventListener("click", function(e){
       e.preventDefault();
 
-      const cat = btn.dataset.filter;
+      const category = this.dataset.filter.toLowerCase();
 
-      const filtered =
-        cat === "All"
-          ? shopProducts
-          : shopProducts.filter(p =>
-              p.category.toLowerCase() === cat.toLowerCase()
-            );
+      let filtered;
+
+      if(category === "all"){
+        filtered = products;
+      } else {
+        filtered = products.filter(p =>
+          p.category.toLowerCase() === category
+        );
+      }
 
       render("products", filtered);
 
-      // ✅ update title
+      // ✅ update heading
       const title = document.getElementById("sectionTitle");
-      if(title){
-        title.innerText =
-          cat === "All"
-            ? "Our Collection"
-            : "Showing: " + cat;
-      }
+      title.innerText = category === "all"
+        ? "Our Collection"
+        : "Showing: " + category;
 
-      // ✅ active style
+      // ✅ active button styling
       document.querySelectorAll(".filters a").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
+      this.classList.add("active");
 
     });
 
   });
-
 }
 
 /* ===============================
-   CLICK HANDLER
+   CLICK HANDLER (SAFE)
 ================================ */
 document.addEventListener("click", function(e){
   if(e.target.classList.contains("add-btn")){
-    addToCart(e.target.dataset.id);
+    const id = e.target.dataset.id;
+    addToCart(id);
   }
 });
 
 /* ===============================
-   INIT (CRITICAL FIX ✅)
+   INIT
 ================================ */
 document.addEventListener("DOMContentLoaded", async ()=>{
 
@@ -135,18 +134,11 @@ document.addEventListener("DOMContentLoaded", async ()=>{
 
   updateCartCount();
 
-  // ✅ SPLIT DATA CORRECTLY
-  const featured = products.slice(0,4);
-  const trending = products.slice(4,10);
-  const shop = products.slice(10);
+  // ✅ INITIAL SECTIONS
+  render("featuredProducts", products.slice(0,4));
+  render("trendingProducts", products.slice(4,10));
+  render("products", products);
 
-  // ✅ STORE ONLY SHOP
-  window.__shopProducts = shop;
-
-  render("featuredProducts", featured);
-  render("trendingProducts", trending);
-  render("products", shop);
-
-  setupFilters();
+  setupFilters(products);
 
 });
