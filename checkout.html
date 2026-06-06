@@ -3,11 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Tinkers Checkout</title>
+<title>Checkout</title>
 
 <link rel="stylesheet" href="css/styles.css">
 <link rel="stylesheet" href="css/additions.css">
-
 </head>
 
 <body>
@@ -15,7 +14,6 @@
 <header class="header">
   <div class="container">
     <h2>Checkout</h2>
-
     <nav>
       <a href="index.html">Home</a>
     </nav>
@@ -24,56 +22,17 @@
 
 <main class="container">
 
-  <!-- ✅ BACK BUTTON -->
-  <a href="index.html" class="btn-back">← Back to Shopping</a>
+  <a href="index.html">← Back to Shopping</a>
 
   <h2>Your Cart</h2>
 
-  <!-- ✅ CART -->
   <div id="cart"></div>
 
-  <!-- ✅ TOTAL -->
-  <h3 class="total-box">
-    Total: <span id="checkoutTotal">R0</span>
-  </h3>
-
-  <!-- ✅ ACTIONS -->
-  <div class="checkout-actions">
-
-    <button class="btn-clear" onclick="clearCart()">Clear Cart</button>
-
-    <button class="btn-whatsapp" onclick="whatsappCart()">
-      WhatsApp Order
-    </button>
-
-    <button class="btn-payflex" onclick="payflexCheckout()">
-      Payflex Demo
-    </button>
-
-    <!-- ✅ PAYFAST -->
-    <form action="https://sandbox.payfast.co.za/eng/process" method="post">
-
-      <input type="hidden" name="merchant_id" value="10000100">
-      <input type="hidden" name="merchant_key" value="46f0cd694581a">
-
-      <!-- ✅ CORRECT URL (FIXED) -->
-      <input type="hidden" name="return_url" value="https://tinkers-sys.github.io/tinkers-live/success.html">
-      <input type="hidden" name="cancel_url" value="https://tinkers-sys.github.io/tinkers-live/checkout.html">
-
-      <input type="hidden" name="amount" id="payfastAmount" value="0">
-      <input type="hidden" name="item_name" value="Tinkers Order">
-
-      <button class="btn-payfast" type="submit">
-        Pay with Card
-      </button>
-
-    </form>
-
-  </div>
+  <h3>Total: <span id="checkoutTotal">R0</span></h3>
 
 </main>
 
 <script src="js/app.js"></script>
-
 </body>
 </html>
+``
