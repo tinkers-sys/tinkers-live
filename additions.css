@@ -324,3 +324,25 @@ nav {
   background: var(--primary);
   color: white;
 }
+/* ===============================
+   FEATURED SECTION
+=============================== */
+.featured {
+  padding: 50px 20px;
+  text-align: center;
+}
+
+.featured h2 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.featured-sub {
+  color: #666;
+  margin-bottom: 25px;
+}
+
+/* subtle separation */
+.featured {
+  border-top: 1px solid #eee;
+}
