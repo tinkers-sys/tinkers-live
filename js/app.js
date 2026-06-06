@@ -357,32 +357,17 @@ function whatsappOrder(){
   clearCart();
 }
 /* ===============================
-   INIT
+   INIT (FINAL FIXED)
 ================================ */
 document.addEventListener("DOMContentLoaded", async () => {
 
-  // ✅ FORCE CLEAR CART AFTER PAYFAST SUCCESS
-  if(window.location.href.includes("success.html")){
+  // ✅ CLEAR CART AFTER PAYFAST SUCCESS (FLAG METHOD)
+  if (localStorage.getItem("paymentSuccess") === "true") {
     localStorage.removeItem("cart");
+    localStorage.removeItem("paymentSuccess");
   }
 
   const products = await loadProducts();
-  window.__products = products;
-
-  updateCartCount();
-
-  render("featuredProducts", products.slice(0,4));
-  render("trendingProducts", products.slice(4,10));
-  render("products", products);
-
-  setupFilters(products);
-
-  renderCheckout();
-});
-document.addEventListener("DOMContentLoaded", async () => {
-
-  const products = await loadProducts();
-
   window.__products = products;
 
   updateCartCount();
