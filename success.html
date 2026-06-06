@@ -9,7 +9,17 @@
   <h1>✅ Payment Successful</h1>
   <p>Thank you for your order!</p>
 
-  <a href="index.html">Return to Store</a>
+  <p>Redirecting back to store...</p>
+
+<script>
+  // ✅ CLEAR CART IMMEDIATELY
+  localStorage.removeItem("cart");
+
+  // ✅ REDIRECT BACK AFTER 2 SECONDS
+  setTimeout(function(){
+    window.location.href = "index.html";
+  }, 2000);
+</script>
 
 </body>
 </html>
