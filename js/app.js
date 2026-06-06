@@ -42,7 +42,6 @@ async function loadProducts() {
 ================================ */
 function addToCart(id) {
   let cart = readCart();
-
   const item = cart.find(i => i.id === id);
 
   if (item) item.qty++;
@@ -67,7 +66,7 @@ function buildCard(p) {
 }
 
 /* ===============================
-   RENDER FUNCTION
+   RENDER
 ================================ */
 function render(id, products) {
   const el = document.getElementById(id);
@@ -77,12 +76,12 @@ function render(id, products) {
 }
 
 /* ===============================
-   ✅ FIXED FILTER FUNCTION
+   ✅ FILTER (FINAL FIXED)
 ================================ */
 function setupFilters(products){
 
-  const featuredSection = document.querySelector(".featured");
-  const trendingSection = document.querySelector(".trending");
+  const featured = document.querySelector(".featured");
+  const trending = document.querySelector(".trending");
 
   document.querySelectorAll(".filters a").forEach(btn => {
 
@@ -96,21 +95,14 @@ function setupFilters(products){
       if(selected === "all"){
         filtered = products;
 
-        if(featuredSection) featuredSection.style.display = "block";
-        if(trendingSection) trendingSection.style.display = "block";
+        featured.style.display = "block";
+        trending.style.display = "block";
 
       } else {
+        filtered = products.filter(p => p.category.includes(selected));
 
-        filtered = products.filter(p =>
-  (p.category || "")
-    .toLowerCase()
-    .trim()
-    .includes(selected)
-);
-
-
-        if(featuredSection) featuredSection.style.display = "none";
-        if(trendingSection) trendingSection.style.display = "none";
+        featured.style.display = "none";
+        trending.style.display = "none";
       }
 
       render("products", filtered);
@@ -123,18 +115,17 @@ function setupFilters(products){
             : "Showing: " + this.dataset.filter;
       }
 
+      document.getElementById("products")
+        .scrollIntoView({ behavior: "smooth" });
     });
-
   });
-
 }
-
 
 /* ===============================
    CLICK HANDLER
 ================================ */
-document.addEventListener("click", function (e) {
-  if (e.target.classList.contains("add-btn")) {
+document.addEventListener("click", function(e){
+  if(e.target.classList.contains("add-btn")){
     addToCart(e.target.dataset.id);
   }
 });
@@ -147,7 +138,7 @@ function renderCheckout(){
   const cartEl = document.getElementById("cart");
   const totalEl = document.getElementById("checkoutTotal");
 
-  if(!cartEl || !totalEl) return;
+  if (!cartEl || !totalEl) return;
 
   const cart = readCart();
 
@@ -194,15 +185,15 @@ function renderCheckout(){
 /* ===============================
    CART CONTROLS
 ================================ */
-function updateQty(id, change) {
+function updateQty(id, change){
   let cart = readCart();
-
   let item = cart.find(i => i.id === id);
+
   if (!item) return;
 
   item.qty += change;
 
-  if (item.qty <= 0) {
+  if (item.qty <= 0){
     cart = cart.filter(i => i.id !== id);
   }
 
@@ -211,18 +202,32 @@ function updateQty(id, change) {
   updateCartCount();
 }
 
-function removeItem(id) {
+function removeItem(id){
   let cart = readCart().filter(i => i.id !== id);
-
   writeCart(cart);
   renderCheckout();
   updateCartCount();
 }
 
-function clearCart() {
+function clearCart(){
   localStorage.removeItem("cart");
   renderCheckout();
   updateCartCount();
+}
+
+/* ===============================
+   PAYMENT FUNCTIONS
+================================ */
+function payfastCheckout(){
+  alert("Redirecting to PayFast (demo) ✅");
+}
+
+function payflexCheckout(){
+  alert("Payflex option selected ✅");
+}
+
+function whatsappOrder(){
+  alert("WhatsApp order coming ✅");
 }
 
 /* ===============================
@@ -231,12 +236,13 @@ function clearCart() {
 document.addEventListener("DOMContentLoaded", async () => {
 
   const products = await loadProducts();
+
   window.__products = products;
 
   updateCartCount();
 
-  render("featuredProducts", products.slice(0, 4));
-  render("trendingProducts", products.slice(4, 10));
+  render("featuredProducts", products.slice(0,4));
+  render("trendingProducts", products.slice(4,10));
   render("products", products);
 
   setupFilters(products);
