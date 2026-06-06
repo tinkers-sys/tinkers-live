@@ -3,7 +3,7 @@
 const URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1";
 
 /* ===============================
-   CART SYSTEM
+   CART
 ================================ */
 function readCart(){
   return JSON.parse(localStorage.getItem("cart") || "[]");
@@ -17,7 +17,7 @@ function updateCartCount(){
   const el = document.getElementById("cartCount");
   if(!el) return;
 
-  const total = readCart().reduce((sum, item) => sum + item.qty, 0);
+  const total = readCart().reduce((s,i) => s + i.qty, 0);
   el.textContent = total;
 }
 
@@ -31,7 +31,7 @@ async function loadProducts(){
   return data.map(p => ({
     id: String(p.id || p.ID),
     name: p.name,
-    category: (p.category || "").trim(),
+    category: (p.category || "").trim().toLowerCase(), // ✅ IMPORTANT FIX
     image: p.image,
     price: Number(p.price)
   }));
@@ -53,7 +53,7 @@ function addToCart(id){
 }
 
 /* ===============================
-   PRODUCT CARD
+   CARD
 ================================ */
 function buildCard(p){
   return `
@@ -67,7 +67,7 @@ function buildCard(p){
 }
 
 /* ===============================
-   RENDER FUNCTION
+   RENDER
 ================================ */
 function render(targetId, products){
   const el = document.getElementById(targetId);
@@ -77,7 +77,7 @@ function render(targetId, products){
 }
 
 /* ===============================
-   FILTER FUNCTION ✅ FINAL FIX
+   FILTER ✅ PERFECT FIX
 ================================ */
 function setupFilters(products){
 
@@ -86,42 +86,38 @@ function setupFilters(products){
     btn.addEventListener("click", function(e){
       e.preventDefault();
 
-      const category = this.dataset.filter.toLowerCase();
+      const selected = this.dataset.filter.toLowerCase();
 
       let filtered;
 
-      if(category === "all"){
+      if(selected === "all"){
         filtered = products;
       } else {
-        filtered = products.filter(p =>
-          p.category.toLowerCase() === category
-        );
+        filtered = products.filter(p => p.category === selected);
       }
 
       render("products", filtered);
 
-      // ✅ update heading
       const title = document.getElementById("sectionTitle");
-      title.innerText = category === "all"
+      title.innerText = selected === "all"
         ? "Our Collection"
-        : "Showing: " + category;
+        : "Showing: " + this.dataset.filter;
 
-      // ✅ active button styling
-      document.querySelectorAll(".filters a").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".filters a").forEach(a => a.classList.remove("active"));
       this.classList.add("active");
 
     });
 
   });
+
 }
 
 /* ===============================
-   CLICK HANDLER (SAFE)
+   BUTTON HANDLER
 ================================ */
 document.addEventListener("click", function(e){
   if(e.target.classList.contains("add-btn")){
-    const id = e.target.dataset.id;
-    addToCart(id);
+    addToCart(e.target.dataset.id);
   }
 });
 
@@ -134,9 +130,11 @@ document.addEventListener("DOMContentLoaded", async ()=>{
 
   updateCartCount();
 
-  // ✅ INITIAL SECTIONS
+  // ✅ ONLY FOR DISPLAY (not filtering logic)
   render("featuredProducts", products.slice(0,4));
   render("trendingProducts", products.slice(4,10));
+
+  // ✅ MAIN SHOP (FULL DATASET)
   render("products", products);
 
   setupFilters(products);
