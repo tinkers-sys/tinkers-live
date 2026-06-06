@@ -253,3 +253,74 @@ nav {
   padding: 12px;
   border-radius: 10px;
 }
+
+/* ===============================
+   HERO SECTION (BRAND IDENTITY)
+=============================== */
+.hero {
+  background: linear-gradient(to right, #fdfaf5, #f6eee4);
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.hero-content {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* TITLE */
+.hero h1 {
+  font-size: 42px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* TAGLINE */
+.hero-tagline {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--primary);
+  margin-bottom: 15px;
+}
+
+/* DESCRIPTION */
+.hero-description {
+  font-size: 15px;
+  color: #555;
+  margin-bottom: 25px;
+  line-height: 1.6;
+}
+
+/* BUTTONS */
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* PRIMARY BUTTON */
+.btn-primary {
+  background: var(--primary);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.btn-primary:hover {
+  background: var(--secondary);
+}
+
+/* OUTLINE BUTTON */
+.btn-outline {
+  border: 2px solid var(--primary);
+  color: var(--primary);
+  padding: 12px 20px;
+  border-radius: 10px;
+}
+
+.btn-outline:hover {
+  background: var(--primary);
+  color: white;
+}
