@@ -228,33 +228,39 @@ function payfastCheckout(){
   }
 
   let total = 0;
-  let itemName = "Tinkers Order";
+
+  // ✅ STORE FULL ORDER DATA
+  const orderData = [];
 
   cart.forEach(item => {
     const product = window.__products.find(p => p.id === item.id);
+
     if(product){
       total += product.price * item.qty;
+
+      orderData.push({
+        name: product.name,
+        price: product.price,
+        qty: item.qty
+      });
     }
   });
 
-  // ✅ PAYFAST SANDBOX (TESTING MODE)
-const payfastURL = "https://sandbox.payfast.co.za/eng/process";
+  // ✅ SAVE ORDER FOR RECEIPT PAGE
+  localStorage.setItem("cart", JSON.stringify(orderData));
 
-const params = new URLSearchParams({
-  merchant_id: "10000100",
-  merchant_key: "46f0cd694581a",
+  const payfastURL = "https://sandbox.payfast.co.za/eng/process";
 
-  amount: total.toFixed(2),
-  item_name: itemName,
+  const params = new URLSearchParams({
+    merchant_id: "10000100",
+    merchant_key: "46f0cd694581a",
+    amount: total.toFixed(2),
+    item_name: "Tinkers Order",
 
-  return_url: "https://tinkers-sys.github.io/tinkers-live/success.html",
-  cancel_url: "https://tinkers-sys.github.io/tinkers-live/cancel.html",
+    return_url: "https://tinkers-sys.github.io/tinkers-live/success.html",
+    cancel_url: "https://tinkers-sys.github.io/tinkers-live/cancel.html"
+  });
 
-  // ✅ OPTIONAL (safe placeholder)
-  notify_url: "https://tinkers-sys.github.io/"
-});
-
-  // ✅ REDIRECT TO PAYFAST
   window.location.href = payfastURL + "?" + params.toString();
 }
 
