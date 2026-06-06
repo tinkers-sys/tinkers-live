@@ -17,10 +17,11 @@
 
     <nav>
       <a href="#">Home</a>
-      <a href="checkout.html">Checkout</a>
+      <a href="checkout.html">Checkout (<span id="cartCount">0</span>)</a>
     </nav>
   </div>
 
+  <!-- ✅ FILTERS FIXED -->
   <div class="filters">
     <a href="#" data-filter="All">All</a>
     <a href="#" data-filter="Art">Art</a>
@@ -30,7 +31,7 @@
   </div>
 </header>
 
-<!-- HERO -->
+<!-- ✅ HERO -->
 <section class="hero-banner">
   <div class="hero-overlay">
     <h1>CRAFTED IN AFRICA.<br> CARRIED IN YOUR HEART.</h1>
@@ -39,25 +40,24 @@
   </div>
 </section>
 
-<!-- FEATURED -->
+<!-- ✅ FEATURED -->
 <section class="featured fade-in">
   <h2>✨ Curated for You</h2>
   <div id="featuredProducts" class="product-grid"></div>
 </section>
 
-<!-- TRENDING -->
+<!-- ✅ TRENDING -->
 <section class="trending fade-in">
   <h2>🔥 Trending Now</h2>
   <div id="trendingProducts" class="product-grid"></div>
 </section>
 
-<!-- MAIN SHOP -->
-<section class="main-shop fade-in">
+<!-- ✅ MAIN SHOP -->
+<section class="main-shop fade-in" id="products">
   <h2>Our Collection</h2>
-  <div id="products" class="product-grid"></div>
+  <div id="productsList" class="product-grid"></div>
 </section>
 
 <script src="js/app.js"></script>
-
 </body>
 </html>
