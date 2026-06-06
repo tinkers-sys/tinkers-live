@@ -20,20 +20,20 @@
   </div>
 </header>
 
-<!-- ✅ IMPORTANT: REMOVE NARROW CONTAINER -->
-<main style="width:100%; max-width:1200px; margin:0 auto;">
+<main class="checkout-container">
 
   <a href="index.html">← Back to Shopping</a>
 
   <h2>Your Cart</h2>
 
-  <div id="cart"></div>
+  <!-- ✅ GRID WRAPPER -->
+  <div id="cart">
+    <div class="checkout-grid"></div>
+  </div>
 
   <h3>Total: <span id="checkoutTotal">R0</span></h3>
 
-  <div class="checkout-actions">
-    <button onclick="clearCart()">Clear Cart</button>
-  </div>
+  <button onclick="clearCart()">Clear Cart</button>
 
 </main>
 
