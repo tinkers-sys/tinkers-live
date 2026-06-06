@@ -2,31 +2,14 @@
 <html>
 <head>
   <title>Payment Successful</title>
-
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/additions.css">
 </head>
 
-<body>
-
-<div style="text-align:center; margin-top:100px;">
+<body style="text-align:center; margin-top:100px;">
 
   <h1>✅ Payment Successful</h1>
   <p>Thank you for your order!</p>
 
-  <button onclick="goHome()">Return to Store</button>
-
-</div>
-
-<script>
-  // ✅ CLEAR CART WHEN PAGE LOADS
-  localStorage.removeItem("cart");
-
-  // ✅ OPTIONAL FUNCTION
-  function goHome(){
-    window.location.href = "index.html";
-  }
-</script>
+  <a href="index.html">Return to Store</a>
 
 </body>
 </html>
