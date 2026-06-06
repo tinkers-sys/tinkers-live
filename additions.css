@@ -2,8 +2,6 @@
   --primary: #c55a11;
   --secondary: #8c3d0a;
   --bg: #fdfaf5;
-  --card: #ffffff;
-  --text: #2c2c2c;
 }
 
 /* GLOBAL */
@@ -17,12 +15,11 @@ body {
 .header .container {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  padding: 15px 20px;
 }
 
-nav {
-  display: flex;
-  gap: 15px;
+nav a {
+  margin-left: 15px;
 }
 
 /* FILTERS */
@@ -32,11 +29,18 @@ nav {
   gap: 10px;
 }
 
+.filters a {
+  background: #eee;
+  padding: 6px 10px;
+  border-radius: 6px;
+}
+
 /* HERO */
 .hero-banner {
   height: 90vh;
-  background: linear-gradient(rgba(60,40,20,0.7), rgba(60,40,20,0.7)),
-              url("images/hero-bg.jpg");
+  background: linear-gradient(rgba(50,30,10,0.7), rgba(50,30,10,0.7)),
+              url("../images/hero-bg.jpg");
+
   background-size: cover;
   background-position: center;
 
@@ -44,6 +48,7 @@ nav {
   align-items: center;
   justify-content: center;
   text-align: center;
+
   color: white;
 }
 
@@ -53,70 +58,59 @@ nav {
 }
 
 .hero-sub {
-  margin-top: 15px;
-  font-size: 18px;
+  margin-top: 10px;
 }
 
 /* BUTTON */
 .btn-primary {
-  display: inline-block;
   margin-top: 20px;
+  display: inline-block;
   padding: 12px 24px;
   background: var(--primary);
   color: white;
-  border-radius: 8px;
-}
-
-/* SECTIONS */
-.featured,
-.trending,
-.main-shop {
-  padding: 50px 20px;
-  text-align: center;
 }
 
 /* GRID */
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
   gap: 25px;
+  padding: 20px;
 }
 
 /* CARD */
 .card {
   background: white;
-  border-radius: 14px;
   padding: 20px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+  border-radius: 14px;
+  text-align: center;
 
   transition: 0.3s;
 }
 
 .card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-6px);
 }
 
 .card img {
-  width: 100%;
   height: 180px;
   object-fit: contain;
+  width: 100%;
 }
 
 .price {
   color: var(--primary);
   font-weight: bold;
 }
-/* ===============================
-   SCROLL FADE-IN EFFECT
-================================ */
+
+/* FADE-IN */
 .fade-in {
   opacity: 0;
   transform: translateY(40px);
-  transition: all 0.8s ease;
+  transition: 0.7s;
 }
 
 .fade-in.active {
   opacity: 1;
   transform: translateY(0);
 }
-
