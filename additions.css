@@ -113,38 +113,37 @@ a[href="index.html"]:hover {
   gap: 6px;
 }
 /* ============================
-   ✅ FINAL BUTTON FIX (STRONG SELECTORS)
+   ✅ FORCE ALL CHECKOUT BUTTONS (WORKING FIX)
 ============================ */
 
-/* + and - buttons */
-.checkout-card .qty-controls button {
+/* ALL BUTTONS INSIDE CHECKOUT */
+#cart button {
   background-color: #c55a11 !important;
   color: white !important;
   border: none !important;
   border-radius: 6px !important;
+  padding: 6px 12px !important;
+  cursor: pointer;
+  font-weight: 600;
 }
 
-/* + - hover */
-.checkout-card .qty-controls button:hover {
+/* HOVER */
+#cart button:hover {
   background-color: #8c3d0a !important;
 }
 
-/* REMOVE BUTTON */
-.checkout-card button[onclick^="removeItem"] {
+/* REMOVE BUTTON (LAST BUTTON IN CARD) */
+.checkout-card button:last-child {
   background-color: #e74c3c !important;
-  color: white !important;
 }
 
-.checkout-card button[onclick^="removeItem"]:hover {
+.checkout-card button:last-child:hover {
   background-color: #c0392b !important;
 }
 
 /* CLEAR CART BUTTON */
 button[onclick="clearCart()"] {
   background-color: #2e86de !important;
-  color: white !important;
-  border-radius: 8px !important;
-  padding: 10px 18px !important;
 }
 
 button[onclick="clearCart()"]:hover {
