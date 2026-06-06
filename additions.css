@@ -25,7 +25,9 @@ body {
   text-decoration: none;
 }
 
-/* PRODUCT GRID */
+/* ======================
+   PRODUCT GRID (HOME)
+====================== */
 .product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
@@ -47,28 +49,49 @@ body {
   object-fit: contain;
 }
 
-/* CHECKOUT GRID */
+/* ======================
+   ✅ CHECKOUT GRID FIX
+====================== */
+
+/* FORCE GRID ALWAYS */
 #cart {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)) !important;
   gap: 20px;
+
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-/* CHECKOUT CARD */
+/* Cards inside checkout */
 .checkout-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  width: 100% !important;
+
   background: white;
   padding: 15px;
   border-radius: 12px;
-  text-align: center;
 }
 
+/* Image fix */
 .checkout-card img {
   width: 100%;
   height: 150px;
   object-fit: contain;
 }
 
-/* BUTTONS */
+/* Quantity controls */
+.qty-controls {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+
+/* Buttons */
 button {
   padding: 10px;
   margin-top: 10px;
@@ -77,58 +100,3 @@ button {
   border: none;
   border-radius: 6px;
 }
-
-.qty-controls button {
-  margin: 5px;
-}
-/* ✅ FORCE GRID VIEW IN CHECKOUT */
-#cart {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 20px;
-  align-items: stretch;
-}
-
-/* ✅ FIX CARD STRUCTURE */
-.checkout-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  background: white;
-  padding: 15px;
-  border-radius: 12px;
-}
-.checkout-card {
-  width: 100%;
-}
-
-/* ✅ FIX IMAGE SIZE */
-.checkout-card img {
-  width: 100%;
-  height: 160px;
-  object-fit: contain;
-}
-
-/* ✅ FIX BUTTON ALIGNMENT */
-.qty-controls {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-}
-/* ✅ BREAK OUT OF CONTAINER WIDTH */
-#cart {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 20px;
-
-  width: 100%;
-  max-width: 1200px;   /* ✅ keeps grid wide and centered */
-  margin: 0 auto;      /* ✅ center properly */
-}
-/* ✅ REMOVE NARROW CONSTRAINT FROM CHECKOUT */
-main.container {
-  max-width: 1200px;
-  width: 100%;
-}
-
