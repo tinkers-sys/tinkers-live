@@ -345,6 +345,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (document.getElementById("cart")) {
     renderCheckout();
   }
+   
+ /* ✅ ADD THIS PART */
+  if (document.getElementById("featuredProducts")) {
+    renderFeatured(products);
+  }
+
 });
 
 /* expose for inline onclick */
