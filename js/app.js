@@ -131,7 +131,7 @@ function renderProducts(products, category = "All") {
       <img src="images/${p.image}" alt="${p.name}" loading="lazy">
       <h3>${p.name}</h3>
       <p class="price">R${p.price}</p>
-      <p class="stock-note">${stockNote}</p>
+      ${stockNote ? `<p class="stock-note">⚠ ${stockNote}</p>` : ""}
       <button ${disabled} onclick="addToCart('${p.id}')">Add to cart</button>
     `;
     grid.appendChild(card);
@@ -350,7 +350,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (document.getElementById("featuredProducts")) {
     renderFeatured(products);
   }
-
+   
+if (document.getElementById("trendingProducts")) {
+  renderTrending(products);
+}
 });
 
 /* expose for inline onclick */
@@ -360,6 +363,30 @@ window.removeItem = removeItem;
 window.clearCart = clearCart;
 window.whatsappCart = whatsappCart;
 window.payflexCheckout = payflexCheckout;
+
+function renderTrending(products) {
+
+  const container = document.getElementById("trendingProducts");
+  if (!container) return;
+
+  // ✅ Simulated AI logic:
+  const trending = [...products]
+    .sort(() => 0.5 - Math.random()) // random sort (feels dynamic)
+    .slice(0, 6);
+
+  container.innerHTML = "";
+
+  trending.forEach(p => {
+    container.innerHTML += `
+      <div class="card">
+        <img src="images/${p.image}">
+        <h3>${p.name}</h3>
+        <p class="price">R${p.price}</p>
+        <button onclick="addToCart('${p.id}')">Add to cart</button>
+      </div>
+    `;
+  });
+}
 
 function renderFeatured(products) {
 
