@@ -49,14 +49,14 @@ body {
   object-fit: contain;
 }
 
-/* ============================
-   ✅ FINAL CHECKOUT GRID FIX
-============================ */
+/* ======================
+   ✅ FINAL CHECKOUT GRID
+====================== */
 
-/* ✅ GRID CONTAINER */
+/* ✅ ONLY ONE CART GRID RULE */
 #cart {
-  display: grid !important;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
 
   width: 100%;
@@ -65,53 +65,32 @@ body {
   padding: 20px;
 }
 
-/* ✅ CARD (REMOVE FULL WIDTH ISSUE) */
+/* ✅ CLEAN CARD STRUCTURE */
 .checkout-card {
-  background: #fff;
+  background: white;
   padding: 15px;
   border-radius: 12px;
+  text-align: center;
 
   display: flex;
   flex-direction: column;
-  align-items: center;
-
-  /* ✅ IMPORTANT FIX */
-  width: auto !important;
-  max-width: 100%;
+  justify-content: space-between;
 }
 
-/* ✅ IMAGE FIX */
+/* ✅ IMAGE */
 .checkout-card img {
   width: 100%;
-  height: 180px;
+  height: 160px;
   object-fit: contain;
-}
-
-/* ✅ TEXT ALIGN */
-.checkout-card h3 {
-  text-align: center;
-  font-size: 14px;
 }
 
 /* ✅ BUTTONS */
 .qty-controls {
   display: flex;
-  gap: 8px;
   justify-content: center;
+  gap: 6px;
 }
 
-.qty-controls button {
-  padding: 6px 10px;
-}
-
-/* Quantity controls */
-.qty-controls {
-  display: flex;
-  justify-content: center;
-  gap: 5px;
-}
-
-/* Buttons */
 button {
   padding: 10px;
   margin-top: 10px;
@@ -119,43 +98,4 @@ button {
   color: white;
   border: none;
   border-radius: 6px;
-}
-/* ============================
-   ✅ FINAL GRID FIX (WORKING)
-============================ */
-
-/* FULL WIDTH CONTAINER */
-#cart {
-  display: grid !important;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
-  gap: 20px;
-
-  width: 100%;
-}
-
-/* CARD */
-.checkout-card {
-  background: #fff;
-  padding: 15px;
-  border-radius: 12px;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  width: auto !important;
-}
-
-/* IMAGE */
-.checkout-card img {
-  width: 100%;
-  height: 160px;
-  object-fit: contain;
-}
-
-/* BUTTON CONTROLS */
-.qty-controls {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
 }
