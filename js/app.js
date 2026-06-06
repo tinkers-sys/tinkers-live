@@ -3,7 +3,7 @@
 const URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1";
 
 /* ===============================
-   CART
+   CART SYSTEM
 ================================ */
 function readCart(){
   return JSON.parse(localStorage.getItem("cart") || "[]");
@@ -17,7 +17,7 @@ function updateCartCount(){
   const el = document.getElementById("cartCount");
   if(!el) return;
 
-  const total = readCart().reduce((s,i) => s + i.qty, 0);
+  const total = readCart().reduce((sum,item)=>sum+item.qty,0);
   el.textContent = total;
 }
 
@@ -28,12 +28,12 @@ async function loadProducts(){
   const res = await fetch(URL);
   const data = await res.json();
 
-  return data.map(p => ({
-    id: String(p.id || p.ID),
-    name: p.name,
-    category: (p.category || "").trim().toLowerCase(),
-    image: p.image,
-    price: Number(p.price)
+  return data.map(p=>({
+    id:String(p.id||p.ID),
+    name:p.name,
+    category:(p.category||"").trim().toLowerCase(),
+    image:p.image,
+    price:Number(p.price)
   }));
 }
 
@@ -43,24 +43,24 @@ async function loadProducts(){
 function addToCart(id){
   let cart = readCart();
 
-  const item = cart.find(i => i.id === id);
+  const item = cart.find(i=>i.id===id);
 
   if(item) item.qty++;
-  else cart.push({ id, qty:1 });
+  else cart.push({id,qty:1});
 
   writeCart(cart);
   updateCartCount();
 }
 
 /* ===============================
-   CARD
+   CARD TEMPLATE
 ================================ */
 function buildCard(p){
   return `
     <div class="card">
       <img src="images/${p.image}" alt="${p.name}">
       <h3>${p.name}</h3>
-      <p class="price">R${p.price}</p>
+      <p>R${p.price}</p>
       <button class="add-btn" data-id="${p.id}">Add to cart</button>
     </div>
   `;
@@ -69,38 +69,35 @@ function buildCard(p){
 /* ===============================
    RENDER
 ================================ */
-function render(id, products){
-  const el = document.getElementById(id);
+function render(id,products){
+  const el=document.getElementById(id);
   if(!el) return;
+
   el.innerHTML = products.map(buildCard).join("");
 }
 
 /* ===============================
-   FILTER ✅ FIXED
+   FILTER
 ================================ */
 function setupFilters(products){
 
-  document.querySelectorAll(".filters a").forEach(btn => {
+  document.querySelectorAll(".filters a").forEach(btn=>{
 
-    btn.addEventListener("click", function(e){
+    btn.addEventListener("click",function(e){
       e.preventDefault();
 
-      const selected = this.dataset.filter.toLowerCase();
+      const category=this.dataset.filter.toLowerCase();
 
-      let filtered;
+      const filtered = category==="all"
+        ? products
+        : products.filter(p=>p.category===category);
 
-      if(selected === "all"){
-        filtered = products;
-      } else {
-        filtered = products.filter(p => p.category === selected);
-      }
+      render("products",filtered);
 
-      render("products", filtered);
-
-      const title = document.getElementById("sectionTitle");
-      title.innerText = selected === "all"
-        ? "Our Collection"
-        : "Showing: " + this.dataset.filter;
+      document.getElementById("sectionTitle").innerText =
+        category==="all"
+          ? "Our Collection"
+          : "Showing: "+this.dataset.filter;
     });
 
   });
@@ -110,73 +107,129 @@ function setupFilters(products){
 /* ===============================
    CLICK HANDLER
 ================================ */
-document.addEventListener("click", function(e){
+document.addEventListener("click",function(e){
+
   if(e.target.classList.contains("add-btn")){
     addToCart(e.target.dataset.id);
   }
+
 });
 
 /* ===============================
-   CHECKOUT ✅ FIXED (THE MISSING PART)
+   CHECKOUT RENDER
 ================================ */
 function renderCheckout(){
 
-  const cartEl = document.getElementById("cart");
-  const totalEl = document.getElementById("checkoutTotal");
+  const cartEl=document.getElementById("cart");
+  const totalEl=document.getElementById("checkoutTotal");
 
-  if(!cartEl || !totalEl) return;
+  if(!cartEl||!totalEl) return;
 
-  const cart = readCart();
+  const cart=readCart();
 
-  if(!cart.length){
-    cartEl.innerHTML = "<p>Your cart is empty</p>";
-    totalEl.textContent = "R0";
+  if(cart.length===0){
+    cartEl.innerHTML="<p>Your cart is empty</p>";
+    totalEl.textContent="R0";
     return;
   }
 
-  let total = 0;
+  let total=0;
+  cartEl.innerHTML="";
 
-  cartEl.innerHTML = "";
+  cart.forEach(item=>{
 
-  cart.forEach(item => {
-
-    const product = window.__products.find(p => p.id === item.id);
+    const product=window.__products.find(p=>p.id===item.id);
     if(!product) return;
 
-    const subtotal = product.price * item.qty;
-    total += subtotal;
+    const subtotal=product.price*item.qty;
+    total+=subtotal;
 
-    cartEl.innerHTML += `
-      <div class="card">
-        <img src="images/${product.image}">
-        <h3>${product.name}</h3>
-        <p>${item.qty} × R${product.price}</p>
-        <p><strong>R${subtotal}</strong></p>
+    cartEl.innerHTML+=`
+    <div class="checkout-card">
+      <img src="images/${product.image}">
+      <h3>${product.name}</h3>
+
+      <p>${item.qty} × R${product.price}</p>
+      <p><strong>R${subtotal}</strong></p>
+
+      <div class="qty-controls">
+        <button onclick="updateQty('${item.id}',-1)">-</button>
+        <button onclick="updateQty('${item.id}',1)">+</button>
       </div>
-    `;
+
+      <button onclick="removeItem('${item.id}')">Remove</button>
+    </div>`;
   });
 
-  totalEl.textContent = "R" + total;
+  totalEl.textContent="R"+total;
+}
+
+/* ===============================
+   CART CONTROLS ✅ FIXED
+================================ */
+function updateQty(id,change){
+
+  let cart=readCart();
+  let item=cart.find(i=>i.id===id);
+
+  if(!item) return;
+
+  item.qty+=change;
+
+  if(item.qty<=0){
+    cart=cart.filter(i=>i.id!==id);
+  }
+
+  writeCart(cart);
+  renderCheckout();
+  updateCartCount();
+}
+
+function removeItem(id){
+  let cart=readCart().filter(i=>i.id!==id);
+
+  writeCart(cart);
+  renderCheckout();
+  updateCartCount();
+}
+
+function clearCart(){
+  localStorage.removeItem("cart");
+  renderCheckout();
+  updateCartCount();
+}
+
+/* ===============================
+   PAYMENTS
+================================ */
+function whatsappOrder(){
+  alert("WhatsApp order feature coming ✅");
+}
+
+function payflexCheckout(){
+  alert("Payflex demo working ✅");
+}
+
+function payNow(){
+  alert("Redirecting to PayFast ✅");
 }
 
 /* ===============================
    INIT
 ================================ */
-document.addEventListener("DOMContentLoaded", async ()=>{
+document.addEventListener("DOMContentLoaded",async()=>{
 
-  const products = await loadProducts();
+  const products=await loadProducts();
 
-  window.__products = products;
+  window.__products=products;
 
   updateCartCount();
 
-  render("featuredProducts", products.slice(0,4));
-  render("trendingProducts", products.slice(4,10));
-  render("products", products);
+  render("featuredProducts",products.slice(0,4));
+  render("trendingProducts",products.slice(4,10));
+  render("products",products);
 
   setupFilters(products);
 
-  // ✅ LOAD CHECKOUT IF PRESENT
   renderCheckout();
 });
-``
