@@ -227,7 +227,38 @@ function payflexCheckout(){
 }
 
 function whatsappOrder(){
-  alert("WhatsApp order coming ✅");
+
+  const cart = readCart();
+
+  if(cart.length === 0){
+    alert("Cart is empty ❌");
+    return;
+  }
+
+  let message = "Hello, I'd like to order:\n\n";
+
+  let total = 0;
+
+  cart.forEach(item => {
+    const product = window.__products.find(p => p.id === item.id);
+
+    if(product){
+      const subtotal = product.price * item.qty;
+      total += subtotal;
+
+      message += `${product.name} x ${item.qty} - R${subtotal}\n`;
+    }
+  });
+
+  message += `\nTotal: R${total}`;
+  message += "\n\nPlease confirm availability.";
+
+  // ✅ IMPORTANT: Replace this with YOUR number (no spaces, no +)
+  const phone = "27682525454";
+
+  const whatsappURL = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
+  window.open(whatsappURL, "_blank");
 }
 
 /* ===============================
