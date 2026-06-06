@@ -113,3 +113,14 @@ button {
   justify-content: center;
   gap: 6px;
 }
+/* ✅ BREAK OUT OF CONTAINER WIDTH */
+#cart {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+
+  width: 100%;
+  max-width: 1200px;   /* ✅ keeps grid wide and centered */
+  margin: 0 auto;      /* ✅ center properly */
+}
+
