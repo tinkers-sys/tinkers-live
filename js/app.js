@@ -31,7 +31,7 @@ async function loadProducts(){
   return data.map(p => ({
     id: String(p.id || p.ID),
     name: p.name,
-    category: (p.category || "").trim().toLowerCase(), // ✅ IMPORTANT FIX
+    category: (p.category || "").trim().toLowerCase(),
     image: p.image,
     price: Number(p.price)
   }));
@@ -69,15 +69,14 @@ function buildCard(p){
 /* ===============================
    RENDER
 ================================ */
-function render(targetId, products){
-  const el = document.getElementById(targetId);
+function render(id, products){
+  const el = document.getElementById(id);
   if(!el) return;
-
   el.innerHTML = products.map(buildCard).join("");
 }
 
 /* ===============================
-   FILTER ✅ PERFECT FIX
+   FILTER ✅ FIXED
 ================================ */
 function setupFilters(products){
 
@@ -102,10 +101,6 @@ function setupFilters(products){
       title.innerText = selected === "all"
         ? "Our Collection"
         : "Showing: " + this.dataset.filter;
-
-      document.querySelectorAll(".filters a").forEach(a => a.classList.remove("active"));
-      this.classList.add("active");
-
     });
 
   });
@@ -113,7 +108,7 @@ function setupFilters(products){
 }
 
 /* ===============================
-   BUTTON HANDLER
+   CLICK HANDLER
 ================================ */
 document.addEventListener("click", function(e){
   if(e.target.classList.contains("add-btn")){
@@ -122,21 +117,66 @@ document.addEventListener("click", function(e){
 });
 
 /* ===============================
+   CHECKOUT ✅ FIXED (THE MISSING PART)
+================================ */
+function renderCheckout(){
+
+  const cartEl = document.getElementById("cart");
+  const totalEl = document.getElementById("checkoutTotal");
+
+  if(!cartEl || !totalEl) return;
+
+  const cart = readCart();
+
+  if(!cart.length){
+    cartEl.innerHTML = "<p>Your cart is empty</p>";
+    totalEl.textContent = "R0";
+    return;
+  }
+
+  let total = 0;
+
+  cartEl.innerHTML = "";
+
+  cart.forEach(item => {
+
+    const product = window.__products.find(p => p.id === item.id);
+    if(!product) return;
+
+    const subtotal = product.price * item.qty;
+    total += subtotal;
+
+    cartEl.innerHTML += `
+      <div class="card">
+        <img src="images/${product.image}">
+        <h3>${product.name}</h3>
+        <p>${item.qty} × R${product.price}</p>
+        <p><strong>R${subtotal}</strong></p>
+      </div>
+    `;
+  });
+
+  totalEl.textContent = "R" + total;
+}
+
+/* ===============================
    INIT
 ================================ */
 document.addEventListener("DOMContentLoaded", async ()=>{
 
   const products = await loadProducts();
 
+  window.__products = products;
+
   updateCartCount();
 
-  // ✅ ONLY FOR DISPLAY (not filtering logic)
   render("featuredProducts", products.slice(0,4));
   render("trendingProducts", products.slice(4,10));
-
-  // ✅ MAIN SHOP (FULL DATASET)
   render("products", products);
 
   setupFilters(products);
 
+  // ✅ LOAD CHECKOUT IF PRESENT
+  renderCheckout();
 });
+``
