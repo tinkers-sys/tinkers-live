@@ -7,18 +7,28 @@
 <body style="text-align:center; margin-top:100px;">
 
   <h1>✅ Payment Successful</h1>
-  <p>Thank you for your order!</p>
-
-  <p>Redirecting back to store...</p>
+  <p>Processing your order...</p>
 
 <script>
-  // ✅ CLEAR CART IMMEDIATELY
-  localStorage.removeItem("cart");
+  try {
+    // ✅ FORCE CLEAR CART
+    window.localStorage.clear();
 
-  // ✅ REDIRECT BACK AFTER 2 SECONDS
+    // ✅ Or safer:
+    window.localStorage.removeItem("cart");
+
+  } catch(e) {
+    console.log("Storage error:", e);
+  }
+
+  // ✅ DOUBLE CHECK AFTER DELAY
   setTimeout(function(){
-    window.location.href = "index.html";
-  }, 2000);
+    window.localStorage.removeItem("cart");
+
+    // ✅ REDIRECT BACK TO HOME
+    window.location.href = "/tinkers-live/index.html";
+
+  }, 1500);
 </script>
 
 </body>
