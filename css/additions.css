@@ -223,4 +223,52 @@ button:hover {
   font-weight: bold;
   color: #c55a11;
 }
-``
+/* DASHBOARD FIX */
+.dashboard-container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* Summary row */
+.summary {
+  display: flex;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.summary-card {
+  flex: 1;
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Cards */
+.dashboard-card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* Header row */
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+/* Items */
+.order-items {
+  padding-left: 20px;
+}
+
+/* Total */
+.order-total {
+  font-weight: bold;
+  color: #c55a11;
+}
