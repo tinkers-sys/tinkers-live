@@ -1,31 +1,18 @@
-:root {
-  --primary: #c55a11;
-  --secondary: #8c3d0a;
-  --bg: #fdfaf5;
-}
-
 body {
   margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: var(--bg);
+  font-family: Arial;
 }
 
-/* HEADER */
 .header .container {
   display: flex;
   justify-content: space-between;
-  padding: 15px 20px;
+  padding: 15px;
 }
 
-nav a {
-  margin-left: 15px;
-}
-
-/* FILTER BUTTONS */
 .filters {
   display: flex;
   gap: 10px;
-  padding: 10px 20px;
+  padding: 10px;
 }
 
 .filters a {
@@ -35,71 +22,50 @@ nav a {
   text-decoration: none;
 }
 
-/* HERO */
 .hero-banner {
-  height: 80vh;
-  background: linear-gradient(rgba(60,40,20,0.6), rgba(60,40,20,0.6)),
-              url("../images/hero-bg.jpg");
-  background-size: cover;
+  height: 60vh;
   display: flex;
-  align-items: center;
   justify-content: center;
-  color: white;
+  align-items: center;
+  flex-direction: column;
 }
 
-.hero-banner h1 {
-  font-size: 42px;
-}
-
-/* GRID */
 .product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
-  gap: 25px;
+  gap: 20px;
   padding: 20px;
 }
 
-/* CARD */
 .card {
   background: white;
-  padding: 20px;
-  border-radius: 14px;
+  padding: 15px;
+  border-radius: 12px;
   text-align: center;
-  transition: 0.3s;
-}
-
-.card:hover {
-  transform: translateY(-5px);
 }
 
 .card img {
   width: 100%;
-  height: 160px;
+  height: 150px;
   object-fit: contain;
 }
 
-.price {
-  color: var(--primary);
-  font-weight: bold;
-}
-
-/* BUTTON */
-.card button {
-  margin-top: 10px;
+button {
   padding: 10px;
-  background: var(--primary);
+  background: orange;
+  border: none;
   color: white;
-  border-radius: 8px;
+  margin-top: 10px;
 }
 
-/* ANIMATION */
 .fade-in {
   opacity: 0;
   transform: translateY(30px);
-  transition: 0.7s;
+  transition: 0.6s;
 }
 
 .fade-in.active {
   opacity: 1;
   transform: translateY(0);
 }
+``
