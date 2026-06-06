@@ -114,21 +114,21 @@ document.addEventListener("click", function (e) {
 /* ===============================
    CHECKOUT RENDER (FINAL FIX ✅)
 ================================ */
-function renderCheckout() {
+function renderCheckout(){
 
   const cartEl = document.getElementById("cart");
   const totalEl = document.getElementById("checkoutTotal");
 
-  if (!cartEl || !totalEl) return;
+  if(!cartEl || !totalEl) return;
 
   const cart = readCart();
 
-  /* ✅ ALWAYS CREATE GRID WRAPPER */
+  // ✅ Create grid wrapper FIRST
   cartEl.innerHTML = '<div class="checkout-grid"></div>';
 
   const grid = cartEl.querySelector(".checkout-grid");
 
-  if (!cart.length) {
+  if(!cart.length){
     grid.innerHTML = "<p>Your cart is empty</p>";
     totalEl.textContent = "R0";
     return;
@@ -136,10 +136,12 @@ function renderCheckout() {
 
   let total = 0;
 
+  grid.innerHTML = "";
+
   cart.forEach(item => {
 
     const product = window.__products.find(p => p.id === item.id);
-    if (!product) return;
+    if(!product) return;
 
     const subtotal = product.price * item.qty;
     total += subtotal;
@@ -164,6 +166,7 @@ function renderCheckout() {
 
   totalEl.textContent = "R" + total;
 }
+
 
 /* ===============================
    CART CONTROLS
