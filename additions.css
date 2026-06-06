@@ -92,48 +92,6 @@ body {
 }
 
 /* ======================
-   ✅ BUTTON STYLING (FINAL)
-====================== */
-
-/* ALL BUTTONS */
-button,
-.qty-controls button,
-.checkout-actions button {
-  background-color: #c55a11 !important;
-  color: white !important;
-  border: none !important;
-  border-radius: 8px !important;
-  padding: 8px 12px !important;
-  cursor: pointer !important;
-  font-weight: 600;
-  transition: 0.2s ease;
-}
-
-/* HOVER */
-button:hover {
-  background-color: #8c3d0a !important;
-}
-
-/* REMOVE BUTTON */
-.checkout-card button:last-of-type {
-  background-color: #e74c3c !important;
-}
-
-.checkout-card button:last-of-type:hover {
-  background-color: #c0392b !important;
-}
-
-/* CLEAR CART */
-button[onclick="clearCart()"] {
-  background-color: #2e86de !important;
-  padding: 10px 18px !important;
-}
-
-button[onclick="clearCart()"]:hover {
-  background-color: #1b4f72 !important;
-}
-
-/* ======================
    ✅ BACK TO SHOP LINK
 ====================== */
 a[href="index.html"] {
@@ -153,4 +111,42 @@ a[href="index.html"]:hover {
   display: flex;
   justify-content: center;
   gap: 6px;
+}
+/* ============================
+   ✅ FINAL BUTTON FIX (STRONG SELECTORS)
+============================ */
+
+/* + and - buttons */
+.checkout-card .qty-controls button {
+  background-color: #c55a11 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 6px !important;
+}
+
+/* + - hover */
+.checkout-card .qty-controls button:hover {
+  background-color: #8c3d0a !important;
+}
+
+/* REMOVE BUTTON */
+.checkout-card button[onclick^="removeItem"] {
+  background-color: #e74c3c !important;
+  color: white !important;
+}
+
+.checkout-card button[onclick^="removeItem"]:hover {
+  background-color: #c0392b !important;
+}
+
+/* CLEAR CART BUTTON */
+button[onclick="clearCart()"] {
+  background-color: #2e86de !important;
+  color: white !important;
+  border-radius: 8px !important;
+  padding: 10px 18px !important;
+}
+
+button[onclick="clearCart()"]:hover {
+  background-color: #1b4f72 !important;
 }
