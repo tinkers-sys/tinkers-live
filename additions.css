@@ -149,3 +149,40 @@ button[onclick="clearCart()"] {
 button[onclick="clearCart()"]:hover {
   background-color: #1b4f72 !important;
 }
+/* ============================
+   ✅ HARD OVERRIDE (FINAL FIX)
+============================ */
+
+/* TARGET EVERY BUTTON IN CHECKOUT GRID */
+.checkout-grid button {
+  background: #c55a11 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 6px 12px !important;
+}
+
+/* HOVER */
+.checkout-grid button:hover {
+  background: #8c3d0a !important;
+}
+
+/* REMOVE BUTTON (LAST BUTTON IN CARD) */
+.checkout-card button:last-child {
+  background: #e74c3c !important;
+}
+
+.checkout-card button:last-child:hover {
+  background: #c0392b !important;
+}
+
+/* CLEAR CART BUTTON */
+button[onclick="clearCart()"] {
+  background: #2e86de !important;
+  color: white !important;
+}
+
+button[onclick="clearCart()"]:hover {
+  background: #1b4f72 !important;
+}
+
