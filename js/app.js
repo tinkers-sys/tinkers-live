@@ -111,4 +111,4 @@ document.addEventListener("DOMContentLoaded", async ()=>{
 
 /* GLOBAL */
 window.addToCart = addToCart;
-``
+
