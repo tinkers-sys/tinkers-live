@@ -219,8 +219,41 @@ function clearCart(){
    PAYMENT FUNCTIONS
 ================================ */
 function payfastCheckout(){
-  alert("Redirecting to PayFast (demo) ✅");
+
+  const cart = readCart();
+
+  if(cart.length === 0){
+    alert("Cart is empty ❌");
+    return;
+  }
+
+  let total = 0;
+  let itemName = "Tinkers Order";
+
+  cart.forEach(item => {
+    const product = window.__products.find(p => p.id === item.id);
+    if(product){
+      total += product.price * item.qty;
+    }
+  });
+
+  // ✅ PAYFAST SANDBOX (TESTING MODE)
+  const payfastURL = "https://sandbox.payfast.co.za/eng/process";
+
+  const params = new URLSearchParams({
+    merchant_id: "10000100",      // ✅ Test merchant
+    merchant_key: "46f0cd694581a",// ✅ Test key
+    amount: total.toFixed(2),
+    item_name: itemName,
+    return_url: window.location.origin,
+    cancel_url: window.location.origin,
+    notify_url: window.location.origin
+  });
+
+  // ✅ REDIRECT TO PAYFAST
+  window.location.href = payfastURL + "?" + params.toString();
 }
+
 
 function payflexCheckout(){
   alert("Payflex option selected ✅");
