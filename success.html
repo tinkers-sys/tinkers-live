@@ -1,11 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Payment Success</title>
+  <title>Payment Successful</title>
 
-<link rel="stylesheet" href="css/styles.css">
-<link rel="stylesheet" href="css/additions.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/additions.css">
 </head>
 
 <body>
@@ -13,12 +12,21 @@
 <div style="text-align:center; margin-top:100px;">
 
   <h1>✅ Payment Successful</h1>
+  <p>Thank you for your order!</p>
 
-  <p>Thank you for your purchase!</p>
-
-  <a href="index.html">Return to Store</a>
+  <button onclick="goHome()">Return to Store</button>
 
 </div>
+
+<script>
+  // ✅ CLEAR CART WHEN PAGE LOADS
+  localStorage.removeItem("cart");
+
+  // ✅ OPTIONAL FUNCTION
+  function goHome(){
+    window.location.href = "index.html";
+  }
+</script>
 
 </body>
 </html>
