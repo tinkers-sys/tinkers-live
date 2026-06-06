@@ -1,35 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Payment Successful</title>
-</head>
-
-<body style="text-align:center; margin-top:100px;">
-
-  <h1>✅ Payment Successful</h1>
-  <p>Processing your order...</p>
-
 <script>
-  try {
-    // ✅ FORCE CLEAR CART
-    window.localStorage.clear();
+  // ✅ SET FLAG (NOT CLEAR DIRECTLY)
+  localStorage.setItem("paymentSuccess", "true");
 
-    // ✅ Or safer:
-    window.localStorage.removeItem("cart");
-
-  } catch(e) {
-    console.log("Storage error:", e);
-  }
-
-  // ✅ DOUBLE CHECK AFTER DELAY
-  setTimeout(function(){
-    window.localStorage.removeItem("cart");
-
-    // ✅ REDIRECT BACK TO HOME
-    window.location.href = "/tinkers-live/index.html";
-
-  }, 1500);
+  // ✅ REDIRECT BACK
+  window.location.href = "/tinkers-live/index.html";
 </script>
-
-</body>
-</html>
