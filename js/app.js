@@ -292,7 +292,7 @@ function payflexCheckout(){
   message += `\n💰 Total: R${total}`;
   message += "\n\nRequesting Payflex payment plan ✅";
 
-  const phone = "27720919243"; // ✅ REPLACE WITH YOUR NUMBER
+  const phone = "27720912943"; // ✅ REPLACE WITH YOUR NUMBER
 
   const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 
