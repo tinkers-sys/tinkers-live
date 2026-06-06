@@ -256,7 +256,47 @@ function payfastCheckout(){
 
 
 function payflexCheckout(){
-  alert("Payflex option selected ✅");
+
+  const cart = readCart();
+
+  if(cart.length === 0){
+    alert("Cart is empty ❌");
+    return;
+  }
+
+  const name = document.getElementById("custName").value.trim();
+  const phoneInput = document.getElementById("custPhone").value.trim();
+
+  if(!name || !phoneInput){
+    alert("Please enter your name and phone number ✅");
+    return;
+  }
+
+  let message = "💳 Payflex Order Request\n\n";
+  message += `👤 Name: ${name}\n`;
+  message += `📞 Phone: ${phoneInput}\n\n`;
+
+  let total = 0;
+  message += "🧾 Items:\n";
+
+  cart.forEach(item => {
+    const product = window.__products.find(p => p.id === item.id);
+    if(product){
+      const subtotal = product.price * item.qty;
+      total += subtotal;
+
+      message += `• ${product.name} x${item.qty} - R${subtotal}\n`;
+    }
+  });
+
+  message += `\n💰 Total: R${total}`;
+  message += "\n\nRequesting Payflex payment plan ✅";
+
+  const phone = "27720919243"; // ✅ REPLACE WITH YOUR NUMBER
+
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
+  window.open(url, "_blank");
 }
 
 function whatsappOrder(){
