@@ -1,9 +1,64 @@
-<script>
-  // ✅ SET FLAG
-  localStorage.setItem("paymentSuccess", "true");
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Order Receipt</title>
 
-  // ✅ WAIT before redirecting (VERY IMPORTANT)
-  setTimeout(function(){
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/additions.css">
+</head>
+
+<body>
+
+<div style="max-width:600px; margin:50px auto; text-align:center;">
+
+  <h1>✅ Order Successful</h1>
+
+  <p>Thank you for your purchase!</p>
+
+  <div id="receiptBox" style="margin-top:20px; text-align:left;"></div>
+
+  <h3 id="receiptTotal"></h3>
+
+  <button onclick="goHome()">Return to Store</button>
+
+</div>
+
+<script>
+
+  // ✅ GET CART BEFORE CLEARING
+  const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+  let total = 0;
+  let receiptHTML = "";
+
+  cart.forEach(item => {
+    const subtotal = item.price * item.qty;
+    total += subtotal;
+
+    receiptHTML += `
+      <p>${item.name} x${item.qty} - R${subtotal}</p>
+    `;
+  });
+
+  // ✅ GENERATE ORDER ID
+  const orderID = "TK" + Date.now();
+
+  document.getElementById("receiptBox").innerHTML = `
+    <p><strong>Order ID:</strong> ${orderID}</p>
+    ${receiptHTML}
+  `;
+
+  document.getElementById("receiptTotal").innerText =
+    "Total Paid: R" + total;
+
+  // ✅ CLEAR CART AFTER BUILDING RECEIPT
+  localStorage.removeItem("cart");
+
+  function goHome(){
     window.location.href = "/tinkers-live/index.html";
-  }, 1000); // 1 second delay
+  }
+
 </script>
+
+</body>
+</html>
