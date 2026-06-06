@@ -1,110 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tinkers</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tinkers</title>
 
-  <!-- ✅ CORRECT CSS -->
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/additions.css">
+<link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/additions.css">
 </head>
 
 <body>
 
-<!-- ✅ HEADER -->
 <header class="header">
-  <div class="container header-row">
+  <div class="container">
+    <h2>Tinkers</h2>
 
-    <!-- LEFT -->
-    <div class="logo-area">
-      <h2>Tinkers</h2>
-      <span class="tagline">From our hands to your heart</span>
-    </div>
+    <nav>
+      <a href="#">Home</a>
+      <a href="checkout.html">Checkout</a>
+    </nav>
+  </div>
 
-    <!-- RIGHT -->
-    <div class="nav-area">
-
-      <nav class="top-nav">
-        <a href="index.html">Home</a>
-        <a href="checkout.html">🛒 View Cart (<span id="cartCount">0</span>)</a>
-        <a href="checkout.html">Checkout</a>
-      </nav>
-
-      <div class="filters top-filters">
-        <a href="#" data-filter="All">All</a>
-        <a href="#" data-filter="Apparel">Apparel</a>
-        <a href="#" data-filter="Art">Art</a>
-        <a href="#" data-filter="Accessories">Accessories</a>
-        <a href="#" data-filter="Beadwork">Beadwork</a>
-      </div>
-
-    </div>
-
+  <div class="filters">
+    <a href="#" data-filter="All">All</a>
+    <a href="#" data-filter="Art">Art</a>
+    <a href="#" data-filter="Apparel">Apparel</a>
+    <a href="#" data-filter="Accessories">Accessories</a>
+    <a href="#" data-filter="Beadwork">Beadwork</a>
   </div>
 </header>
 
-<!-- ✅ HERO -->
-<section class="hero">
+<!-- ================= HERO ================= -->
+<section class="hero-banner">
+  <div class="hero-overlay">
+    <h1>CRAFTED IN AFRICA.<br> CARRIED IN YOUR HEART.</h1>
 
-  <div class="hero-content">
-
-    <h1>Tinkers</h1>
-
-    <p class="hero-tagline">
-      From our hands to your heart
+    <p class="hero-sub">
+      Artisanal treasures, curated for you.
     </p>
 
-    <p class="hero-description">
-      Discover original handcrafted African artistry — each piece tells a story of culture, heritage and identity.
-    </p>
-
-    <div class="hero-buttons">
-      <a href="#products" class="btn-primary">Shop Collection</a>
-      <a href="#products" class="btn-outline">Explore</a>
-    </div>
-
+    <a href="#products" class="btn-primary">Explore Collection</a>
   </div>
-
 </section>
+
+<!-- ================= FEATURED ================= -->
 <section class="featured">
-
   <h2>✨ Curated for You</h2>
-
-  <p class="featured-sub">
-    Handpicked pieces inspired by African heritage — chosen for collectors and culture lovers.
-  </p>
-
   <div id="featuredProducts" class="product-grid"></div>
-
 </section>
-  
- <section class="trending">
 
+<!-- ================= TRENDING ================= -->
+<section class="trending">
   <h2>🔥 Trending Now</h2>
-
-  <p class="featured-sub">
-    Popular handcrafted pieces customers are loving right now.
-  </p>
-
   <div id="trendingProducts" class="product-grid"></div>
+</section>
 
-</section> 
-
-<!-- ✅ PRODUCTS -->
-<main class="container">
-
-  <h2 id="products">Our Products</h2>
-
+<!-- ================= MAIN SHOP ================= -->
+<section class="main-shop">
+  <h2>Our Collection</h2>
   <div id="products" class="product-grid"></div>
+</section>
 
-</main>
-
-<footer class="container">
-  <p>© Tinkers Curio Shop</p>
-</footer>
-
-<!-- ✅ CORRECT JS -->
 <script src="js/app.js"></script>
 
 </body>
