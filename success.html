@@ -12,37 +12,37 @@
 <div style="max-width:600px; margin:50px auto; text-align:center;">
 
   <h1>✅ Order Successful</h1>
-
   <p>Thank you for your purchase!</p>
 
-  <div id="receiptBox" style="margin-top:20px; text-align:left;"></div>
+  <div id="receiptBox" style="text-align:left; margin-top:20px;"></div>
 
   <h3 id="receiptTotal"></h3>
 
+  <button onclick="sendReceipt()">Send via WhatsApp</button>
   <button onclick="goHome()">Return to Store</button>
 
 </div>
 
 <script>
 
-  // ✅ GET CART BEFORE CLEARING
   const cart = JSON.parse(localStorage.getItem("cart") || "[]");
 
   let total = 0;
   let receiptHTML = "";
+  let receiptText = "";
+
+  // ✅ CREATE ORDER ID
+  const orderID = "TK" + Date.now();
 
   cart.forEach(item => {
     const subtotal = item.price * item.qty;
     total += subtotal;
 
-    receiptHTML += `
-      <p>${item.name} x${item.qty} - R${subtotal}</p>
-    `;
+    receiptHTML += `<p>${item.name} x${item.qty} - R${subtotal}</p>`;
+    receiptText += `• ${item.name} x${item.qty} - R${subtotal}\n`;
   });
 
-  // ✅ GENERATE ORDER ID
-  const orderID = "TK" + Date.now();
-
+  // ✅ DISPLAY RECEIPT
   document.getElementById("receiptBox").innerHTML = `
     <p><strong>Order ID:</strong> ${orderID}</p>
     ${receiptHTML}
@@ -51,11 +51,51 @@
   document.getElementById("receiptTotal").innerText =
     "Total Paid: R" + total;
 
-  // ✅ CLEAR CART AFTER BUILDING RECEIPT
+  // ✅ SAVE ORDER HISTORY
+  const history = JSON.parse(localStorage.getItem("orderHistory") || "[]");
+
+  history.push({
+    id: orderID,
+    items: cart,
+    total: total
+  });
+
+  localStorage.setItem("orderHistory", JSON.stringify(history));
+
+  // ✅ STORE RECEIPT FOR WHATSAPP
+  localStorage.setItem("lastReceipt", JSON.stringify({
+    id: orderID,
+    text: receiptText,
+    total: total
+  }));
+
+  // ✅ CLEAR CART
   localStorage.removeItem("cart");
 
   function goHome(){
     window.location.href = "/tinkers-live/index.html";
+  }
+
+  // ✅ SEND RECEIPT VIA WHATSAPP
+  function sendReceipt(){
+
+    const receipt = JSON.parse(localStorage.getItem("lastReceipt"));
+
+    if(!receipt){
+      alert("No receipt found ❌");
+      return;
+    }
+
+    let message = `🧾 Tinkers Receipt\n\n`;
+    message += `Order ID: ${receipt.id}\n\n`;
+    message += receipt.text;
+    message += `\nTotal Paid: R${receipt.total}`;
+
+    const phone = "27711234567"; // ✅ YOUR NUMBER
+
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
+    window.open(url, "_blank");
   }
 
 </script>
