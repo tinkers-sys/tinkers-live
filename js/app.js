@@ -102,8 +102,12 @@ function setupFilters(products){
       } else {
 
         filtered = products.filter(p =>
-          p.category === selected
-        );
+  (p.category || "")
+    .toLowerCase()
+    .trim()
+    .includes(selected)
+);
+
 
         if(featuredSection) featuredSection.style.display = "none";
         if(trendingSection) trendingSection.style.display = "none";
@@ -123,6 +127,9 @@ function setupFilters(products){
 
   });
 
+}
+if(filtered.length === 0){
+  render("products", products);
 }
 
 /* ===============================
