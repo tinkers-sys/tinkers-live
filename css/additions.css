@@ -87,3 +87,29 @@ button[onclick] {
 button[onclick="clearCart()"] {
   background: #2e86de !important;
 }
+.checkout-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.checkout-actions button {
+  flex: 1;
+  min-width: 150px;
+}
+
+/* WhatsApp */
+button[onclick="whatsappOrder()"] {
+  background: #25D366 !important;
+}
+
+/* PayFast */
+button[onclick="payfastCheckout()"] {
+  background: #2e86de !important;
+}
+
+/* Payflex */
+button[onclick="payflexCheckout()"] {
+  background: #6c5ce7 !important;
+}
