@@ -116,3 +116,55 @@ button {
 .checkout-card {
   width: auto !important;
 }
+/* ============================
+   ✅ CHECKOUT BUTTON STYLING
+============================ */
+
+/* + and - buttons */
+.qty-controls button {
+  background: #c55a11;   /* ✅ brand color */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.qty-controls button:hover {
+  background: #8c3d0a;  /* darker on hover */
+}
+
+/* REMOVE button */
+.checkout-card button:last-child {
+  background: #e74c3c;  /* red */
+  color: white;
+  border-radius: 8px;
+}
+
+.checkout-card button:last-child:hover {
+  background: #c0392b;
+}
+
+/* CLEAR CART BUTTON */
+.checkout-actions button,
+button[onclick="clearCart()"] {
+  background: #2e86de;  /* blue */
+  color: white;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  margin-top: 15px;
+}
+
+.checkout-actions button:hover,
+button[onclick="clearCart()"]:hover {
+  background: #1b4f72;
+}
+
+/* GENERAL BUTTON IMPROVEMENT */
+button {
+  border: none;
+  cursor: pointer;
+}
