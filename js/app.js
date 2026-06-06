@@ -245,9 +245,9 @@ function payfastCheckout(){
     merchant_key: "46f0cd694581a",// ✅ Test key
     amount: total.toFixed(2),
     item_name: itemName,
-   return_url: window.location.origin + "/tinkers-live/success.html",
-   cancel_url: window.location.origin + "/tinkers-live/cancel.html",
-    notify_url: window.location.origin
+   return_url: https://tinkers-sys.github.io/tinkers-live/success.html,
+   cancel_url: https://tinkers-sys.github.io/tinkers-live/cancel.html",
+   
   });
 
   // ✅ REDIRECT TO PAYFAST
@@ -268,35 +268,37 @@ function payflexCheckout(){
   const phoneInput = document.getElementById("custPhone").value.trim();
 
   if(!name || !phoneInput){
-    alert("Please enter your name and phone number ✅");
+    alert("Please enter your details ✅");
     return;
   }
 
   let message = "💳 Payflex Order Request\n\n";
-  message += `👤 Name: ${name}\n`;
-  message += `📞 Phone: ${phoneInput}\n\n`;
+  message += `Name: ${name}\nPhone: ${phoneInput}\n\n`;
 
   let total = 0;
-  message += "🧾 Items:\n";
 
   cart.forEach(item => {
     const product = window.__products.find(p => p.id === item.id);
+
     if(product){
       const subtotal = product.price * item.qty;
       total += subtotal;
 
-      message += `• ${product.name} x${item.qty} - R${subtotal}\n`;
+      message += `${product.name} x${item.qty} - R${subtotal}\n`;
     }
   });
 
-  message += `\n💰 Total: R${total}`;
-  message += "\n\nRequesting Payflex payment plan ✅";
+  message += `\nTotal: R${total}`;
+  message += "\n\nPlease send Payflex payment link ✅";
 
-  const phone = "27720912943"; // ✅ REPLACE WITH YOUR NUMBER
+  const phone = "27720912943"; // your number
 
   const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 
   window.open(url, "_blank");
+
+  // ✅ THIS WAS MISSING
+  clearCart();
 }
 
 function whatsappOrder(){
