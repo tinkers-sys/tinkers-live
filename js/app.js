@@ -5,60 +5,60 @@ const URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLA
 /* ===============================
    CART SYSTEM
 ================================ */
-function readCart(){
+function readCart() {
   return JSON.parse(localStorage.getItem("cart") || "[]");
 }
 
-function writeCart(cart){
+function writeCart(cart) {
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 
-function updateCartCount(){
+function updateCartCount() {
   const el = document.getElementById("cartCount");
-  if(!el) return;
+  if (!el) return;
 
-  const total = readCart().reduce((sum,item)=>sum+item.qty,0);
+  const total = readCart().reduce((sum, item) => sum + item.qty, 0);
   el.textContent = total;
 }
 
 /* ===============================
    LOAD PRODUCTS
 ================================ */
-async function loadProducts(){
+async function loadProducts() {
   const res = await fetch(URL);
   const data = await res.json();
 
-  return data.map(p=>({
-    id:String(p.id||p.ID),
-    name:p.name,
-    category:(p.category||"").trim().toLowerCase(),
-    image:p.image,
-    price:Number(p.price)
+  return data.map(p => ({
+    id: String(p.id || p.ID),
+    name: p.name,
+    category: (p.category || "").trim().toLowerCase(),
+    image: p.image,
+    price: Number(p.price)
   }));
 }
 
 /* ===============================
    ADD TO CART
 ================================ */
-function addToCart(id){
+function addToCart(id) {
   let cart = readCart();
 
-  const item = cart.find(i=>i.id===id);
+  const item = cart.find(i => i.id === id);
 
-  if(item) item.qty++;
-  else cart.push({id,qty:1});
+  if (item) item.qty++;
+  else cart.push({ id, qty: 1 });
 
   writeCart(cart);
   updateCartCount();
 }
 
 /* ===============================
-   CARD TEMPLATE
+   PRODUCT CARD
 ================================ */
-function buildCard(p){
+function buildCard(p) {
   return `
     <div class="card">
-      <img src="images/${p.image}" alt="${p.name}">
+      <img src="images/${p.image}">
       <h3>${p.name}</h3>
       <p>R${p.price}</p>
       <button class="add-btn" data-id="${p.id}">Add to cart</button>
@@ -67,117 +67,117 @@ function buildCard(p){
 }
 
 /* ===============================
-   RENDER
+   RENDER FUNCTION
 ================================ */
-function render(id,products){
-  const el=document.getElementById(id);
-  if(!el) return;
+function render(id, products) {
+  const el = document.getElementById(id);
+  if (!el) return;
 
   el.innerHTML = products.map(buildCard).join("");
 }
 
 /* ===============================
-   FILTER
+   FILTER FUNCTION
 ================================ */
-function setupFilters(products){
-
-  document.querySelectorAll(".filters a").forEach(btn=>{
-
-    btn.addEventListener("click",function(e){
+function setupFilters(products) {
+  document.querySelectorAll(".filters a").forEach(btn => {
+    btn.addEventListener("click", function (e) {
       e.preventDefault();
 
-      const category=this.dataset.filter.toLowerCase();
+      const category = this.dataset.filter.toLowerCase();
 
-      const filtered = category==="all"
+      const filtered = category === "all"
         ? products
-        : products.filter(p=>p.category===category);
+        : products.filter(p => p.category === category);
 
-      render("products",filtered);
+      render("products", filtered);
 
-      document.getElementById("sectionTitle").innerText =
-        category==="all"
+      const title = document.getElementById("sectionTitle");
+      if (title) {
+        title.innerText = category === "all"
           ? "Our Collection"
-          : "Showing: "+this.dataset.filter;
+          : "Showing: " + this.dataset.filter;
+      }
     });
-
   });
-
 }
 
 /* ===============================
    CLICK HANDLER
 ================================ */
-document.addEventListener("click",function(e){
-
-  if(e.target.classList.contains("add-btn")){
+document.addEventListener("click", function (e) {
+  if (e.target.classList.contains("add-btn")) {
     addToCart(e.target.dataset.id);
   }
-
 });
 
 /* ===============================
-   CHECKOUT RENDER
+   CHECKOUT RENDER (FINAL FIX ✅)
 ================================ */
-function renderCheckout(){
+function renderCheckout() {
 
-  const cartEl=document.getElementById("cart");
-  const totalEl=document.getElementById("checkoutTotal");
+  const cartEl = document.getElementById("cart");
+  const totalEl = document.getElementById("checkoutTotal");
 
-  if(!cartEl||!totalEl) return;
+  if (!cartEl || !totalEl) return;
 
-  const cart=readCart();
+  const cart = readCart();
 
-  if(cart.length===0){
-    cartEl.innerHTML="<p>Your cart is empty</p>";
-    totalEl.textContent="R0";
+  /* ✅ ALWAYS CREATE GRID WRAPPER */
+  cartEl.innerHTML = '<div class="checkout-grid"></div>';
+
+  const grid = cartEl.querySelector(".checkout-grid");
+
+  if (!cart.length) {
+    grid.innerHTML = "<p>Your cart is empty</p>";
+    totalEl.textContent = "R0";
     return;
   }
 
-  let total=0;
-  cartEl.innerHTML="";
+  let total = 0;
 
-  cart.forEach(item=>{
+  cart.forEach(item => {
 
-    const product=window.__products.find(p=>p.id===item.id);
-    if(!product) return;
+    const product = window.__products.find(p => p.id === item.id);
+    if (!product) return;
 
-    const subtotal=product.price*item.qty;
-    total+=subtotal;
+    const subtotal = product.price * item.qty;
+    total += subtotal;
 
-    cartEl.innerHTML+=`
-    <div class="checkout-card">
-      <img src="images/${product.image}">
-      <h3>${product.name}</h3>
+    grid.innerHTML += `
+      <div class="checkout-card">
+        <img src="images/${product.image}">
+        <h3>${product.name}</h3>
 
-      <p>${item.qty} × R${product.price}</p>
-      <p><strong>R${subtotal}</strong></p>
+        <p>${item.qty} × R${product.price}</p>
+        <p><strong>R${subtotal}</strong></p>
 
-      <div class="qty-controls">
-        <button onclick="updateQty('${item.id}',-1)">-</button>
-        <button onclick="updateQty('${item.id}',1)">+</button>
+        <div class="qty-controls">
+          <button onclick="updateQty('${item.id}', -1)">-</button>
+          <button onclick="updateQty('${item.id}', 1)">+</button>
+        </div>
+
+        <button onclick="removeItem('${item.id}')">Remove</button>
       </div>
-
-      <button onclick="removeItem('${item.id}')">Remove</button>
-    </div>`;
+    `;
   });
 
-  totalEl.textContent="R"+total;
+  totalEl.textContent = "R" + total;
 }
 
 /* ===============================
-   CART CONTROLS ✅ FIXED
+   CART CONTROLS
 ================================ */
-function updateQty(id,change){
+function updateQty(id, change) {
+  let cart = readCart();
 
-  let cart=readCart();
-  let item=cart.find(i=>i.id===id);
+  let item = cart.find(i => i.id === id);
+  if (!item) return;
 
-  if(!item) return;
+  item.qty += change;
 
-  item.qty+=change;
-
-  if(item.qty<=0){
-    cart=cart.filter(i=>i.id!==id);
+  if (item.qty <= 0) {
+    cart = cart.filter(i => i.id !== id);
   }
 
   writeCart(cart);
@@ -185,51 +185,37 @@ function updateQty(id,change){
   updateCartCount();
 }
 
-function removeItem(id){
-  let cart=readCart().filter(i=>i.id!==id);
+function removeItem(id) {
+  let cart = readCart().filter(i => i.id !== id);
 
   writeCart(cart);
   renderCheckout();
   updateCartCount();
 }
 
-function clearCart(){
+function clearCart() {
   localStorage.removeItem("cart");
   renderCheckout();
   updateCartCount();
 }
 
 /* ===============================
-   PAYMENTS
-================================ */
-function whatsappOrder(){
-  alert("WhatsApp order feature coming ✅");
-}
-
-function payflexCheckout(){
-  alert("Payflex demo working ✅");
-}
-
-function payNow(){
-  alert("Redirecting to PayFast ✅");
-}
-
-/* ===============================
    INIT
 ================================ */
-document.addEventListener("DOMContentLoaded",async()=>{
+document.addEventListener("DOMContentLoaded", async () => {
 
-  const products=await loadProducts();
-
-  window.__products=products;
+  const products = await loadProducts();
+  window.__products = products;
 
   updateCartCount();
 
-  render("featuredProducts",products.slice(0,4));
-  render("trendingProducts",products.slice(4,10));
-  render("products",products);
+  render("featuredProducts", products.slice(0, 4));
+  render("trendingProducts", products.slice(4, 10));
+  render("products", products);
 
   setupFilters(products);
 
+  /* ✅ LOAD CHECKOUT IF PAGE HAS CART */
   renderCheckout();
 });
+``
