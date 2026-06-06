@@ -235,32 +235,48 @@ function whatsappOrder(){
     return;
   }
 
-  let message = "Hello, I'd like to order:\n\n";
+  // ✅ GET CUSTOMER INFO
+  const name = document.getElementById("custName").value.trim();
+  const phoneInput = document.getElementById("custPhone").value.trim();
+  const delivery = document.getElementById("deliveryOption").value;
+
+  if(!name || !phoneInput){
+    alert("Please enter your name and phone number ✅");
+    return;
+  }
+
+  let message = `🛍️ Tinkers Order Request\n\n`;
+  message += `👤 Name: ${name}\n`;
+  message += `📞 Phone: ${phoneInput}\n`;
+  message += `🚚 Delivery: ${delivery}\n\n`;
 
   let total = 0;
 
+  message += `🧾 Order Details:\n`;
+
   cart.forEach(item => {
     const product = window.__products.find(p => p.id === item.id);
-
     if(product){
       const subtotal = product.price * item.qty;
       total += subtotal;
 
-      message += `${product.name} x ${item.qty} - R${subtotal}\n`;
+      message += `• ${product.name} x${item.qty} - R${subtotal}\n`;
     }
   });
 
-  message += `\nTotal: R${total}`;
-  message += "\n\nPlease confirm availability.";
+  message += `\n💰 Total: R${total}\n`;
+  message += `\nPlease confirm availability ✅`;
 
-  // ✅ IMPORTANT: Replace this with YOUR number (no spaces, no +)
-  const phone = "27682525454";
+  // ✅ IMPORTANT: USE YOUR NUMBER
+  const phone = "27720912943"; // <-- REPLACE WITH YOUR REAL NUMBER
 
-  const whatsappURL = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+  const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
 
-  window.open(whatsappURL, "_blank");
+  window.open(url, "_blank");
+
+  // ✅ OPTIONAL: clear cart after sending
+  clearCart();
 }
-
 /* ===============================
    INIT
 ================================ */
