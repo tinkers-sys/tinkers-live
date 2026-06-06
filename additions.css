@@ -81,3 +81,35 @@ button {
 .qty-controls button {
   margin: 5px;
 }
+/* ✅ FORCE GRID VIEW IN CHECKOUT */
+#cart {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+
+/* ✅ FIX CARD STRUCTURE */
+.checkout-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+}
+
+/* ✅ FIX IMAGE SIZE */
+.checkout-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: contain;
+}
+
+/* ✅ FIX BUTTON ALIGNMENT */
+.qty-controls {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
