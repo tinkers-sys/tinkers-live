@@ -103,3 +103,15 @@ button {
   border: none;
   border-radius: 6px;
 }
+/* ✅ FINAL GRID WRAPPER */
+.checkout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+/* ✅ CARD FIX */
+.checkout-card {
+  width: auto !important;
+}
