@@ -84,4 +84,17 @@ function animateOnScroll() {
 }
 
 window.addEventListener("scroll", animateOnScroll);
+/* ===============================
+   HERO PARALLAX EFFECT
+================================ */
+window.addEventListener("scroll", function () {
+  const hero = document.querySelector(".hero-banner");
+
+  if (!hero) return;
+
+  let offset = window.pageYOffset;
+
+  hero.style.backgroundPositionY = offset * 0.5 + "px";
+});
+
 
