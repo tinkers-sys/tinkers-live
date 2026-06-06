@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Order History</title>
+
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/additions.css">
+</head>
+
+<body>
+
+<header class="header">
+  <div class="container">
+    <h2>Order History</h2>
+    <nav>
+      <a href="index.html">Home</a>
+    </nav>
+  </div>
+</header>
+
+<main style="max-width:900px; margin:40px auto;">
+
+  <h2>📦 Your Orders</h2>
+
+  <div id="ordersList"></div>
+
+</main>
+
+<script>
+
+  const orders = JSON.parse(localStorage.getItem("orderHistory") || "[]");
+
+  const container = document.getElementById("ordersList");
+
+  if(orders.length === 0){
+    container.innerHTML = "<p>No orders found ❌</p>";
+  } else {
+
+    let html = "";
+
+    orders.reverse().forEach(order => {
+
+      let itemsHTML = "";
+
+      order.items.forEach(item => {
+        itemsHTML += `
+          <p>${item.name} x${item.qty} - R${item.subtotal}</p>
+        `;
+      });
+
+      html += `
+        <div style="
+          background:white;
+          padding:20px;
+          margin-bottom:20px;
+          border-radius:10px;
+        ">
+
+          <h3>Order ID: ${order.orderID}</h3>
+
+          <p><strong>Date:</strong> ${order.date}</p>
+          <p><strong>Name:</strong> ${order.customer.name}</p>
+          <p><strong>Phone:</strong> ${order.customer.phone}</p>
+          <p><strong>Delivery:</strong> ${order.customer.delivery}</p>
+
+          <hr>
+
+          ${itemsHTML}
+
+          <h3>Total: R${order.total}</h3>
+
+        </div>
+      `;
+    });
+
+    container.innerHTML = html;
+  }
+
+</script>
+
+</body>
+</html>
