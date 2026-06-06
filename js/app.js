@@ -2,9 +2,7 @@
 
 const URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1";
 
-/* ===============================
-   CART
-================================ */
+/* CART */
 function readCart(){
   return JSON.parse(localStorage.getItem("cart") || "[]");
 }
@@ -16,14 +14,11 @@ function writeCart(cart){
 function updateCartCount(){
   const el = document.getElementById("cartCount");
   if(!el) return;
-
   const total = readCart().reduce((s,i) => s + i.qty, 0);
   el.textContent = total;
 }
 
-/* ===============================
-   LOAD PRODUCTS
-================================ */
+/* LOAD */
 async function loadProducts(){
   const res = await fetch(URL);
   const data = await res.json();
@@ -37,9 +32,7 @@ async function loadProducts(){
   }));
 }
 
-/* ===============================
-   ADD TO CART
-================================ */
+/* ADD TO CART */
 function addToCart(id){
   let cart = readCart();
   const item = cart.find(i => i.id === id);
@@ -49,64 +42,53 @@ function addToCart(id){
 
   writeCart(cart);
   updateCartCount();
-
-  console.log("✅ Added:", id);
 }
 
-/* ===============================
-   CARD BUILDER ✅ FIXED IMAGE
-================================ */
+/* CARD */
 function buildCard(p){
   return `
     <div class="card">
-      <img src="images/${p.image}" alt="${p.name}">
+      <img src="images/${p.image}">
       <h3>${p.name}</h3>
-      <p class="price">R${p.price}</p>
-      <button onclick="addToCart('${p.id}')">Add to cart</button>
+      <p>R${p.price}</p>
+      <button class="add-btn" data-id="${p.id}">Add to cart</button>
     </div>
   `;
 }
 
-/* ===============================
-   RENDER FUNCTIONS
-================================ */
-function render(id, products){
-  const el = document.getElementById(id);
+/* RENDER */
+function render(elId, products){
+  const el = document.getElementById(elId);
   if(!el) return;
-
   el.innerHTML = products.map(buildCard).join("");
 }
 
-/* ===============================
-   FILTERS ✅ FIXED
-================================ */
+/* FILTER */
 function setupFilters(products){
-
-  document.querySelectorAll(".filters a").forEach(btn => {
-
-    btn.addEventListener("click", (e)=>{
+  document.querySelectorAll(".filters a").forEach(btn=>{
+    btn.addEventListener("click", e=>{
       e.preventDefault();
 
       const cat = btn.dataset.filter;
 
-      const filtered = cat === "All"
+      const filtered = cat==="All"
         ? products
-        : products.filter(p => p.category === cat);
+        : products.filter(p=>p.category===cat);
 
       render("products", filtered);
-
-      // ✅ active button style
-      document.querySelectorAll(".filters a").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
     });
-
   });
-
 }
 
-/* ===============================
-   ANIMATION
-================================ */
+/* CLICK HANDLER */
+document.addEventListener("click", function(e){
+  if(e.target.classList.contains("add-btn")){
+    const id = e.target.dataset.id;
+    addToCart(id);
+  }
+});
+
+/* SCROLL ANIMATION */
 function animate(){
   document.querySelectorAll(".fade-in").forEach(el=>{
     if(el.getBoundingClientRect().top < window.innerHeight - 100){
@@ -117,29 +99,15 @@ function animate(){
 
 window.addEventListener("scroll", animate);
 
-/* ===============================
-   INIT ✅ CLEAN + CORRECT
-================================ */
+/* INIT */
 document.addEventListener("DOMContentLoaded", async ()=>{
-
   const products = await loadProducts();
 
   updateCartCount();
 
-  /* ✅ SPLIT PRODUCTS (NO DUPLICATION) */
-  const featured = products.slice(0,4);
-  const trending = products.slice(4,10);
-  const shop = products.slice(10);
-
-  render("featuredProducts", featured);
-  render("trendingProducts", trending);
-  render("products", shop);
+  render("featuredProducts", products.slice(0,4));
+  render("trendingProducts", products.slice(4,10));
+  render("products", products.slice(10));
 
   setupFilters(products);
-
 });
-
-/* ===============================
-   GLOBAL
-================================ */
-window.addToCart = addToCart;
