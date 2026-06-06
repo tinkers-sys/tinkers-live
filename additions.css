@@ -120,3 +120,42 @@ button {
   border: none;
   border-radius: 6px;
 }
+/* ============================
+   ✅ FINAL GRID FIX (WORKING)
+============================ */
+
+/* FULL WIDTH CONTAINER */
+#cart {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+  gap: 20px;
+
+  width: 100%;
+}
+
+/* CARD */
+.checkout-card {
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: auto !important;
+}
+
+/* IMAGE */
+.checkout-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: contain;
+}
+
+/* BUTTON CONTROLS */
+.qty-controls {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
