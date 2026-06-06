@@ -354,3 +354,27 @@ window.removeItem = removeItem;
 window.clearCart = clearCart;
 window.whatsappCart = whatsappCart;
 window.payflexCheckout = payflexCheckout;
+
+function renderFeatured(products) {
+
+  const container = document.getElementById("featuredProducts");
+  if (!container) return;
+
+  // ✅ Simulate AI (top 4 products)
+  const selected = products
+    .sort((a, b) => (b.stock - a.stock)) // example logic
+    .slice(0, 4);
+
+  container.innerHTML = "";
+
+  selected.forEach(p => {
+    container.innerHTML += `
+      <div class="card">
+        <img src="images/${p.image}">
+        <h3>${p.name}</h3>
+        <p class="price">R${p.price}</p>
+        <button onclick="addToCart('${p.id}')">Add to cart</button>
+      </div>
+    `;
+  });
+}
