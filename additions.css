@@ -346,3 +346,7 @@ nav {
 .featured {
   border-top: 1px solid #eee;
 }
+.trending {
+  padding: 50px 20px;
+  text-align: center;
+}
