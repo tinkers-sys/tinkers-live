@@ -245,8 +245,8 @@ function payfastCheckout(){
     merchant_key: "46f0cd694581a",// ✅ Test key
     amount: total.toFixed(2),
     item_name: itemName,
-   return_url: https://tinkers-sys.github.io/tinkers-live/success.html,
-   cancel_url: https://tinkers-sys.github.io/tinkers-live/cancel.html",
+   return_url: "https://tinkers-sys.github.io/tinkers-live/success.html",
+   cancel_url: "https://tinkers-sys.github.io/tinkers-live/cancel.html",
    
   });
 
