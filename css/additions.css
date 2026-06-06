@@ -6,18 +6,14 @@ body {
   font-family: Arial, sans-serif;
 }
 
-/* ======================
-   HEADER
-====================== */
+/* HEADER */
 .header .container {
   display: flex;
   justify-content: space-between;
   padding: 15px;
 }
 
-/* ======================
-   FILTERS
-====================== */
+/* FILTERS */
 .filters {
   display: flex;
   gap: 10px;
@@ -31,9 +27,7 @@ body {
   text-decoration: none;
 }
 
-/* ======================
-   PRODUCT GRID (HOME)
-====================== */
+/* HOME GRID */
 .product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
@@ -41,7 +35,6 @@ body {
   padding: 20px;
 }
 
-/* PRODUCT CARD */
 .card {
   background: white;
   padding: 15px;
@@ -55,134 +48,42 @@ body {
   object-fit: contain;
 }
 
-/* ======================
-   ✅ CHECKOUT GRID
-====================== */
-
+/* ✅ CHECKOUT GRID */
 .checkout-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
-  width: 100%;
   padding: 20px 0;
-  justify-items: center;
 }
 
-/* CHECKOUT CARD */
 .checkout-card {
   background: #fff;
   padding: 15px;
   border-radius: 12px;
   text-align: center;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  max-width: 300px;
-  width: 100%;
 }
 
-/* IMAGE CONTROL */
 .checkout-card img {
   width: 180px;
   height: 180px;
   object-fit: contain;
-  margin: 0 auto;
 }
 
-/* ======================
-   ✅ BACK TO SHOP LINK
-====================== */
-a[href="index.html"] {
-  color: #c55a11 !important;
-  font-weight: bold;
-  text-decoration: none;
-}
-
-a[href="index.html"]:hover {
-  text-decoration: underline;
-}
-
-/* ======================
-   QUANTITY CONTROLS
-====================== */
-.qty-controls {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-}
-/* ============================
-   ✅ FORCE ALL CHECKOUT BUTTONS (WORKING FIX)
-============================ */
-
-/* ALL BUTTONS INSIDE CHECKOUT */
-#cart button {
-  background-color: #c55a11 !important;
+/* BUTTONS */
+.checkout-grid button,
+button[onclick] {
+  background: #c55a11 !important;
   color: white !important;
   border: none !important;
-  border-radius: 6px !important;
-  padding: 6px 12px !important;
-  cursor: pointer;
-  font-weight: 600;
+  border-radius: 6px;
 }
 
-/* HOVER */
-#cart button:hover {
-  background-color: #8c3d0a !important;
-}
-
-/* REMOVE BUTTON (LAST BUTTON IN CARD) */
-.checkout-card button:last-child {
-  background-color: #e74c3c !important;
-}
-
-.checkout-card button:last-child:hover {
-  background-color: #c0392b !important;
-}
-
-/* CLEAR CART BUTTON */
-button[onclick="clearCart()"] {
-  background-color: #2e86de !important;
-}
-
-button[onclick="clearCart()"]:hover {
-  background-color: #1b4f72 !important;
-}
-/* ============================
-   ✅ HARD OVERRIDE (FINAL FIX)
-============================ */
-
-/* TARGET EVERY BUTTON IN CHECKOUT GRID */
-.checkout-grid button {
-  background: #c55a11 !important;
-  color: #ffffff !important;
-  border: none !important;
-  border-radius: 6px !important;
-  padding: 6px 12px !important;
-}
-
-/* HOVER */
-.checkout-grid button:hover {
-  background: #8c3d0a !important;
-}
-
-/* REMOVE BUTTON (LAST BUTTON IN CARD) */
+/* REMOVE */
 .checkout-card button:last-child {
   background: #e74c3c !important;
 }
 
-.checkout-card button:last-child:hover {
-  background: #c0392b !important;
-}
-
-/* CLEAR CART BUTTON */
+/* CLEAR */
 button[onclick="clearCart()"] {
   background: #2e86de !important;
-  color: white !important;
 }
-
-button[onclick="clearCart()"]:hover {
-  background: #1b4f72 !important;
-}
-
