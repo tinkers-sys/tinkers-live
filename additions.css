@@ -168,3 +168,57 @@ button {
   border: none;
   cursor: pointer;
 }
+/* BACK TO SHOPPING LINK */
+a[href="index.html"] {
+  color: #c55a11;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+a[href="index.html"]:hover {
+  text-decoration: underline;
+}
+``
+/* ============================
+   ✅ FORCE BUTTON COLORS (FINAL FIX)
+============================ */
+
+/* ALL BUTTONS BASE */
+button {
+  background-color: #c55a11 !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+button:hover {
+  background-color: #8c3d0a !important;
+}
+
+/* + and - buttons */
+.qty-controls button {
+  background-color: #c55a11 !important;
+  color: white !important;
+}
+
+.qty-controls button:hover {
+  background-color: #8c3d0a !important;
+}
+
+/* REMOVE button */
+.checkout-card button:last-child {
+  background-color: #e74c3c !important;
+}
+
+.checkout-card button:last-child:hover {
+  background-color: #c0392b !important;
+}
+
+/* CLEAR CART button */
+button[onclick="clearCart()"] {
+  background-color: #2e86de !important;
+}
+
+button[onclick="clearCart()"]:hover {
+  background-color: #1b4f72 !important;
+}
+
