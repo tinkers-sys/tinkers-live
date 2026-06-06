@@ -87,6 +87,16 @@ button[onclick] {
 button[onclick="clearCart()"] {
   background: #2e86de !important;
 }
+nav a {
+  margin-left: 15px;
+  font-weight: bold;
+  color: #c55a11;
+  text-decoration: none;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
 .checkout-actions {
   display: flex;
   flex-wrap: wrap;
