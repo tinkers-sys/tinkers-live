@@ -1,7 +1,9 @@
 <script>
-  // ✅ SET FLAG (NOT CLEAR DIRECTLY)
+  // ✅ SET FLAG
   localStorage.setItem("paymentSuccess", "true");
 
-  // ✅ REDIRECT BACK
-  window.location.href = "/tinkers-live/index.html";
+  // ✅ WAIT before redirecting (VERY IMPORTANT)
+  setTimeout(function(){
+    window.location.href = "/tinkers-live/index.html";
+  }, 1000); // 1 second delay
 </script>
