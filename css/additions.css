@@ -1,257 +1,188 @@
-/* ==================================
-   DO NOT BREAK BASE STYLES
-   (ONLY ENHANCE)
-================================== */
-
-/* ==================================
-   CONTAINER
-==================================*/
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
+/* ======================
+   GLOBAL
+====================== */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
 }
 
-/* ==================================
-   NAV + HEADER FIX (SAFE)
-==================================*/
+/* ======================
+   HEADER
+====================== */
 .header .container {
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  padding: 15px;
 }
 
-nav {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-}
-
-/* ==================================
-   FILTER BUTTONS
-==================================*/
+/* ======================
+   FILTERS
+====================== */
 .filters {
   display: flex;
   gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 10px;
+  padding: 10px;
 }
 
 .filters a {
-  padding: 6px 12px;
   background: #eee;
+  padding: 6px 10px;
   border-radius: 6px;
   text-decoration: none;
-  color: #333;
 }
 
-.filters a:hover {
-  background: #c55a11;
-  color: white;
+/* ======================
+   PRODUCT GRID (HOME)
+====================== */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px,1fr));
+  gap: 20px;
+  padding: 20px;
 }
 
-/* ==================================
-   BACK BUTTON
-==================================*/
-.btn-back {
-  display: inline-block;
-  margin-bottom: 15px;
-  color: #c55a11;
+/* PRODUCT CARD */
+.card {
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.card img {
+  width: 100%;
+  height: 150px;
+  object-fit: contain;
+}
+
+/* ======================
+   ✅ CHECKOUT GRID
+====================== */
+
+.checkout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  width: 100%;
+  padding: 20px 0;
+  justify-items: center;
+}
+
+/* CHECKOUT CARD */
+.checkout-card {
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+  text-align: center;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  max-width: 300px;
+  width: 100%;
+}
+
+/* IMAGE CONTROL */
+.checkout-card img {
+  width: 180px;
+  height: 180px;
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+/* ======================
+   ✅ BACK TO SHOP LINK
+====================== */
+a[href="index.html"] {
+  color: #c55a11 !important;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+a[href="index.html"]:hover {
+  text-decoration: underline;
+}
+
+/* ======================
+   QUANTITY CONTROLS
+====================== */
+.qty-controls {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+}
+/* ============================
+   ✅ FORCE ALL CHECKOUT BUTTONS (WORKING FIX)
+============================ */
+
+/* ALL BUTTONS INSIDE CHECKOUT */
+#cart button {
+  background-color: #c55a11 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 6px 12px !important;
+  cursor: pointer;
   font-weight: 600;
 }
 
-/* ==================================
-   PRODUCT GRID
-==================================*/
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 25px;
+/* HOVER */
+#cart button:hover {
+  background-color: #8c3d0a !important;
 }
 
-/* ==================================
-   PRODUCT CARD
-==================================*/
-.card {
-  background: #fff;
-  border-radius: 14px;
-  padding: 18px;
-  text-align: center;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
+/* REMOVE BUTTON (LAST BUTTON IN CARD) */
+.checkout-card button:last-child {
+  background-color: #e74c3c !important;
 }
 
-/* IMAGE */
-.card img {
-  width: 100%;
-  height: 180px;
-  object-fit: contain;
-  margin-bottom: 10px;
+.checkout-card button:last-child:hover {
+  background-color: #c0392b !important;
 }
 
-/* TEXT */
-.card h3 {
-  font-size: 15px;
-  margin: 5px 0;
+/* CLEAR CART BUTTON */
+button[onclick="clearCart()"] {
+  background-color: #2e86de !important;
 }
 
-.card .price {
-  font-weight: bold;
-  color: #c55a11;
+button[onclick="clearCart()"]:hover {
+  background-color: #1b4f72 !important;
+}
+/* ============================
+   ✅ HARD OVERRIDE (FINAL FIX)
+============================ */
+
+/* TARGET EVERY BUTTON IN CHECKOUT GRID */
+.checkout-grid button {
+  background: #c55a11 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 6px !important;
+  padding: 6px 12px !important;
 }
 
-/* STOCK TEXT */
-.stock-note {
-  font-size: 12px;
-  color: #666;
-  margin-top: 4px;
+/* HOVER */
+.checkout-grid button:hover {
+  background: #8c3d0a !important;
 }
 
-/* ==================================
-   BADGES (FIXED SIZE)
-==================================*/
-.badge {
-  font-size: 10px;
-  padding: 3px 6px;
-  border-radius: 6px;
-  display: inline-block;
-  margin-bottom: 6px;
+/* REMOVE BUTTON (LAST BUTTON IN CARD) */
+.checkout-card button:last-child {
+  background: #e74c3c !important;
 }
 
-.badge.low {
-  background: #ffe5cc;
-  color: #c55a11;
+.checkout-card button:last-child:hover {
+  background: #c0392b !important;
 }
 
-.badge.out {
-  background: #f8d7da;
-  color: #a94442;
+/* CLEAR CART BUTTON */
+button[onclick="clearCart()"] {
+  background: #2e86de !important;
+  color: white !important;
 }
 
-/* ==================================
-   CHECKOUT GRID (FIXED)
-==================================*/
-#cart .checkout-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 20px;
+button[onclick="clearCart()"]:hover {
+  background: #1b4f72 !important;
 }
 
-/* ==================================
-   CHECKOUT CARD (ALIGNED)
-==================================*/
-.checkout-card {
-  background: #fff;
-  border-radius: 12px;
-  padding: 15px;
-  text-align: center;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  height: 100%;
-  box-shadow: 0 6px 15px rgba(0,0,0,0.06);
-}
-
-/* IMAGE */
-.checkout-img {
-  width: 100%;
-  height: 140px;
-  object-fit: contain;
-}
-
-/* TEXT */
-.checkout-card h3 {
-  font-size: 14px;
-  margin: 5px 0;
-}
-
-.checkout-card .price {
-  color: #c55a11;
-  font-weight: bold;
-}
-
-/* ==================================
-   QUANTITY
-==================================*/
-.qty-row {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.qty-row button {
-  padding: 4px 10px;
-  border: none;
-  background: #ddd;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.qty-row button:hover {
-  background: #c55a11;
-  color: white;
-}
-
-/* ==================================
-   REMOVE BUTTON
-==================================*/
-.remove-btn {
-  margin-top: 8px;
-  padding: 6px 12px;
-  border-radius: 6px;
-  background: #ffeaea;
-  color: #c55a11;
-  border: none;
-}
-
-/* ==================================
-   CHECKOUT SUMMARY
-==================================*/
-.total-box {
-  font-size: 20px;
-  font-weight: bold;
-  color: #c55a11;
-}
-
-.checkout-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-/* BUTTONS */
-.btn-clear {
-  border: 2px solid #c55a11;
-  color: #c55a11;
-  padding: 12px;
-  border-radius: 10px;
-}
-
-.btn-whatsapp {
-  background: #25D366;
-  color: white;
-  padding: 12px;
-  border-radius: 10px;
-}
-
-.btn-payflex {
-  background: linear-gradient(45deg, #6c5ce7, #8e7dff);
-  color: white;
-  padding: 12px;
-  border-radius: 10px;
-}
-
-.btn-payfast {
-  background: #2e86de;
-  color: white;
-  padding: 12px;
-  border-radius: 10px;
-}
-``
