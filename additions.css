@@ -49,39 +49,59 @@ body {
   object-fit: contain;
 }
 
-/* ======================
-   ✅ CHECKOUT GRID FIX
-====================== */
+/* ============================
+   ✅ FINAL CHECKOUT GRID FIX
+============================ */
 
-/* FORCE GRID ALWAYS */
+/* ✅ GRID CONTAINER */
 #cart {
   display: grid !important;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)) !important;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) !important;
   gap: 20px;
 
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
+  padding: 20px;
 }
 
-/* Cards inside checkout */
+/* ✅ CARD (REMOVE FULL WIDTH ISSUE) */
 .checkout-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-
-  width: 100% !important;
-
-  background: white;
+  background: #fff;
   padding: 15px;
   border-radius: 12px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  /* ✅ IMPORTANT FIX */
+  width: auto !important;
+  max-width: 100%;
 }
 
-/* Image fix */
+/* ✅ IMAGE FIX */
 .checkout-card img {
   width: 100%;
-  height: 150px;
+  height: 180px;
   object-fit: contain;
+}
+
+/* ✅ TEXT ALIGN */
+.checkout-card h3 {
+  text-align: center;
+  font-size: 14px;
+}
+
+/* ✅ BUTTONS */
+.qty-controls {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.qty-controls button {
+  padding: 6px 10px;
 }
 
 /* Quantity controls */
