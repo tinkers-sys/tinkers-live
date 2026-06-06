@@ -68,7 +68,6 @@ body {
   padding: 20px 0;
 }
 
-/* CHECKOUT CARD */
 .checkout-card {
   background: #fff;
   padding: 15px;
@@ -77,23 +76,25 @@ body {
 
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  align-items: center;
+
+  /* ✅ VERY IMPORTANT FIX */
+  max-width: 300px;
+  margin: 0 auto;
 }
 
-/* IMAGE */
 .checkout-card img {
-  width: 100%;
-  height: 160px;
+  width: 180px;       /* ✅ FIXED SIZE */
+  height: 180px;
   object-fit: contain;
 }
 
-/* QUANTITY CONTROLS */
+/* CONTROLS */
 .qty-controls {
   display: flex;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
 }
-
 /* BUTTONS */
 button {
   padding: 10px;
