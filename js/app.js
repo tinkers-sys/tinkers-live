@@ -77,7 +77,7 @@ function render(id, products) {
 }
 
 /* ===============================
-   FILTER FUNCTION
+   ✅ FIXED FILTER FUNCTION
 ================================ */
 function setupFilters(products){
 
@@ -89,39 +89,28 @@ function setupFilters(products){
     btn.addEventListener("click", function(e){
       e.preventDefault();
 
-      const selected = this.dataset.filter
-        .toLowerCase()
-        .trim();
+      const selected = this.dataset.filter.toLowerCase().trim();
 
       let filtered;
 
       if(selected === "all"){
         filtered = products;
 
-        // ✅ SHOW ALL SECTIONS AGAIN
         if(featuredSection) featuredSection.style.display = "block";
         if(trendingSection) trendingSection.style.display = "block";
 
       } else {
 
-     filtered = products.filter(p =>
-  (p.category || "")
-    .toLowerCase()
-    .trim()
-    .includes(selected)
-);
-        if(filtered.length === 0){
-  console.log("No products found for:", selected);
-} 
+        filtered = products.filter(p =>
+          p.category === selected
+        );
 
-        // ✅ HIDE OTHER SECTIONS
         if(featuredSection) featuredSection.style.display = "none";
         if(trendingSection) trendingSection.style.display = "none";
       }
 
       render("products", filtered);
 
-      // ✅ Update heading
       const title = document.getElementById("sectionTitle");
       if(title){
         title.innerText =
@@ -129,32 +118,6 @@ function setupFilters(products){
             ? "Our Collection"
             : "Showing: " + this.dataset.filter;
       }
-
-      // ✅ Scroll to results
-      document.getElementById("products")
-        .scrollIntoView({ behavior: "smooth" });
-
-    });
-
-  });
-
-}
-
-      // ✅ replace ALL products shown
-      render("products", filtered);
-
-      // ✅ update heading
-      const title = document.getElementById("sectionTitle");
-      if(title){
-        title.innerText =
-          selected === "all"
-            ? "Our Collection"
-            : "Showing: " + this.dataset.filter;
-      }
-
-      // ✅ optional auto-scroll
-      document.getElementById("products")
-        .scrollIntoView({ behavior: "smooth" });
 
     });
 
@@ -172,7 +135,7 @@ document.addEventListener("click", function (e) {
 });
 
 /* ===============================
-   CHECKOUT RENDER (FINAL FIX ✅)
+   CHECKOUT RENDER
 ================================ */
 function renderCheckout(){
 
@@ -183,9 +146,7 @@ function renderCheckout(){
 
   const cart = readCart();
 
-  // ✅ Create grid wrapper FIRST
   cartEl.innerHTML = '<div class="checkout-grid"></div>';
-
   const grid = cartEl.querySelector(".checkout-grid");
 
   if(!cart.length){
@@ -195,8 +156,6 @@ function renderCheckout(){
   }
 
   let total = 0;
-
-  grid.innerHTML = "";
 
   cart.forEach(item => {
 
@@ -226,7 +185,6 @@ function renderCheckout(){
 
   totalEl.textContent = "R" + total;
 }
-
 
 /* ===============================
    CART CONTROLS
@@ -278,7 +236,5 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   setupFilters(products);
 
-  /* ✅ LOAD CHECKOUT IF PAGE HAS CART */
   renderCheckout();
 });
-``
