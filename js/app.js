@@ -16,6 +16,7 @@ function writeCart(cart){
 function updateCartCount(){
   const el = document.getElementById("cartCount");
   if(!el) return;
+
   const total = readCart().reduce((s,i) => s + i.qty, 0);
   el.textContent = total;
 }
@@ -30,7 +31,7 @@ async function loadProducts(){
   return data.map(p => ({
     id: String(p.id || p.ID),
     name: p.name,
-    category: p.category,
+    category: (p.category || "").trim(),
     image: p.image,
     price: Number(p.price)
   }));
@@ -51,12 +52,12 @@ function addToCart(id){
 }
 
 /* ===============================
-   CARD
+   CARD (FIXED)
 ================================ */
 function buildCard(p){
   return `
     <div class="card">
-      <img src="images/${p.image}">
+      <img src="images/${p.image}" alt="${p.name}">
       <h3>${p.name}</h3>
       <p class="price">R${p.price}</p>
       <button class="add-btn" data-id="${p.id}">Add to cart</button>
@@ -74,13 +75,9 @@ function render(id, products){
 }
 
 /* ===============================
-   FILTER ✅ FIXED LOGIC
+   FILTER (FIXED PROPERLY)
 ================================ */
 function setupFilters(products){
-
-  const featured = document.querySelector(".featured");
-  const trending = document.querySelector(".trending");
-  const title = document.getElementById("sectionTitle");
 
   document.querySelectorAll(".filters a").forEach(btn => {
 
@@ -89,34 +86,24 @@ function setupFilters(products){
 
       const cat = btn.dataset.filter;
 
-      if(cat === "All"){
-        render("products", products.slice(10));
-        featured.style.display = "block";
-        trending.style.display = "block";
-        title.innerText = "Our Collection";
+      const filtered = cat === "All"
+        ? products.slice(10)
+        : products.filter(p =>
+            p.category.toLowerCase() === cat.toLowerCase()
+          );
 
-      } else {
-        const filtered = products.filter(p =>
-          p.category &&
-          p.category.trim().toLowerCase() === cat.toLowerCase()
-        );
+      render("products", filtered);
 
-        render("products", filtered);
-
-        featured.style.display = "none";
-        trending.style.display = "none";
-
-        title.innerText = "Showing: " + cat;
-      }
-
+      // ✅ update text
+      const title = document.getElementById("sectionTitle");
+      title.innerText = cat === "All" ? "Our Collection" : "Showing: " + cat;
     });
 
   });
-
 }
 
 /* ===============================
-   CLICK HANDLER
+   CLICK HANDLER (SAFE)
 ================================ */
 document.addEventListener("click", function(e){
   if(e.target.classList.contains("add-btn")){
