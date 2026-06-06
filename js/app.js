@@ -1,24 +1,3 @@
-document.addEventListener("DOMContentLoaded", async () => {
-
-  // ✅ FORCE CLEAR CART AFTER PAYFAST SUCCESS
-  if(window.location.href.includes("success.html")){
-    localStorage.removeItem("cart");
-  }
-
-  const products = await loadProducts();
-  window.__products = products;
-
-  updateCartCount();
-
-  render("featuredProducts", products.slice(0,4));
-  render("trendingProducts", products.slice(4,10));
-  render("products", products);
-
-  setupFilters(products);
-
-  renderCheckout();
-});
-
 "use strict";
 
 const URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1";
@@ -380,6 +359,26 @@ function whatsappOrder(){
 /* ===============================
    INIT
 ================================ */
+document.addEventListener("DOMContentLoaded", async () => {
+
+  // ✅ FORCE CLEAR CART AFTER PAYFAST SUCCESS
+  if(window.location.href.includes("success.html")){
+    localStorage.removeItem("cart");
+  }
+
+  const products = await loadProducts();
+  window.__products = products;
+
+  updateCartCount();
+
+  render("featuredProducts", products.slice(0,4));
+  render("trendingProducts", products.slice(4,10));
+  render("products", products);
+
+  setupFilters(products);
+
+  renderCheckout();
+});
 document.addEventListener("DOMContentLoaded", async () => {
 
   const products = await loadProducts();
