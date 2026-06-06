@@ -128,9 +128,7 @@ function setupFilters(products){
   });
 
 }
-if(filtered.length === 0){
-  render("products", products);
-}
+
 
 /* ===============================
    CLICK HANDLER
