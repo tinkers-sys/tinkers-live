@@ -79,27 +79,47 @@ function render(id, products) {
 /* ===============================
    FILTER FUNCTION
 ================================ */
-function setupFilters(products) {
+function setupFilters(products){
+
   document.querySelectorAll(".filters a").forEach(btn => {
-    btn.addEventListener("click", function (e) {
+
+    btn.addEventListener("click", function(e){
       e.preventDefault();
 
-      const category = this.dataset.filter.toLowerCase();
+      const selected = this.dataset.filter
+        .trim()
+        .toLowerCase();
 
-      const filtered = category === "all"
-        ? products
-        : products.filter(p => p.category === category);
+      let filtered;
 
+      if(selected === "all"){
+        filtered = products;
+      } else {
+        filtered = products.filter(p =>
+          (p.category || "").trim().toLowerCase() === selected
+        );
+      }
+
+      // ✅ replace ALL products shown
       render("products", filtered);
 
+      // ✅ update heading
       const title = document.getElementById("sectionTitle");
-      if (title) {
-        title.innerText = category === "all"
-          ? "Our Collection"
-          : "Showing: " + this.dataset.filter;
+      if(title){
+        title.innerText =
+          selected === "all"
+            ? "Our Collection"
+            : "Showing: " + this.dataset.filter;
       }
+
+      // ✅ optional auto-scroll
+      document.getElementById("products")
+        .scrollIntoView({ behavior: "smooth" });
+
     });
+
   });
+
 }
 
 /* ===============================
