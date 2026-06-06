@@ -4,7 +4,6 @@
   --bg: #fdfaf5;
 }
 
-/* GLOBAL */
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
@@ -22,52 +21,34 @@ nav a {
   margin-left: 15px;
 }
 
-/* FILTERS */
+/* FILTER BUTTONS */
 .filters {
-  padding: 10px 20px;
   display: flex;
   gap: 10px;
+  padding: 10px 20px;
 }
 
 .filters a {
   background: #eee;
   padding: 6px 10px;
   border-radius: 6px;
+  text-decoration: none;
 }
 
 /* HERO */
 .hero-banner {
-  height: 90vh;
-  background: linear-gradient(rgba(50,30,10,0.7), rgba(50,30,10,0.7)),
+  height: 80vh;
+  background: linear-gradient(rgba(60,40,20,0.6), rgba(60,40,20,0.6)),
               url("../images/hero-bg.jpg");
-
   background-size: cover;
-  background-position: center;
-
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
-
   color: white;
 }
 
 .hero-banner h1 {
-  font-size: 48px;
-  font-weight: 900;
-}
-
-.hero-sub {
-  margin-top: 10px;
-}
-
-/* BUTTON */
-.btn-primary {
-  margin-top: 20px;
-  display: inline-block;
-  padding: 12px 24px;
-  background: var(--primary);
-  color: white;
+  font-size: 42px;
 }
 
 /* GRID */
@@ -84,18 +65,17 @@ nav a {
   padding: 20px;
   border-radius: 14px;
   text-align: center;
-
   transition: 0.3s;
 }
 
 .card:hover {
-  transform: translateY(-6px);
+  transform: translateY(-5px);
 }
 
 .card img {
-  height: 180px;
-  object-fit: contain;
   width: 100%;
+  height: 160px;
+  object-fit: contain;
 }
 
 .price {
@@ -103,10 +83,19 @@ nav a {
   font-weight: bold;
 }
 
-/* FADE-IN */
+/* BUTTON */
+.card button {
+  margin-top: 10px;
+  padding: 10px;
+  background: var(--primary);
+  color: white;
+  border-radius: 8px;
+}
+
+/* ANIMATION */
 .fade-in {
   opacity: 0;
-  transform: translateY(40px);
+  transform: translateY(30px);
   transition: 0.7s;
 }
 
