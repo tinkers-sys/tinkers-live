@@ -52,7 +52,7 @@ function addToCart(id){
 }
 
 /* ===============================
-   CARD (FIXED)
+   CARD
 ================================ */
 function buildCard(p){
   return `
@@ -71,13 +71,16 @@ function buildCard(p){
 function render(id, products){
   const el = document.getElementById(id);
   if(!el) return;
+
   el.innerHTML = products.map(buildCard).join("");
 }
 
 /* ===============================
-   FILTER (FIXED PROPERLY)
+   FILTER (FINAL FIX ✅)
 ================================ */
-function setupFilters(products){
+function setupFilters(){
+
+  const shopProducts = window.__shopProducts;
 
   document.querySelectorAll(".filters a").forEach(btn => {
 
@@ -86,24 +89,36 @@ function setupFilters(products){
 
       const cat = btn.dataset.filter;
 
-      const filtered = cat === "All"
-        ? products.slice(10)
-        : products.filter(p =>
-            p.category.toLowerCase() === cat.toLowerCase()
-          );
+      const filtered =
+        cat === "All"
+          ? shopProducts
+          : shopProducts.filter(p =>
+              p.category.toLowerCase() === cat.toLowerCase()
+            );
 
       render("products", filtered);
 
-      // ✅ update text
+      // ✅ update title
       const title = document.getElementById("sectionTitle");
-      title.innerText = cat === "All" ? "Our Collection" : "Showing: " + cat;
+      if(title){
+        title.innerText =
+          cat === "All"
+            ? "Our Collection"
+            : "Showing: " + cat;
+      }
+
+      // ✅ active style
+      document.querySelectorAll(".filters a").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
     });
 
   });
+
 }
 
 /* ===============================
-   CLICK HANDLER (SAFE)
+   CLICK HANDLER
 ================================ */
 document.addEventListener("click", function(e){
   if(e.target.classList.contains("add-btn")){
@@ -112,7 +127,7 @@ document.addEventListener("click", function(e){
 });
 
 /* ===============================
-   INIT
+   INIT (CRITICAL FIX ✅)
 ================================ */
 document.addEventListener("DOMContentLoaded", async ()=>{
 
@@ -120,10 +135,18 @@ document.addEventListener("DOMContentLoaded", async ()=>{
 
   updateCartCount();
 
-  render("featuredProducts", products.slice(0,4));
-  render("trendingProducts", products.slice(4,10));
-  render("products", products.slice(10));
+  // ✅ SPLIT DATA CORRECTLY
+  const featured = products.slice(0,4);
+  const trending = products.slice(4,10);
+  const shop = products.slice(10);
 
-  setupFilters(products);
+  // ✅ STORE ONLY SHOP
+  window.__shopProducts = shop;
+
+  render("featuredProducts", featured);
+  render("trendingProducts", trending);
+  render("products", shop);
+
+  setupFilters();
 
 });
