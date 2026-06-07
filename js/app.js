@@ -154,12 +154,19 @@ document.addEventListener("click", function(e){
 ================================ */
 document.addEventListener("DOMContentLoaded", async () => {
 
+  // ✅ LOAD PRODUCTS FIRST (VERY IMPORTANT)
   const products = await loadProducts();
   window.__products = products;
 
+  // ✅ UPDATE CART COUNT
   updateCartCount();
 
+  // ✅ RENDER STORE IF EXISTS
   render("products", products);
+
+  // ✅ FILTERS
   setupFilters(products);
 
+  // ✅ ✅ ALWAYS RENDER CHECKOUT (FIX)
+  renderCheckout();
 });
