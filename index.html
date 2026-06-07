@@ -2,31 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tinkers</title>
 
-  <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/additions.css">
 </head>
-<!-- CART DRAWER -->
-<div id="cartDrawer" class="cart-drawer">
-
-  <div class="cart-header">
-    <h3>Your Cart</h3>
-    <button onclick="toggleCart()">✕</button>
-  </div>
-
-  <div id="cartItems"></div>
-
-  <div class="cart-footer">
-    <p>Total: R<span id="cartTotal">0</span></p>
-
-    <button onclick="whatsappOrder()">WhatsApp Checkout</button>
-    <button onclick="payfastCheckout()">PayFast</button>
-    <button onclick="clearCart()">Clear</button>
-  </div>
-
-</div>
 
 <body>
 
@@ -36,55 +15,44 @@
 
     <nav>
       <a href="index.html">Home</a>
-      <a href="orders.html">Orders</a>
-      <a href="dashboard.html">Dashboard</a>
-      <a href="checkout.html">Checkout (<span id="cartCount">0</span>)</a>
+      <a href="checkout.html">Checkout</a>
     </nav>
-  </div>
-
-  <div class="container">
-    <div class="filters">
-      <a href="#" data-filter="all">All</a>
-      <a href="#" data-filter="art">Art</a>
-      <a href="#" data-filter="apparel">Apparel</a>
-      <a href="#" data-filter="accessories">Accessories</a>
-      <a href="#" data-filter="beadwork">Beadwork</a>
-    </div>
   </div>
 </header>
 
 <div class="container">
 
-  <!-- HERO -->
   <section class="hero">
     <h1>Authentic African Craftsmanship</h1>
     <p>Curated pieces that tell real African stories</p>
   </section>
 
-  <!-- TRUST -->
-  <div class="trust-row">
-    <span>✔ Handmade Quality</span>
-    <span>✔ Authentic African Craft</span>
-    <span>✔ Secure Checkout</span>
-  </div>
-
-  <!-- CURATED -->
-  <section class="block" id="featuredSection">
-    <h2 class="section-title">✨ Curated for You</h2>
-    <div id="featuredProducts" class="products"></div>
-  </section>
-
-  <!-- TRENDING -->
-  <section class="block" id="trendingSection">
-    <h2 class="section-title">🔥 Trending Now</h2>
-    <div id="trendingProducts" class="products"></div>
-  </section>
-
-  <!-- MAIN -->
-  <section class="block">
+  <section>
     <h2 class="section-title">Our Collection</h2>
     <div id="products" class="products"></div>
   </section>
+
+</div>
+
+<!-- ✅ CART DRAWER -->
+<div id="cartDrawer" class="cart-drawer">
+
+  <div class="cart-header">
+    <h3>Your Cart</h3>
+    <button onclick="toggleCart()">X</button>
+  </div>
+
+  <div id="cartItems"></div>
+
+  <div class="cart-footer">
+    <p>Total: R<span id="cartTotal">0</span></p>
+
+    <a href="checkout.html">
+      <button>Go to Checkout</button>
+    </a>
+
+    <button onclick="clearCart()">Clear</button>
+  </div>
 
 </div>
 
