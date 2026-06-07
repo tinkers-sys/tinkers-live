@@ -24,6 +24,7 @@ nav a, nav button {
   margin: auto;
 }
 
+/* HERO */
 .hero {
   background: #2c3e50;
   color: white;
@@ -32,35 +33,37 @@ nav a, nav button {
   margin: 20px 0;
 }
 
-/* FILTERS */
+/* FILTERS RIGHT */
 .filters {
   display: flex;
-  justify-content: flex-end; /* ✅ pushes to right */
+  justify-content: flex-end;
   gap: 10px;
-  margin: 15px 0 10px;
+  margin: 15px 0;
 }
 
 .filters a {
   background: #eee;
-  padding: 5px 12px;
-  border-radius: 15px;
+  padding: 6px 12px;
+  border-radius: 20px;
   text-decoration: none;
+  font-size: 13px;
 }
 
-/* PRODUCTS */
+/* PRODUCTS GRID */
 .products {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
   gap: 20px;
 }
 
+/* PRODUCT CARD ALIGNMENT */
 .product-card {
   background: white;
   padding: 15px;
   border-radius: 10px;
   text-align: center;
 
-  display: flex;                 /* ✅ FIX ALIGNMENT */
+  display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
@@ -69,16 +72,16 @@ nav a, nav button {
   width: 100%;
   height: 150px;
   object-fit: contain;
-  margin-bottom: 10px;
 }
 
-
+/* BUTTON */
 .add-btn {
   width: 100%;
   padding: 10px;
-  background: orange;
+  background: linear-gradient(135deg, #f39c12, #e67e22);
   border: none;
   color: white;
+  border-radius: 6px;
   cursor: pointer;
   margin-top: 10px;
 }
@@ -98,21 +101,18 @@ nav a, nav button {
 .cart-drawer.open {
   right: 0;
 }
-.qty-controls {
-  margin-top: 10px;
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
 }
 
+/* QTY BUTTONS */
 .qty-controls button {
   margin: 2px;
   padding: 5px 8px;
   border: none;
   background: #ddd;
   cursor: pointer;
-}
-
-
-.cart-item {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
 }
