@@ -34,11 +34,8 @@ async function loadProducts() {
     category: (p.category || "").toLowerCase(),
     price: Number(p.price),
 
-    images: [
-      p.image,
-      p.image2,
-      p.image3
-    ].filter(Boolean)
+    // ✅ ONLY ONE IMAGE NOW
+    image: p.image
   }));
 }
 
@@ -58,41 +55,17 @@ function addToCart(id) {
 }
 
 /* ===============================
-   IMAGE SWITCH
-================================ */
-function swapImg(id, src){
-  const img = document.getElementById(`img-${id}`);
-  if(img){
-    img.src = `images/${src}`;
-  }
-}
-
-/* ===============================
-   PRODUCT CARD
+   PRODUCT CARD ✅ CLEAN
 ================================ */
 function buildCard(p) {
 
-  const mainImage = p.images[0];
-
   return `
-    <div class="card">
+    <div class="product-card">
 
-      <img 
-        id="img-${p.id}"
-        src="images/${mainImage}"
-        alt="${p.name}"
-        onmouseover="${p.images[1] ? `this.src='images/${p.images[1]}'` : ''}"
-        onmouseout="this.src='images/${mainImage}'"
-      >
+      <img src="images/${p.image}" alt="${p.name}">
 
-      <div class="thumbs">
-        ${p.images.map(img => `
-          <img src="images/${img}" onclick="swapImg('${p.id}','${img}')">
-        `).join("")}
-      </div>
-
-      <h3>${p.name}</h3>
-      <p>R${p.price}</p>
+      <h3 class="product-title">${p.name}</h3>
+      <p class="product-price">R${p.price}</p>
 
       <button class="add-btn" data-id="${p.id}">
         Add to cart
@@ -140,7 +113,6 @@ function setupFilters(products){
 ================================ */
 function renderCheckout(){
 
-  // ✅ WAIT FOR PRODUCTS
   if(!window.__products || window.__products.length === 0){
     setTimeout(renderCheckout, 200);
     return;
@@ -171,7 +143,7 @@ function renderCheckout(){
 
     const price = product.price;
     const name = product.name;
-    const image = product.images?.[0] || "default.jpg";
+    const image = product.image;
 
     const subtotal = price * item.qty;
     total += subtotal;
@@ -233,7 +205,7 @@ function clearCart(){
 }
 
 /* ===============================
-   PAYMENT FUNCTIONS ✅
+   PAYMENT FUNCTIONS
 ================================ */
 function whatsappOrder(){
 
@@ -248,109 +220,32 @@ function whatsappOrder(){
   const phoneInput = document.getElementById("custPhone").value.trim();
   const delivery = document.getElementById("deliveryOption").value;
 
-  // ✅ VALIDATION (CRITICAL)
   if(!name || !phoneInput){
-    alert("Please fill in your Name and Phone Number before ordering ✅");
+    alert("Fill in your Name and Phone Number ✅");
     return;
   }
 
-  let message = `🛍️ Tinkers Order\n\n`;
-  message += `Name: ${name}\n`;
-  message += `Phone: ${phoneInput}\n`;
-  message += `Delivery: ${delivery}\n\n`;
+  let message = `🛍️ Tinkers Order\n\nName: ${name}\nPhone: ${phoneInput}\nDelivery: ${delivery}\n\n`;
 
   let total = 0;
 
   cart.forEach(item => {
     const product = window.__products.find(p => p.id === item.id);
-
     if(product){
       const subtotal = product.price * item.qty;
       total += subtotal;
-
       message += `• ${product.name} x${item.qty} - R${subtotal}\n`;
     }
   });
 
   message += `\nTotal: R${total}`;
 
-  const phone = "27720912943"; // your number
+  const phone = "27720912943";
 
   window.open(
     `https://wa.me/${phone}?text=${encodeURIComponent(message)}`,
     "_blank"
   );
-}
-function payfastCheckout(){
-
-  const cart = readCart();
-
-  if(cart.length === 0){
-    alert("Cart is empty ❌");
-    return;
-  }
-
-  let total = 0;
-  let orderItems = [];
-
-  cart.forEach(item => {
-
-    const product = window.__products.find(p => p.id === item.id);
-
-    if(product){
-      const subtotal = product.price * item.qty;
-
-      total += subtotal;
-
-      // ✅ IMPORTANT: SAVE FULL PRODUCT DATA
-      orderItems.push({
-        name: product.name,
-        qty: item.qty,
-        price: product.price,
-        subtotal: subtotal
-      });
-    }
-
-  });
-
-  // ✅ SAVE COMPLETE ORDER (THIS FIXES EVERYTHING)
-  const order = {
-    orderID: "TK" + Date.now(),
-    date: new Date().toLocaleString(),
-    items: orderItems,
-    total: total
-  };
-
-  localStorage.setItem("lastOrder", JSON.stringify(order));
-
-  // ✅ PAYFAST REDIRECT
-  const params = new URLSearchParams({
-    merchant_id: "10000100",
-    merchant_key: "46f0cd694581a",
-    amount: total.toFixed(2),
-    item_name: "Tinkers Order",
-    return_url: "https://tinkers-sys.github.io/tinkers-live/success.html",
-    cancel_url: "https://tinkers-sys.github.io/tinkers-live/cancel.html"
-  });
-
-  window.location.href =
-    "https://sandbox.payfast.co.za/eng/process?" + params.toString();
-}
-
-function payflexCheckout(){
-
-  const name = document.getElementById("custName").value.trim();
-  const phoneInput = document.getElementById("custPhone").value.trim();
-
-  // ✅ VALIDATION (CRITICAL)
-  if(!name || !phoneInput){
-    alert("Please fill in your Name and Phone Number before using Payflex ✅");
-    return;
-  }
-
-  alert("Payflex request ✅");
-
-  whatsappOrder(); // reuse validated function
 }
 
 /* ===============================
@@ -363,7 +258,7 @@ document.addEventListener("click", function(e){
 });
 
 /* ===============================
-   INIT ✅ FINAL
+   INIT
 ================================ */
 document.addEventListener("DOMContentLoaded", async () => {
 
