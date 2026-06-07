@@ -84,4 +84,4 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   setupFilters(products);
 });
-``
+
