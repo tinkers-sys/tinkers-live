@@ -2,28 +2,7 @@
 
 const URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1";
 
-/* ===============================
-   CART
-================================ */
-function readCart() {
-  return JSON.parse(localStorage.getItem("cart") || "[]");
-}
-
-function writeCart(cart) {
-  localStorage.setItem("cart", JSON.stringify(cart));
-}
-
-function updateCartCount() {
-  const el = document.getElementById("cartCount");
-  if (!el) return;
-
-  const total = readCart().reduce((sum, i) => sum + i.qty, 0);
-  el.textContent = total;
-}
-
-/* ===============================
-   LOAD PRODUCTS
-================================ */
+/* LOAD PRODUCTS */
 async function loadProducts() {
   const res = await fetch(URL);
   const data = await res.json();
@@ -33,117 +12,76 @@ async function loadProducts() {
     name: p.name,
     category: (p.category || "").toLowerCase(),
     price: Number(p.price),
-    <img src="images/${p.image}" alt="${p.name}">
-
-    featured: (p.featured || "").toLowerCase() === "yes",
-    trending: (p.trending || "").toLowerCase() === "yes"
+    image: p.image
   }));
 }
 
-/* ===============================
-   PRODUCT CARD
-================================ */
+/* PRODUCT CARD */
 function buildCard(p) {
+
+  let badge = "";
+
+  if (p.price >= 1500) {
+    badge = `<span class="badge premium">PREMIUM</span>`;
+  } else if (p.price >= 700) {
+    badge = `<span class="badge hot">HOT</span>`;
+  }
+
   return `
     <div class="product-card">
-      <img src="images/${p.image}" alt="${p.name}">
-      <h3 class="product-title">${p.name}</h3>
-      <p class="product-price">R${p.price}</p>
-      <button class="add-btn" data-id="${p.id}">Add to cart</button>
+      ${badge}
+      <div class="img-wrap">
+        <img src="images/${p.image}" alt="${p.name}">
+      </div>
+      <h3>${p.name}</h3>
+      <p>R${p.price}</p>
+      <button class="add-btn">Add to cart</button>
     </div>
   `;
 }
 
-/* ===============================
-   RENDER
-================================ */
+/* RENDER */
 function render(id, products) {
-  const el = document.getElementById(id);
-  if (!el) return;
-
-  el.innerHTML = products.length
-    ? products.map(buildCard).join("")
-    : "<p style='padding:10px'>No products available</p>";
+  document.getElementById(id).innerHTML =
+    products.map(buildCard).join("");
 }
 
-/* ===============================
-   FILTERS
-================================ */
+/* FILTERS */
 function setupFilters(products) {
-
   document.querySelectorAll(".filters a").forEach(btn => {
-    btn.addEventListener("click", function (e) {
+
+    btn.addEventListener("click", e => {
       e.preventDefault();
 
       document.querySelectorAll(".filters a").forEach(b => b.classList.remove("active"));
-      this.classList.add("active");
+      btn.classList.add("active");
 
-      const category = this.dataset.filter;
+      const cat = btn.dataset.filter;
 
-      const filtered = category === "all"
-        ? products
-        : products.filter(p => p.category === category);
+      if (cat === "all") {
+        render("products", products);
+      } else {
+        render("products", products.filter(p => p.category === cat));
+      }
 
-      render("products", filtered);
+      document.getElementById("featuredSection").style.display = "none";
+      document.getElementById("trendingSection").style.display = "none";
     });
+
   });
-
 }
 
-/* ===============================
-   ADD TO CART
-================================ */
-document.addEventListener("click", function (e) {
-  if (e.target.classList.contains("add-btn")) {
-
-    let cart = readCart();
-    const id = e.target.dataset.id;
-
-    const item = cart.find(i => i.id === id);
-
-    if (item) item.qty++;
-    else cart.push({ id, qty: 1 });
-
-    writeCart(cart);
-    updateCartCount();
-  }
-});
-
-/* ===============================
-   SMART SECTIONS
-================================ */
-function renderSections(products){
-
-  const curated = products.filter(p => 
-    p.featured || p.price >= 1500
-  );
-
-  const trending = products.filter(p => 
-    p.trending || (p.price >= 500 && p.price < 1500)
-  );
-
-  render("featuredProducts", curated.slice(0, 4));
-  render("trendingProducts", trending.slice(0, 4));
-
-  // hide empty sections
-  if (!curated.length) document.getElementById("featuredSection").style.display = "none";
-  if (!trending.length) document.getElementById("trendingSection").style.display = "none";
-}
-
-/* ===============================
-   INIT
-================================ */
+/* INIT */
 document.addEventListener("DOMContentLoaded", async () => {
 
   const products = await loadProducts();
-  window.__products = products;
 
-  updateCartCount();
+  render("products", products);
 
-  if (document.getElementById("products")) {
-    render("products", products);
-    setupFilters(products);
-    renderSections(products);
-  }
+  // SMART SECTIONS
+  render("featuredProducts", products.filter(p => p.price > 1200));
+  render("trendingProducts", products.filter(p => p.price >= 500 && p.price <= 1200));
 
+  setupFilters(products);
 });
+``
