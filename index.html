@@ -1,202 +1,71 @@
-/* ======================
-   GLOBAL
-====================== */
-body {
-  margin: 0;
-  background: #f7f8fa;
-  font-family: 'Poppins', Arial, sans-serif;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tinkers</title>
 
-/* ======================
-   HEADER
-====================== */
-.header {
-  background: #1f2f36;
-  color: white;
-}
+  <!-- ✅ CSS FILES -->
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/additions.css">
+</head>
 
-.header-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-}
+<body>
 
-.logo {
-  margin: 0;
-  font-size: 20px;
-}
+<header class="header">
+  <div class="container header-top">
+    <h2 class="logo">Tinkers</h2>
 
-nav a {
-  margin-left: 15px;
-  color: white;
-  text-decoration: none;
-  font-size: 14px;
-}
+    <nav>
+      <a href="#">Home</a>
+      <a href="orders.html">Orders</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="checkout.html">Checkout (<span id="cartCount">0</span>)</a>
+    </nav>
+  </div>
 
-nav a:hover {
-  color: #f39c12;
-}
+  <!-- ✅ FILTERS -->
+  <div class="container">
+    <div class="filters">
+      <a href="#" data-filter="all">All</a>
+      <a href="#" data-filter="art">Art</a>
+      <a href="#" data-filter="apparel">Apparel</a>
+      <a href="#" data-filter="accessories">Accessories</a>
+      <a href="#" data-filter="beadwork">Beadwork</a>
+    </div>
+  </div>
+</header>
 
-/* ======================
-   CONTAINER
-====================== */
-.container {
-  width: 90%;
-  max-width: 1400px;
-  margin: auto;
-}
+<div class="container">
 
-/* ======================
-   FILTERS
-====================== */
-.filters {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin: 15px 0 20px;
-}
+  <!-- ✅ HERO -->
+  <section class="hero">
+    <h1>Authentic African Craftsmanship</h1>
+    <p>Curated pieces that tell real African stories</p>
+  </section>
 
-.filters a {
-  padding: 6px 14px;
-  border-radius: 20px;
-  border: 1px solid #ddd;
-  background: white;
-  text-decoration: none;
-  font-size: 13px;
-  color: #333;
-}
+  <!-- ✅ CURATED -->
+  <section class="block" id="featuredSection">
+    <h2 class="section-title">✨ Curated for You</h2>
+    <div id="featuredProducts" class="products"></div>
+  </section>
 
-.filters a.active {
-  background: #1f2f36;
-  color: white;
-}
+  <!-- ✅ TRENDING -->
+  <section class="block" id="trendingSection">
+    <h2 class="section-title">🔥 Trending Now</h2>
+    <div id="trendingProducts" class="products"></div>
+  </section>
 
-/* ======================
-   SECTIONS
-====================== */
-.block {
-  margin-bottom: 30px;
-}
+  <!-- ✅ MAIN PRODUCTS -->
+  <section class="block">
+    <h2 class="section-title">Our Collection</h2>
+    <div id="products" class="products"></div>
+  </section>
 
-.section-title {
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 15px;
-  border-left: 3px solid #c75b12;
-  padding-left: 8px;
-}
+</div>
 
-/* ======================
-   PRODUCT GRID
-====================== */
-.products {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 25px;
-}
+<!-- ✅ JAVASCRIPT -->
+<script src="js/app.js"></script>
 
-/* ======================
-   PRODUCT CARD
-====================== */
-.product-card {
-  background: white;
-  padding: 15px;
-  border-radius: 14px;
-  text-align: center;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-  transition: 0.3s;
-}
-
-.product-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 14px 30px rgba(0,0,0,0.1);
-}
-
-.product-card img {
-  width: 100%;
-  height: 170px;
-  object-fit: contain;
-  background: #f3f4f6;
-  border-radius: 12px;
-  padding: 12px;
-}
-
-.product-title {
-  font-size: 14px;
-  margin: 10px 0 5px;
-}
-
-.product-price {
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-/* BUTTON */
-.add-btn {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  background: linear-gradient(135deg, #c75b12, #f39c12);
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-/* ======================
-   CHECKOUT
-====================== */
-.checkout-container {
-  max-width: 1000px;
-  margin: auto;
-  padding: 20px;
-}
-
-.checkout-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 20px;
-}
-
-.checkout-card {
-  background: white;
-  padding: 15px;
-  border-radius: 14px;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-}
-
-.checkout-card img {
-  width: 120px;
-  height: 120px;
-  object-fit: contain;
-  margin-bottom: 10px;
-}
-
-/* ======================
-   BUTTON COLORS
-====================== */
-button[onclick="whatsappOrder()"] {
-  background: #25D366 !important;
-}
-
-button[onclick="payfastCheckout()"] {
-  background: #2e86de !important;
-}
-
-button[onclick="payflexCheckout()"] {
-  background: #6c5ce7 !important;
-}
-
-button[onclick="clearCart()"] {
-  background: #e74c3c !important;
-}
-
-/* ======================
-   HIDE EMPTY SECTIONS
-====================== */
-#featuredProducts:empty,
-#trendingProducts:empty {
-  display: none;
-}
+</body>
+</html>
