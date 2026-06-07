@@ -98,6 +98,18 @@ nav a, nav button {
 .cart-drawer.open {
   right: 0;
 }
+.qty-controls {
+  margin-top: 10px;
+}
+
+.qty-controls button {
+  margin: 2px;
+  padding: 5px 8px;
+  border: none;
+  background: #ddd;
+  cursor: pointer;
+}
+
 
 .cart-item {
   display: flex;
