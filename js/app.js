@@ -4,14 +4,14 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 /* LOAD PRODUCTS */
 async function loadProducts() {
-
   const res = await fetch("https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1");
   const data = await res.json();
 
   return data.map(p => ({
     name: p.name || "Unknown",
     price: Number(p.price) || 0,
-    image: p.image || "default.jpg"
+    image: p.image || "default.jpg",
+    category: (p.category || "").toLowerCase()
   }));
 }
 
@@ -19,28 +19,28 @@ async function loadProducts() {
 function buildCard(p) {
   return `
     <div class="product-card">
-      <img src="images/${p.image}">
+      <img src="images/${p.image}" alt="${p.name}">
       <h3>${p.name}</h3>
       <p>R${p.price}</p>
-      <button class="add-btn" onclick="addToCart('${p.name}', ${p.price}, '${p.image}')">
+      <button class="add-btn"
+        onclick="addToCart('${p.name}', ${p.price}, '${p.image}')">
         Add to cart
       </button>
     </div>
   `;
 }
 
-/* ADD TO CART */
+/* ADD */
 function addToCart(name, price, image) {
+  const existing = cart.find(i => i.name === name);
 
-  const item = cart.find(i => i.name === name);
-
-  if (item) item.qty++;
+  if (existing) existing.qty++;
   else cart.push({ name, price, image, qty: 1 });
 
   saveCart();
 }
 
-/* SAVE + UPDATE */
+/* SAVE */
 function saveCart() {
   localStorage.setItem("cart", JSON.stringify(cart));
   updateCart();
@@ -49,20 +49,19 @@ function saveCart() {
 /* UPDATE CART */
 function updateCart() {
 
-  const cartEl = document.getElementById("cartItems");
+  const el = document.getElementById("cartItems");
   const totalEl = document.getElementById("cartTotal");
 
-  if (!cartEl) return;
+  if (!el) return;
 
-  cartEl.innerHTML = "";
+  el.innerHTML = "";
   let total = 0;
 
   cart.forEach(item => {
-
     const subtotal = item.price * item.qty;
     total += subtotal;
 
-    cartEl.innerHTML += `
+    el.innerHTML += `
       <div class="cart-item">
         ${item.name} x${item.qty}
         <span>R${subtotal}</span>
@@ -73,7 +72,25 @@ function updateCart() {
   totalEl.textContent = total;
 }
 
-/* TOGGLE CART */
+/* FILTERS */
+function setupFilters(products) {
+  document.querySelectorAll(".filters a").forEach(btn => {
+    btn.addEventListener("click", e => {
+      e.preventDefault();
+
+      const f = btn.dataset.filter;
+
+      const filtered = f === "all"
+        ? products
+        : products.filter(p => p.category === f);
+
+      document.getElementById("products").innerHTML =
+        filtered.map(buildCard).join("");
+    });
+  });
+}
+
+/* DRAWER */
 function toggleCart() {
   document.getElementById("cartDrawer").classList.toggle("open");
 }
@@ -115,14 +132,13 @@ function renderCheckout() {
 
 /* WHATSAPP */
 function whatsappOrder() {
-
   let message = "Tinkers Order\n";
   let total = 0;
 
-  cart.forEach(item => {
-    const subtotal = item.price * item.qty;
-    total += subtotal;
-    message += `${item.name} x${item.qty} - R${subtotal}\n`;
+  cart.forEach(i => {
+    const sub = i.price * i.qty;
+    total += sub;
+    message += `${i.name} x${i.qty} - R${sub}\n`;
   });
 
   message += `Total: R${total}`;
@@ -132,7 +148,6 @@ function whatsappOrder() {
 
 /* PAYFAST */
 function payfastCheckout() {
-
   let total = 0;
   cart.forEach(i => total += i.price * i.qty);
 
@@ -159,6 +174,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   document.getElementById("products").innerHTML =
     products.map(buildCard).join("");
+
+  setupFilters(products);
 
   updateCart();
 });
