@@ -61,34 +61,29 @@ body {
 
 .checkout-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   gap: 20px;
-  width: 100%;
-  padding: 20px 0;
-  justify-items: center;
+  margin-top: 20px;
 }
 
 /* CHECKOUT CARD */
 .checkout-card {
-  background: #fff;
+  background: white;
   padding: 15px;
-  border-radius: 12px;
+  border-radius: 14px;
   text-align: center;
-
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-
-  max-width: 300px;
-  width: 100%;
+  align-items: center;
 }
 
 /* IMAGE CONTROL */
 .checkout-card img {
-  width: 180px;
-  height: 180px;
+  width: 120px;      /* 🔥 FIX SIZE */
+  height: 120px;     /* 🔥 FIX SIZE */
   object-fit: contain;
-  margin: 0 auto;
+  margin-bottom: 10px;
 }
 
 /* ======================
@@ -185,4 +180,15 @@ button[onclick="clearCart()"] {
 button[onclick="clearCart()"]:hover {
   background: #1b4f72 !important;
 }
+.qty-controls {
+  display: flex;
+  gap: 10px;
+  margin: 10px 0;
+}
 
+.qty-controls button {
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
