@@ -238,28 +238,48 @@ function clearCart(){
 function whatsappOrder(){
 
   const cart = readCart();
+
   if(cart.length === 0){
     alert("Cart is empty ❌");
     return;
   }
 
-  let message = "🛍️ Tinkers Order\n\n";
+  const name = document.getElementById("custName").value.trim();
+  const phoneInput = document.getElementById("custPhone").value.trim();
+  const delivery = document.getElementById("deliveryOption").value;
+
+  // ✅ VALIDATION (CRITICAL)
+  if(!name || !phoneInput){
+    alert("Please fill in your Name and Phone Number before ordering ✅");
+    return;
+  }
+
+  let message = `🛍️ Tinkers Order\n\n`;
+  message += `Name: ${name}\n`;
+  message += `Phone: ${phoneInput}\n`;
+  message += `Delivery: ${delivery}\n\n`;
+
   let total = 0;
 
   cart.forEach(item => {
     const product = window.__products.find(p => p.id === item.id);
+
     if(product){
       const subtotal = product.price * item.qty;
       total += subtotal;
-      message += `${product.name} x${item.qty} - R${subtotal}\n`;
+
+      message += `• ${product.name} x${item.qty} - R${subtotal}\n`;
     }
   });
 
   message += `\nTotal: R${total}`;
 
-  const phone = "27720912943";
+  const phone = "27720912943"; // your number
 
-  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
+  window.open(
+    `https://wa.me/${phone}?text=${encodeURIComponent(message)}`,
+    "_blank"
+  );
 }
 function payfastCheckout(){
 
@@ -318,8 +338,19 @@ function payfastCheckout(){
 }
 
 function payflexCheckout(){
+
+  const name = document.getElementById("custName").value.trim();
+  const phoneInput = document.getElementById("custPhone").value.trim();
+
+  // ✅ VALIDATION (CRITICAL)
+  if(!name || !phoneInput){
+    alert("Please fill in your Name and Phone Number before using Payflex ✅");
+    return;
+  }
+
   alert("Payflex request ✅");
-  whatsappOrder();
+
+  whatsappOrder(); // reuse validated function
 }
 
 /* ===============================
