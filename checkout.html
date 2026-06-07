@@ -1,71 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Checkout</title>
+  <meta charset="UTF-8">
+  <title>Checkout</title>
 
-<link rel="stylesheet" href="css/styles.css">
-<link rel="stylesheet" href="css/additions.css">
+  css/additions.css
 </head>
 
-<body>
+<body class="checkout-container">
 
-<header class="header">
-  <div class="container">
-    <h2>Checkout</h2>
-   <nav>
-  <a href="index.html">Home</a>
-  <a href="orders.html">Orders</a>
-   <a href="dashboard.html">Dashboard</a>  
-</nav>
-  </div>
-</header>
+<h2>Checkout</h2>
 
-<main class="checkout-container">
+<div id="checkoutGrid" class="checkout-grid"></div>
 
-  <a href="index.html">← Back to Shopping</a>
+<h3>Total: R<span id="checkoutTotal">0</span></h3>
 
-  <h2>Your Cart</h2>
+<button onclick="whatsappOrder()">WhatsApp Checkout</button>
+<button onclick="payfastCheckout()">PayFast</button>
+<button onclick="clearCart()">Clear Cart</button>
 
-  <!-- ✅ GRID WRAPPER -->
-  <div id="cart">
-    <div class="checkout-grid"></div>
-  </div>
-
-  <h3>Total: <span id="checkoutTotal">R0</span></h3>
-
-  
-!-- ✅ ADD THIS FORM HERE -->
-<div class="checkout-form">
-
-  <input type="text" id="custName" placeholder="Full Name" required>
-
-<input type="text" id="custPhone" placeholder="Phone Number" required>
-
-<select id="deliveryOption">
-    <option value="Pickup">Pickup at store</option>
-    <option value="Delivery">Delivery required</option>
-  </select>
-
-</div>
-
-
- <div class="checkout-actions">
-
-  <button onclick="clearCart()">Clear Cart</button>
-
-  <button onclick="whatsappOrder()">Order via WhatsApp</button>
-
-  <button onclick="payfastCheckout()">Pay with PayFast</button>
-
-  <button onclick="payflexCheckout()">Pay with Payflex</button>
-
-</div>
-
-</main>
-
-<script src="js/app.js"></script>
+js/app.jsscript>
 
 </body>
 </html>
