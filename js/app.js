@@ -278,11 +278,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   window.__products = products;
 
   updateCartCount();
+if(document.getElementById("products")){
 
-  if(document.getElementById("products")){
-    render("products", products);
-    setupFilters(products);
-  }
+  // ✅ All products
+  render("products", products);
+
+  // ✅ Curated (first 3 premium items example)
+  render("featuredProducts", products.slice(0, 3));
+
+  // ✅ Trending (next 3 items example)
+  render("trendingProducts", products.slice(3, 6));
+}
+
 
   renderCheckout();
 });
