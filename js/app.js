@@ -1,4 +1,4 @@
-My app.js: "use strict";
+"use strict";
 
 const URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1";
 
