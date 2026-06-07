@@ -272,3 +272,17 @@ button:hover {
   font-weight: bold;
   color: #c55a11;
 }
+/* BETTER SPACING */
+section {
+  margin-bottom: 30px;
+}
+
+/* ORDER CARD IMPROVEMENT */
+.dashboard-card {
+  transition: 0.2s ease;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+}
