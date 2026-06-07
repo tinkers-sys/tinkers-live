@@ -1,56 +1,11 @@
 "use strict";
 
-/* =======================
-   GLOBAL CART
-======================= */
 let cart = [];
 
-/* =======================
-   TOGGLE CART DRAWER
-======================= */
-function toggleCart() {
-  document.getElementById("cartDrawer").classList.toggle("open");
-}
-
-/* =======================
-   ADD TO CART
-======================= */
-function addToCart(product) {
-  cart.push(product);
-  updateCart();
-}
-
-/* =======================
-   UPDATE CART UI
-======================= */
-function updateCart() {
-
-  const cartEl = document.getElementById("cartItems");
-  const totalEl = document.getElementById("cartTotal");
-
-  if (!cartEl || !totalEl) return;
-
-  cartEl.innerHTML = "";
-  let total = 0;
-
-  cart.forEach(item => {
-    total += item.price;
-
-    cartEl.innerHTML += `
-      <div>
-        ${item.name} - R${item.price}
-      </div>
-    `;
-  });
-
-  totalEl.textContent = total;
-}
-
-/* =======================
-   LOAD PRODUCTS
-======================= */
+/* ============================
+   LOAD PRODUCTS FROM SHEET
+============================= */
 async function loadProducts() {
-
   const res = await fetch("https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1");
   const data = await res.json();
 
@@ -62,9 +17,9 @@ async function loadProducts() {
   }));
 }
 
-/* =======================
+/* ============================
    BUILD PRODUCT CARD
-======================= */
+============================= */
 function buildCard(p) {
 
   let badge = "";
@@ -87,7 +42,7 @@ function buildCard(p) {
       <h3>${p.name}</h3>
       <p>R${p.price}</p>
 
-      <!-- ✅ CLEAN BUTTON -->
+      <!-- ✅ data attributes -->
       <button class="add-btn"
         data-name="${p.name}"
         data-price="${p.price}"
@@ -99,55 +54,124 @@ function buildCard(p) {
   `;
 }
 
-/* =======================
-   RENDER PRODUCTS
-======================= */
-function render(id, data) {
+/* ============================
+   RENDER
+============================= */
+function render(id, products) {
   const el = document.getElementById(id);
   if (!el) return;
 
-  el.innerHTML = data.map(buildCard).join("");
+  el.innerHTML = products.map(buildCard).join("");
 }
 
-/* =======================
-   FILTERS
-======================= */
-function setupFilters(products) {
+/* ============================
+   ADD TO CART (FIXED)
+============================= */
+document.addEventListener("click", function(e) {
 
-  document.querySelectorAll(".filters a").forEach(btn => {
+  if (e.target.classList.contains("add-btn")) {
 
-    btn.addEventListener("click", e => {
-      e.preventDefault();
+    const product = {
+      name: e.target.dataset.name,
+      price: Number(e.target.dataset.price),
+      image: e.target.dataset.image,
+      qty: 1
+    };
 
-      document.querySelectorAll(".filters a")
-        .forEach(b => b.classList.remove("active"));
+    // ✅ CHECK IF ALREADY IN CART
+    const existing = cart.find(i => i.name === product.name);
 
-      btn.classList.add("active");
+    if (existing) {
+      existing.qty++;
+    } else {
+      cart.push(product);
+    }
 
-      const category = btn.dataset.filter.toLowerCase();
+    updateCart();
+    toggleCart(true);
+  }
+});
 
-      let filtered;
+/* ============================
+   UPDATE CART UI (UPGRADED)
+============================= */
+function updateCart() {
 
-      if (category === "all") {
-        filtered = products;
-      } else {
-        filtered = products.filter(p => p.category === category);
-      }
+  const cartEl = document.getElementById("cartItems");
+  const totalEl = document.getElementById("cartTotal");
 
-      render("products", filtered);
+  if (!cartEl || !totalEl) return;
 
-      // hide top sections when filtering
-      document.getElementById("featuredSection").style.display = "none";
-      document.getElementById("trendingSection").style.display = "none";
+  cartEl.innerHTML = "";
 
-    });
+  let total = 0;
 
+  cart.forEach(item => {
+
+    const subtotal = item.price * item.qty;
+    total += subtotal;
+
+    cartEl.innerHTML += `
+      <div class="cart-item">
+        <img src="images/${item.image}">
+
+        <div>
+          <p>${item.name}</p>
+          <small>R${item.price} x ${item.qty}</small>
+        </div>
+
+        <div class="cart-actions">
+          <button onclick="changeQty('${item.name}', 1)">+</button>
+          <button onclick="changeQty('${item.name}', -1)">-</button>
+          <button onclick="removeItem('${item.name}')">✕</button>
+        </div>
+      </div>
+    `;
   });
+
+  totalEl.textContent = total;
 }
 
-/* =======================
+/* ============================
+   CART CONTROLS
+============================= */
+function changeQty(name, amount) {
+
+  const item = cart.find(i => i.name === name);
+  if (!item) return;
+
+  item.qty += amount;
+
+  if (item.qty <= 0) {
+    cart = cart.filter(i => i.name !== name);
+  }
+
+  updateCart();
+}
+
+function removeItem(name) {
+  cart = cart.filter(i => i.name !== name);
+  updateCart();
+}
+
+function clearCart() {
+  cart = [];
+  updateCart();
+}
+
+/* ============================
+   DRAWER CONTROL
+============================= */
+function toggleCart(show = false) {
+  const drawer = document.getElementById("cartDrawer");
+
+  if (show) drawer.classList.add("open");
+  else drawer.classList.toggle("open");
+}
+
+/* ============================
    WHATSAPP CHECKOUT
-======================= */
+============================= */
 function whatsappOrder() {
 
   if (!cart.length) {
@@ -159,8 +183,9 @@ function whatsappOrder() {
   let total = 0;
 
   cart.forEach(item => {
-    total += item.price;
-    message += `${item.name} - R${item.price}\n`;
+    const subtotal = item.price * item.qty;
+    total += subtotal;
+    message += `${item.name} x${item.qty} - R${subtotal}\n`;
   });
 
   message += `\nTotal: R${total}`;
@@ -171,9 +196,9 @@ function whatsappOrder() {
   );
 }
 
-/* =======================
+/* ============================
    PAYFAST
-======================= */
+============================= */
 function payfastCheckout() {
 
   if (!cart.length) {
@@ -182,33 +207,22 @@ function payfastCheckout() {
   }
 
   let total = 0;
-  cart.forEach(item => total += item.price);
+  cart.forEach(i => total += i.price * i.qty);
 
   const params = new URLSearchParams({
     merchant_id: "10000100",
     merchant_key: "46f0cd694581a",
     amount: total.toFixed(2),
-    item_name: "Tinkers Order",
-    return_url: "success.html",
-    cancel_url: "cancel.html"
+    item_name: "Tinkers Order"
   });
 
   window.location.href =
-    "https://sandbox.payfast.co.za/eng/process?"
-    + params.toString();
+    "https://sandbox.payfast.co.za/eng/process?" + params.toString();
 }
 
-/* =======================
-   CLEAR CART
-======================= */
-function clearCart() {
-  cart = [];
-  updateCart();
-}
-
-/* =======================
+/* ============================
    INIT
-======================= */
+============================= */
 document.addEventListener("DOMContentLoaded", async () => {
 
   const products = await loadProducts();
@@ -220,26 +234,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   );
 
   render("trendingProducts",
-    products.filter(p =>
-      p.price >= 500 && p.price < 1500
-    )
+    products.filter(p => p.price >= 500 && p.price < 1500)
   );
 
-  setupFilters(products);
 });
-document.addEventListener("click", function(e) {
-
-  if (e.target.classList.contains("add-btn")) {
-
-    const product = {
-      name: e.target.dataset.name,
-      price: Number(e.target.dataset.price),
-      image: e.target.dataset.image
-    };
-
-    cart.push(product);
-    updateCart();
-  }
-
-});
-
