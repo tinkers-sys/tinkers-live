@@ -87,8 +87,11 @@ function buildCard(p) {
       <h3>${p.name}</h3>
       <p>R${p.price}</p>
 
+      <!-- ✅ CLEAN BUTTON -->
       <button class="add-btn"
-        onclick='addToCart(${JSON.stringify(p)})'>
+        data-name="${p.name}"
+        data-price="${p.price}"
+        data-image="${p.image}">
         Add to cart
       </button>
 
@@ -224,3 +227,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   setupFilters(products);
 });
+document.addEventListener("click", function(e) {
+
+  if (e.target.classList.contains("add-btn")) {
+
+    const product = {
+      name: e.target.dataset.name,
+      price: Number(e.target.dataset.price),
+      image: e.target.dataset.image
+    };
+
+    cart.push(product);
+    updateCart();
+  }
+
+});
+
