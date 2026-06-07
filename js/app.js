@@ -95,22 +95,29 @@ function setupFilters(products){
     btn.addEventListener("click", function(e){
       e.preventDefault();
 
-      // ✅ active UI highlight
+      // ✅ Remove active from all
       document.querySelectorAll(".filters a").forEach(b => b.classList.remove("active"));
+
+      // ✅ Set active on clicked
       this.classList.add("active");
 
       const category = this.dataset.filter;
 
-      const filtered =
-        category === "all"
-          ? products
-          : products.filter(p => p.category === category);
+      let filtered;
+
+      if (category === "all") {
+        filtered = products;
+      } else {
+        filtered = products.filter(p => p.category === category);
+      }
 
       render("products", filtered);
     });
+
   });
 
 }
+
 
 
 /* ===============================
