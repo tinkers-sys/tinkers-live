@@ -35,8 +35,9 @@ nav a, nav button {
 /* FILTERS */
 .filters {
   display: flex;
+  justify-content: flex-end; /* ✅ pushes to right */
   gap: 10px;
-  margin: 15px 0;
+  margin: 15px 0 10px;
 }
 
 .filters a {
@@ -58,13 +59,19 @@ nav a, nav button {
   padding: 15px;
   border-radius: 10px;
   text-align: center;
+
+  display: flex;                 /* ✅ FIX ALIGNMENT */
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .product-card img {
   width: 100%;
   height: 150px;
   object-fit: contain;
+  margin-bottom: 10px;
 }
+
 
 .add-btn {
   width: 100%;
