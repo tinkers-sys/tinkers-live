@@ -1,6 +1,6 @@
 "use strict";
 
-let cart = [];
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 /* ============================
    LOAD PRODUCTS FROM SHEET
@@ -130,6 +130,8 @@ function updateCart() {
   });
 
   totalEl.textContent = total;
+  localStorage.setItem("cart", JSON.stringify(cart));
+ 
 }
 
 /* ============================
@@ -238,3 +240,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   );
 
 });
+
+
