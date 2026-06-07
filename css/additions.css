@@ -1,7 +1,7 @@
 body {
   margin: 0;
-  background: #f5f6f8;
   font-family: Arial;
+  background: #f5f6f8;
 }
 
 .header {
@@ -10,10 +10,9 @@ body {
   padding: 15px;
 }
 
-nav a, .cart-btn {
+nav a, nav button {
   margin-left: 15px;
   color: white;
-  text-decoration: none;
   background: none;
   border: none;
   cursor: pointer;
@@ -29,10 +28,25 @@ nav a, .cart-btn {
   background: #2c3e50;
   color: white;
   padding: 30px;
-  border-radius: 12px;
+  border-radius: 10px;
   margin: 20px 0;
 }
 
+/* FILTERS */
+.filters {
+  display: flex;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.filters a {
+  background: #eee;
+  padding: 5px 12px;
+  border-radius: 15px;
+  text-decoration: none;
+}
+
+/* PRODUCTS */
 .products {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px,1fr));
@@ -42,7 +56,7 @@ nav a, .cart-btn {
 .product-card {
   background: white;
   padding: 15px;
-  border-radius: 12px;
+  border-radius: 10px;
   text-align: center;
 }
 
@@ -59,12 +73,7 @@ nav a, .cart-btn {
   border: none;
   color: white;
   cursor: pointer;
-  border-radius: 6px;
   margin-top: 10px;
-}
-
-.add-btn:hover {
-  background: darkorange;
 }
 
 /* CART */
@@ -77,7 +86,6 @@ nav a, .cart-btn {
   background: white;
   padding: 20px;
   transition: 0.3s;
-  box-shadow: -5px 0 15px rgba(0,0,0,0.2);
 }
 
 .cart-drawer.open {
@@ -87,13 +95,5 @@ nav a, .cart-btn {
 .cart-item {
   display: flex;
   justify-content: space-between;
-  margin: 10px 0;
-}
-
-.checkout-btn {
-  width: 100%;
-  background: green;
-  color: white;
-  padding: 10px;
-  border: none;
+  margin-bottom: 10px;
 }
