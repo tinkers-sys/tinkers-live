@@ -2,7 +2,7 @@
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-/* LOAD PRODUCTS */
+/* LOAD */
 async function loadProducts() {
   const res = await fetch("https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1");
   const data = await res.json();
@@ -15,13 +15,14 @@ async function loadProducts() {
   }));
 }
 
-/* BUILD CARD */
+/* CARD */
 function buildCard(p) {
   return `
     <div class="product-card">
-      <img src="images/${p.image}" alt="${p.name}">
+      <img src="images/${p.image}">
       <h3>${p.name}</h3>
       <p>R${p.price}</p>
+
       <button class="add-btn"
         onclick="addToCart('${p.name}', ${p.price}, '${p.image}')">
         Add to cart
@@ -32,19 +33,10 @@ function buildCard(p) {
 
 /* ADD */
 function addToCart(name, price, image) {
+  let item = cart.find(i => i.name === name);
 
-  let existing = cart.find(item => item.name === name);
-
-  if (existing) {
-    existing.qty += 1;  // ✅ increment works
-  } else {
-    cart.push({
-      name: name,
-      price: price,
-      image: image,
-      qty: 1
-    });
-  }
+  if (item) item.qty++;
+  else cart.push({ name, price, image, qty: 1 });
 
   saveCart();
 }
@@ -55,7 +47,7 @@ function saveCart() {
   updateCart();
 }
 
-/* UPDATE CART */
+/* CART DISPLAY */
 function updateCart() {
 
   const el = document.getElementById("cartItems");
@@ -63,31 +55,38 @@ function updateCart() {
 
   if (!el) return;
 
-  el.innerHTML += `
-  <div class="cart-item">
+  el.innerHTML = "";
+  let total = 0;
 
-    <span>${item.name}</span>
+  cart.forEach(item => {
 
-    <div>
-      <button onclick="changeQty('${item.name}', 1)">+</button>
-      <button onclick="changeQty('${item.name}', -1)">-</button>
-    </div>
+    const subtotal = item.price * item.qty;
+    total += subtotal;
 
-    <span>R${subtotal}</span>
+    el.innerHTML += `
+      <div class="cart-item">
 
-  </div>
-`;
+        <span>${item.name}</span>
 
+        <div class="qty-controls">
+          <button onclick="changeQty('${item.name}',1)">+</button>
+          <button onclick="changeQty('${item.name}',-1)">-</button>
+        </div>
+
+        <span>R${subtotal}</span>
+      </div>
+    `;
   });
 
   totalEl.textContent = total;
 }
-function changeQty(name, amount) {
 
-  const item = cart.find(i => i.name === name);
+/* CHANGE QTY */
+function changeQty(name, amt) {
+  let item = cart.find(i => i.name === name);
   if (!item) return;
 
-  item.qty += amount;
+  item.qty += amt;
 
   if (item.qty <= 0) {
     cart = cart.filter(i => i.name !== name);
@@ -95,7 +94,6 @@ function changeQty(name, amount) {
 
   saveCart();
 }
-
 
 /* FILTERS */
 function setupFilters(products) {
@@ -105,9 +103,10 @@ function setupFilters(products) {
 
       const f = btn.dataset.filter;
 
-      const filtered = f === "all"
-        ? products
-        : products.filter(p => p.category === f);
+      const filtered =
+        f === "all"
+          ? products
+          : products.filter(p => p.category === f);
 
       document.getElementById("products").innerHTML =
         filtered.map(buildCard).join("");
@@ -120,70 +119,63 @@ function toggleCart() {
   document.getElementById("cartDrawer").classList.toggle("open");
 }
 
-/* CLEAR */
 function clearCart() {
   cart = [];
   saveCart();
 }
 
-/* CHECKOUT PAGE */
+/* CHECKOUT */
 function renderCheckout() {
 
   const grid = document.getElementById("checkoutGrid");
   const totalEl = document.getElementById("checkoutTotal");
 
-  if (!grid || !totalEl) return;
+  if (!grid) return;
 
   grid.innerHTML = "";
   let total = 0;
 
-  // ✅ THIS IS YOUR CODE (CORRECT PLACEMENT)
- cart.forEach(item => {
+  cart.forEach(item => {
 
-  const subtotal = item.price * item.qty;
+    const subtotal = item.price * item.qty;
+    total += subtotal;
 
-  total += subtotal;
+    grid.innerHTML += `
+      <div class="product-card">
+        <img src="images/${item.image}">
+        <h3>${item.name}</h3>
 
-  grid.innerHTML += `
-    <div class="product-card">
+        <p>${item.qty} x R${item.price}</p>
 
-      <img src="images/${item.image}">
-      <h3>${item.name}</h3>
+        <div class="qty-controls">
+          <button onclick="changeQty('${item.name}',1)">+</button>
+          <button onclick="changeQty('${item.name}',-1)">-</button>
+        </div>
 
-      <p>${item.qty} x R${item.price}</p>
-      <strong>R${subtotal}</strong>
-
-      <!-- ✅ QUANTITY CONTROLS HERE -->
-      <div class="qty-controls">
-        <button onclick="changeQty('${item.name}', 1)">+</button>
-        <button onclick="changeQty('${item.name}', -1)">-</button>
+        <strong>R${subtotal}</strong>
       </div>
-
-    </div>
-  `;
-});
+    `;
+  });
 
   totalEl.textContent = total;
 }
 
-
-/* WHATSAPP */
+/* PAYMENTS */
 function whatsappOrder() {
-  let message = "Tinkers Order\n";
+  let msg = "Tinkers Order\n";
   let total = 0;
 
   cart.forEach(i => {
-    const sub = i.price * i.qty;
+    let sub = i.price * i.qty;
     total += sub;
-    message += `${i.name} x${i.qty} - R${sub}\n`;
+    msg += `${i.name} x${i.qty} - R${sub}\n`;
   });
 
-  message += `Total: R${total}`;
+  msg += `Total: R${total}`;
 
-  window.open("https://wa.me/27720912943?text=" + encodeURIComponent(message));
+  window.open("https://wa.me/27720912943?text=" + encodeURIComponent(msg));
 }
 
-/* PAYFAST */
 function payfastCheckout() {
   let total = 0;
   cart.forEach(i => total += i.price * i.qty);
@@ -213,6 +205,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     products.map(buildCard).join("");
 
   setupFilters(products);
-
   updateCart();
 });
