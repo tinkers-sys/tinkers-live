@@ -8,22 +8,15 @@
 <link rel="stylesheet" href="css/styles.css">
 <link rel="stylesheet" href="css/additions.css">
 
-<!-- ✅ CHART.JS -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <style>
-body {
-  background:#f4f4f4;
-}
+body { background:#f4f4f4; }
 
-/* LAYOUT */
 .admin-container {
   max-width:1100px;
   margin:auto;
   padding:20px;
 }
 
-/* CARDS */
 .admin-card {
   background:white;
   padding:20px;
@@ -32,7 +25,6 @@ body {
   box-shadow:0 2px 10px rgba(0,0,0,0.1);
 }
 
-/* TABLE */
 table {
   width:100%;
   border-collapse: collapse;
@@ -48,7 +40,6 @@ th {
   color:white;
 }
 
-/* FORM */
 input {
   display:block;
   margin-bottom:10px;
@@ -56,28 +47,10 @@ input {
   width:100%;
 }
 
-/* SUMMARY */
-.summary {
-  display:flex;
-  gap:20px;
-  margin-bottom:20px;
+button {
+  padding:8px 12px;
 }
 
-.summary-card {
-  flex:1;
-  background:white;
-  padding:20px;
-  border-radius:10px;
-  text-align:center;
-  box-shadow:0 2px 10px rgba(0,0,0,0.1);
-}
-
-/* CHART */
-canvas {
-  background:white;
-  border-radius:10px;
-  padding:20px;
-}
 </style>
 
 </head>
@@ -89,26 +62,12 @@ canvas {
     <h2>📊 Admin Dashboard</h2>
     <nav>
       <a href="index.html">Home</a>
-      <a href="orders.html">Orders</a>
       <a href="dashboard.html">Dashboard</a>
     </nav>
   </div>
 </header>
 
 <main class="admin-container">
-
-<!-- ✅ SUMMARY -->
-<div class="summary">
-  <div class="summary-card">
-    <h3>Total Revenue</h3>
-    <p id="totalRevenue">R0</p>
-  </div>
-
-  <div class="summary-card">
-    <h3>Total Orders</h3>
-    <p id="totalOrders">0</p>
-  </div>
-</div>
 
 <!-- ✅ ADD PRODUCT -->
 <div class="admin-card">
@@ -125,7 +84,7 @@ canvas {
 
 <!-- ✅ INVENTORY -->
 <div class="admin-card">
-  <h3>Inventory</h3>
+  <h3>Inventory Control</h3>
 
   <table>
     <thead>
@@ -133,124 +92,128 @@ canvas {
         <th>Image</th>
         <th>Name</th>
         <th>Stock</th>
+        <th>Actions</th>
       </tr>
     </thead>
     <tbody id="inventoryTable"></tbody>
   </table>
 </div>
 
-<!-- ✅ CHART -->
-<div class="admin-card">
-  <h3>Sales Chart</h3>
-  <canvas id="salesChart"></canvas>
-</div>
-
 </main>
 
 <script>
 
-/* =============================
-   ✅ LOAD INVENTORY
-============================= */
-const INVENTORY_URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1";
+/* ===============================
+   ✅ LOCAL INVENTORY STORAGE
+================================ */
+let inventory = JSON.parse(localStorage.getItem("inventory") || "[]");
 
-async function loadInventory() {
-  const res = await fetch(INVENTORY_URL);
-  const data = await res.json();
+
+/* ===============================
+   ✅ LOAD INVENTORY
+================================ */
+function loadInventory() {
 
   const table = document.getElementById("inventoryTable");
   table.innerHTML = "";
 
-  data.forEach(p => {
+  if(inventory.length === 0){
+    table.innerHTML = "<tr><td colspan='4'>No products yet</td></tr>";
+    return;
+  }
+
+  inventory.forEach((p,index) => {
+
     table.innerHTML += `
       <tr>
+
         <td>
           <img src="images/${p.image}" width="50"
           onerror="this.src='images/default.jpg'">
         </td>
-        <td>${p.name || "No name"}</td>
-        <td>${p.stock || 0}</td>
+
+        <td>${p.name}</td>
+
+        <td>
+          <input type="number" value="${p.stock}" 
+          onchange="updateStock(${index}, this.value)">
+        </td>
+
+        <td>
+          <button onclick="deleteProduct(${index})">Delete</button>
+        </td>
+
       </tr>
     `;
   });
+
 }
 
-/* =============================
-   ✅ ADD PRODUCT (INFO ONLY)
-============================= */
+
+/* ===============================
+   ✅ ADD PRODUCT
+================================ */
 function addProduct(){
-  alert("⚠️ Add products directly in Google Sheet.\nThis form is display-only.");
-}
 
+  const name = document.getElementById("newName").value;
+  const category = document.getElementById("newCategory").value;
+  const price = document.getElementById("newPrice").value;
+  const image = document.getElementById("newImage").value;
+  const stock = document.getElementById("newStock").value;
 
-/* =============================
-   ✅ SALES DATA
-============================= */
-const orders = JSON.parse(localStorage.getItem("orderHistory") || []);
-
-let totalRevenue = 0;
-const productSales = {};
-
-orders.forEach(order => {
-  totalRevenue += order.total || 0;
-
-  if(order.items){
-    order.items.forEach(item => {
-      if(!productSales[item.name]){
-        productSales[item.name] = 0;
-      }
-      productSales[item.name] += item.qty;
-    });
+  if(!name || !price){
+    alert("Please enter product name and price ❌");
+    return;
   }
-});
 
-/* ✅ UPDATE SUMMARY */
-document.getElementById("totalRevenue").innerText = "R" + totalRevenue;
-document.getElementById("totalOrders").innerText = orders.length;
-
-
-/* =============================
-   ✅ CHART
-============================= */
-const names = [];
-const values = [];
-
-Object.entries(productSales)
-  .sort((a,b)=>b[1]-a[1])
-  .slice(0,5)
-  .forEach(p=>{
-    names.push(p[0]);
-    values.push(p[1]);
+  inventory.push({
+    id: Date.now(),
+    name,
+    category,
+    price: Number(price),
+    image,
+    stock: Number(stock || 0)
   });
 
-const ctx = document.getElementById("salesChart");
+  saveInventory();
+  loadInventory();
 
-if(ctx){
-  new Chart(ctx,{
-    type:"bar",
-    data:{
-      labels:names,
-      datasets:[{
-        label:"Units Sold",
-        data:values,
-        backgroundColor:"#c55a11",
-        borderRadius:6
-      }]
-    },
-    options:{
-      responsive:true,
-      plugins:{
-        legend:{ display:false }
-      },
-      scales:{
-        y:{
-          beginAtZero:true,
-          ticks:{ stepSize:1 }
-        }
-      }
-    }
-  });
+  alert("✅ Product added");
 }
+
+
+/* ===============================
+   ✅ UPDATE STOCK
+================================ */
+function updateStock(index, value){
+
+  inventory[index].stock = Number(value);
+
+  saveInventory();
+}
+
+
+/* ===============================
+   ✅ DELETE PRODUCT
+================================ */
+function deleteProduct(index){
+
+  if(!confirm("Delete this product? ❌")) return;
+
+  inventory.splice(index,1);
+
+  saveInventory();
+  loadInventory();
+}
+
+
+/* ===============================
+   ✅ SAVE INVENTORY
+================================ */
+function saveInventory(){
+  localStorage.setItem("inventory", JSON.stringify(inventory));
+}
+
 
 /* INIT */
 loadInventory();
