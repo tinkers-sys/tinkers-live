@@ -125,3 +125,61 @@ nav a:hover {
 .add-btn:hover {
   background: linear-gradient(135deg, #e67e22, #f39c12);
 }
+/* ✅ FILTER ACTIVE STATE */
+.filters a.active {
+  background: #1f2f36;
+  color: white;
+  border-color: #1f2f36;
+}
+
+/* ✅ PREMIUM SECTION TITLES */
+.section-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #111;
+  margin-bottom: 25px;
+  border-left: 4px solid #c75b12;
+  padding-left: 10px;
+}
+
+/* ✅ PREMIUM CARD DEPTH */
+.product-card {
+  background: white;
+  padding: 15px;
+  border-radius: 16px;
+  text-align: center;
+  border: none;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  transition: all 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.12);
+}
+
+/* ✅ IMAGE FRAME (IMPORTANT) */
+.product-card img {
+  background: #f3f4f6;
+  border-radius: 12px;
+  padding: 15px;
+}
+
+/* ✅ BETTER BUTTON */
+.add-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #c75b12, #f39c12);
+  color: white;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.add-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 12px rgba(199,91,18,0.3);
+}
