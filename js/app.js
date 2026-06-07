@@ -63,19 +63,21 @@ function updateCart() {
 
   if (!el) return;
 
-  el.innerHTML = "";
-  let total = 0;
+  el.innerHTML += `
+  <div class="cart-item">
 
-  cart.forEach(item => {
-    const subtotal = item.price * item.qty;
-    total += subtotal;
+    <span>${item.name}</span>
 
-    el.innerHTML += `
-      <div class="cart-item">
-        ${item.name} x${item.qty}
-        <span>R${subtotal}</span>
-      </div>
-    `;
+    <div>
+      <button onclick="changeQty('${item.name}', 1)">+</button>
+      <button onclick="changeQty('${item.name}', -1)">-</button>
+    </div>
+
+    <span>R${subtotal}</span>
+
+  </div>
+`;
+
   });
 
   totalEl.textContent = total;
@@ -122,21 +124,30 @@ function renderCheckout() {
   let total = 0;
 
   // ✅ THIS IS YOUR CODE (CORRECT PLACEMENT)
-  cart.forEach(item => {
+ cart.forEach(item => {
 
-    const subtotal = item.price * item.qty;
+  const subtotal = item.price * item.qty;
 
-    total += subtotal;
+  total += subtotal;
 
-    grid.innerHTML += `
-      <div class="product-card">
-        <img src="images/${item.image}">
-        <h3>${item.name}</h3>
-        <p>${item.qty} x R${item.price}</p>
-        <strong>R${subtotal}</strong>
+  grid.innerHTML += `
+    <div class="product-card">
+
+      <img src="images/${item.image}">
+      <h3>${item.name}</h3>
+
+      <p>${item.qty} x R${item.price}</p>
+      <strong>R${subtotal}</strong>
+
+      <!-- ✅ QUANTITY CONTROLS HERE -->
+      <div class="qty-controls">
+        <button onclick="changeQty('${item.name}', 1)">+</button>
+        <button onclick="changeQty('${item.name}', -1)">-</button>
       </div>
-    `;
-  });
+
+    </div>
+  `;
+});
 
   totalEl.textContent = total;
 }
