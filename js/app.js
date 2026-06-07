@@ -95,18 +95,23 @@ function setupFilters(products){
     btn.addEventListener("click", function(e){
       e.preventDefault();
 
-      const category = this.dataset.filter.toLowerCase();
+      // ✅ active UI highlight
+      document.querySelectorAll(".filters a").forEach(b => b.classList.remove("active"));
+      this.classList.add("active");
+
+      const category = this.dataset.filter;
 
       const filtered =
         category === "all"
           ? products
-          : products.filter(p => p.category.includes(category));
+          : products.filter(p => p.category === category);
 
       render("products", filtered);
     });
   });
 
 }
+
 
 /* ===============================
    CHECKOUT SYSTEM ✅
