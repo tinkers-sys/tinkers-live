@@ -12,8 +12,8 @@
 <body>
 
 <header class="header">
-  <div class="container">
-    <h2>Tinkers</h2>
+  <div class="container header-top">
+    <h2 class="logo">Tinkers</h2>
 
     <nav>
       <a href="index.html">Home</a>
@@ -23,30 +23,38 @@
     </nav>
   </div>
 
-  <div class="filters">
-    <a href="#" data-filter="All">All</a>
-    <a href="#" data-filter="Art">Art</a>
-    <a href="#" data-filter="Apparel">Apparel</a>
-    <a href="#" data-filter="Accessories">Accessories</a>
-    <a href="#" data-filter="Beadwork">Beadwork</a>
+  <!-- FIXED FILTER POSITION -->
+  <div class="container">
+    <div class="filters">
+      <a href="#" data-filter="All">All</a>
+      <a href="#" data-filter="Art">Art</a>
+      <a href="#" data-filter="Apparel">Apparel</a>
+      <a href="#" data-filter="Accessories">Accessories</a>
+      <a href="#" data-filter="Beadwork">Beadwork</a>
+    </div>
   </div>
 </header>
 
-<section class="featured">
-  <h2>✨ Curated for You</h2>
-  <div id="featuredProducts" class="product-grid"></div>
-</section>
+<!-- EVERYTHING INSIDE ONE MAIN CONTAINER -->
+<div class="container">
 
-<section class="trending">
-  <h2>🔥 Trending Now</h2>
-  <div id="trendingProducts" class="product-grid"></div>
-</section>
+  <!-- REMOVE EMPTY SPACE FEEL -->
+  <section class="block featured">
+    <h2 class="section-title">✨ Curated for You</h2>
+    <div id="featuredProducts" class="products"></div>
+  </section>
 
-<section class="main-shop">
-  <h2 id="sectionTitle">Our Collection</h2>
-  <div id="products" class="product-grid"></div>
-</section>
+  <section class="block trending">
+    <h2 class="section-title">🔥 Trending Now</h2>
+    <div id="trendingProducts" class="products"></div>
+  </section>
+
+  <section class="block main-shop">
+    <h2 id="sectionTitle" class="section-title">Our Collection</h2>
+    <div id="products" class="products"></div>
+  </section>
+
+</div>
 
 <script src="js/app.js"></script>
 </body>
-</html>
