@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tinkers</title>
 
 <link rel="stylesheet" href="css/additions.css">
@@ -11,29 +12,40 @@
 
 <header class="header">
   <div class="container header-top">
-    <h2 class="logo">Tinkers</h2>
+    <h2>Tinkers</h2>
 
     <nav>
       <a href="index.html">Home</a>
       <a href="checkout.html">Checkout</a>
-      <button onclick="toggleCart()" class="cart-btn">🛒 Cart</button>
+      <button onclick="toggleCart()">🛒 Cart</button>
     </nav>
   </div>
 </header>
 
+<!-- FILTERS -->
+<div class="container">
+  <div class="filters">
+    <a href="#" data-filter="all">All</a>
+    <a href="#" data-filter="apparel">Apparel</a>
+    <a href="#" data-filter="art">Art</a>
+    <a href="#" data-filter="accessories">Accessories</a>
+  </div>
+</div>
+
 <div class="container">
 
-  <section class="hero">
+  <!-- HERO -->
+  <div class="hero">
     <h1>Authentic African Craftsmanship</h1>
     <p>Curated pieces that tell real African stories</p>
-  </section>
+  </div>
 
-  <h2 class="section-title">Our Collection</h2>
+  <h2>Our Collection</h2>
   <div id="products" class="products"></div>
 
 </div>
 
-<!-- ✅ CART DRAWER -->
+<!-- CART DRAWER -->
 <div id="cartDrawer" class="cart-drawer">
 
   <div class="cart-header">
@@ -56,6 +68,6 @@
 </div>
 
 <script src="js/app.js"></script>
+
 </body>
 </html>
-
