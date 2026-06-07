@@ -172,4 +172,25 @@ nav a:hover {
 .cart-footer {
   margin-top: 20px;
 }
+.cart-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.cart-item img {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+}
+
+.cart-actions button {
+  margin: 2px;
+  padding: 4px 6px;
+  border: none;
+  background: #ddd;
+  border-radius: 4px;
+  cursor: pointer;
+}
 
