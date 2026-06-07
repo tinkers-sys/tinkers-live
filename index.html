@@ -23,34 +23,31 @@
     </nav>
   </div>
 
-  <!-- FIXED FILTER POSITION -->
   <div class="container">
     <div class="filters">
-      <a href="#" data-filter="All">All</a>
-      <a href="#" data-filter="Art">Art</a>
-      <a href="#" data-filter="Apparel">Apparel</a>
-      <a href="#" data-filter="Accessories">Accessories</a>
-      <a href="#" data-filter="Beadwork">Beadwork</a>
+      <a href="#" onclick="filterProducts('All')">All</a>
+      <a href="#" onclick="filterProducts('Art')">Art</a>
+      <a href="#" onclick="filterProducts('Apparel')">Apparel</a>
+      <a href="#" onclick="filterProducts('Accessories')">Accessories</a>
+      <a href="#" onclick="filterProducts('Beadwork')">Beadwork</a>
     </div>
   </div>
 </header>
 
-<!-- EVERYTHING INSIDE ONE MAIN CONTAINER -->
 <div class="container">
 
-  <!-- REMOVE EMPTY SPACE FEEL -->
-  <section class="block featured">
+  <section class="block">
     <h2 class="section-title">✨ Curated for You</h2>
     <div id="featuredProducts" class="products"></div>
   </section>
 
-  <section class="block trending">
+  <section class="block">
     <h2 class="section-title">🔥 Trending Now</h2>
     <div id="trendingProducts" class="products"></div>
   </section>
 
-  <section class="block main-shop">
-    <h2 id="sectionTitle" class="section-title">Our Collection</h2>
+  <section class="block">
+    <h2 class="section-title">Our Collection</h2>
     <div id="products" class="products"></div>
   </section>
 
@@ -58,3 +55,5 @@
 
 <script src="js/app.js"></script>
 </body>
+</html>
+``
