@@ -61,7 +61,7 @@ const orders = JSON.parse(localStorage.getItem("orderHistory") || "[]");
 let totalRevenue = 0;
 
 orders.forEach(order => {
-  totalRevenue += order.total;
+  totalRevenue += order.total || 0;
 });
 
 document.getElementById("totalRevenue").innerText = "R" + totalRevenue;
@@ -74,6 +74,8 @@ document.getElementById("totalOrders").innerText = orders.length;
 const productSales = {};
 
 orders.forEach(order => {
+  if(!order.items) return;
+
   order.items.forEach(item => {
     if(!productSales[item.name]){
       productSales[item.name] = 0;
@@ -82,6 +84,7 @@ orders.forEach(order => {
   });
 });
 
+/* DISPLAY TOP PRODUCTS */
 let topHTML = "";
 
 Object.entries(productSales)
@@ -110,21 +113,23 @@ orders.slice(-5).reverse().forEach(order => {
 
   let itemsHTML = "";
 
-  order.items.forEach(i => {
-    itemsHTML += `<li>${i.name} x${i.qty}</li>`;
-  });
+  if(order.items){
+    order.items.forEach(i => {
+      itemsHTML += `<li>${i.name} x${i.qty}</li>`;
+    });
+  }
 
   ordersHTML += `
     <div class="dashboard-card">
 
       <div class="order-header">
-       <h3>${order.orderID || "Order"}</h3>
-      <span>${order.date || ""}</span>
+        <h3>${order.orderID || "Order"}</h3>
+        <span>${order.date || ""}</span>
       </div>
 
       <div class="customer-info">
-       <p>${order.customer?.name || "N/A"}</p>
-       <p>${order.customer?.phone || ""}</p>
+        <p>${order.customer?.name || "N/A"}</p>
+        <p>${order.customer?.phone || ""}</p>
       </div>
 
       <ul class="order-items">
@@ -132,7 +137,7 @@ orders.slice(-5).reverse().forEach(order => {
       </ul>
 
       <div class="order-total">
-        Total: R${order.total}
+        Total: R${order.total || 0}
       </div>
 
     </div>
@@ -142,7 +147,52 @@ orders.slice(-5).reverse().forEach(order => {
 document.getElementById("recentOrders").innerHTML =
   ordersHTML || "<p>No orders yet</p>";
 
-</script>
 
-</body>
-</html>
+/* =============================
+   ✅ SALES CHART (FINAL FIXED)
+============================= */
+
+const productNames = [];
+const productValues = [];
+
+Object.entries(productSales)
+  .sort((a,b) => b[1] - a[1])
+  .slice(0,5)
+  .forEach(product => {
+    productNames.push(product[0]);
+    productValues.push(product[1]);
+  });
+
+const ctx = document.getElementById("salesChart");
+
+/* ✅ ONLY CREATE CHART IF CANVAS EXISTS */
+if(ctx){
+  new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: productNames,
+      datasets: [{
+        label: "Units Sold",
+        data: productValues,
+        backgroundColor: "#c55a11",
+        borderRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1
+          }
+        }
+      }
+    }
+  });
+}
+
+</script>
