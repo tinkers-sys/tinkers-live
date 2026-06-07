@@ -261,7 +261,6 @@ function whatsappOrder(){
 
   window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
 }
-
 function payfastCheckout(){
 
   const cart = readCart();
@@ -275,30 +274,36 @@ function payfastCheckout(){
   let orderItems = [];
 
   cart.forEach(item => {
+
     const product = window.__products.find(p => p.id === item.id);
 
     if(product){
       const subtotal = product.price * item.qty;
+
       total += subtotal;
 
-      // ✅ SAVE FULL PRODUCT INFO
+      // ✅ IMPORTANT: SAVE FULL PRODUCT DATA
       orderItems.push({
         name: product.name,
-        price: product.price,
         qty: item.qty,
+        price: product.price,
         subtotal: subtotal
       });
     }
+
   });
 
-  // ✅ SAVE FULL ORDER (THIS FIXES YOUR ISSUE)
-  localStorage.setItem("lastOrder", JSON.stringify({
+  // ✅ SAVE COMPLETE ORDER (THIS FIXES EVERYTHING)
+  const order = {
     orderID: "TK" + Date.now(),
     date: new Date().toLocaleString(),
     items: orderItems,
     total: total
-  }));
+  };
 
+  localStorage.setItem("lastOrder", JSON.stringify(order));
+
+  // ✅ PAYFAST REDIRECT
   const params = new URLSearchParams({
     merchant_id: "10000100",
     merchant_key: "46f0cd694581a",
