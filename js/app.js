@@ -33,7 +33,7 @@ async function loadProducts() {
     name: p.name,
     category: (p.category || "").toLowerCase(),
     price: Number(p.price),
-    image: p.image,
+    <img src="images/${p.image}" alt="${p.name}">
 
     featured: (p.featured || "").toLowerCase() === "yes",
     trending: (p.trending || "").toLowerCase() === "yes"
@@ -46,7 +46,7 @@ async function loadProducts() {
 function buildCard(p) {
   return `
     <div class="product-card">
-      images/${p.image}
+      <img src="images/${p.image}" alt="${p.name}">
       <h3 class="product-title">${p.name}</h3>
       <p class="product-price">R${p.price}</p>
       <button class="add-btn" data-id="${p.id}">Add to cart</button>
