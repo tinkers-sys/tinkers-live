@@ -32,10 +32,19 @@ function buildCard(p) {
 
 /* ADD */
 function addToCart(name, price, image) {
-  const existing = cart.find(i => i.name === name);
 
-  if (existing) existing.qty++;
-  else cart.push({ name, price, image, qty: 1 });
+  let existing = cart.find(item => item.name === name);
+
+  if (existing) {
+    existing.qty += 1;  // ✅ increment works
+  } else {
+    cart.push({
+      name: name,
+      price: price,
+      image: image,
+      qty: 1
+    });
+  }
 
   saveCart();
 }
@@ -107,14 +116,16 @@ function renderCheckout() {
   const grid = document.getElementById("checkoutGrid");
   const totalEl = document.getElementById("checkoutTotal");
 
-  if (!grid) return;
+  if (!grid || !totalEl) return;
 
   grid.innerHTML = "";
   let total = 0;
 
+  // ✅ THIS IS YOUR CODE (CORRECT PLACEMENT)
   cart.forEach(item => {
 
     const subtotal = item.price * item.qty;
+
     total += subtotal;
 
     grid.innerHTML += `
@@ -129,6 +140,7 @@ function renderCheckout() {
 
   totalEl.textContent = total;
 }
+
 
 /* WHATSAPP */
 function whatsappOrder() {
