@@ -148,6 +148,97 @@ document.addEventListener("click", function(e){
     addToCart(e.target.dataset.id);
   }
 });
+/* ===============================
+   CHECKOUT RENDER (FINAL FIX ✅)
+================================ */
+function renderCheckout(){
+
+  // ✅ WAIT UNTIL PRODUCTS ARE LOADED
+  if(!window.__products || window.__products.length === 0){
+    setTimeout(renderCheckout, 200);
+    return;
+  }
+
+  const cartEl = document.getElementById("cart");
+  const totalEl = document.getElementById("checkoutTotal");
+
+  if(!cartEl || !totalEl) return;
+
+  const cart = readCart();
+
+  cartEl.innerHTML = '<div class="checkout-grid"></div>';
+  const grid = cartEl.querySelector(".checkout-grid");
+
+  if(!cart.length){
+    grid.innerHTML = "<p>Your cart is empty</p>";
+    totalEl.textContent = "R0";
+    return;
+  }
+
+  let total = 0;
+
+  cart.forEach(item => {
+
+    const product = window.__products.find(p => p.id === item.id);
+
+    if(!product){
+      console.warn("Missing product:", item.id);
+      return;
+    }
+
+    const price = product.price || 0;
+    const name = product.name || "Unknown Product";
+    const image = product.images?.[0] || "default.jpg";
+
+    const subtotal = price * item.qty;
+    total += subtotal;
+
+    grid.innerHTML += `
+      <div class="checkout-card">
+
+        <img src="images/${image}" alt="${name}">
+
+        <h3>${name}</h3>
+
+        <p>${item.qty} × R${price}</p>
+        <p><strong>R${subtotal}</strong></p>
+
+        <div class="qty-controls">
+          <button onclick="updateQty('${item.id}', -1)">-</button>
+          <button onclick="updateQty('${item.id}', 1)">+</button>
+        </div>
+
+        <button onclick="removeItem('${item.id}')">Remove</button>
+
+      </div>
+    `;
+  });
+
+  totalEl.textContent = "R" + total;
+}
+function updateQty(id, change){
+  let cart = readCart();
+
+  let item = cart.find(i => i.id === id);
+  if (!item) return;
+
+  item.qty += change;
+
+  if (item.qty <= 0){
+    cart = cart.filter(i => i.id !== id);
+  }
+
+  writeCart(cart);
+  renderCheckout();
+  updateCartCount();
+}
+
+function removeItem(id){
+  let cart = readCart().filter(i => i.id !== id);
+  writeCart(cart);
+  renderCheckout();
+  updateCartCount();
+}
 
 /* ===============================
    INIT
