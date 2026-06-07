@@ -257,7 +257,7 @@ function whatsappOrder(){
 
   message += `\nTotal: R${total}`;
 
-  const phone = "27711234567";
+  const phone = "27720912943";
 
   window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
 }
@@ -265,19 +265,39 @@ function whatsappOrder(){
 function payfastCheckout(){
 
   const cart = readCart();
+
   if(cart.length === 0){
     alert("Cart is empty ❌");
     return;
   }
 
   let total = 0;
+  let orderItems = [];
 
   cart.forEach(item => {
     const product = window.__products.find(p => p.id === item.id);
+
     if(product){
-      total += product.price * item.qty;
+      const subtotal = product.price * item.qty;
+      total += subtotal;
+
+      // ✅ SAVE FULL PRODUCT INFO
+      orderItems.push({
+        name: product.name,
+        price: product.price,
+        qty: item.qty,
+        subtotal: subtotal
+      });
     }
   });
+
+  // ✅ SAVE FULL ORDER (THIS FIXES YOUR ISSUE)
+  localStorage.setItem("lastOrder", JSON.stringify({
+    orderID: "TK" + Date.now(),
+    date: new Date().toLocaleString(),
+    items: orderItems,
+    total: total
+  }));
 
   const params = new URLSearchParams({
     merchant_id: "10000100",
@@ -288,7 +308,8 @@ function payfastCheckout(){
     cancel_url: "https://tinkers-sys.github.io/tinkers-live/cancel.html"
   });
 
-  window.location.href = "https://sandbox.payfast.co.za/eng/process?" + params.toString();
+  window.location.href =
+    "https://sandbox.payfast.co.za/eng/process?" + params.toString();
 }
 
 function payflexCheckout(){
