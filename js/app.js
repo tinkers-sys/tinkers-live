@@ -22,7 +22,7 @@ function buildCard(p) {
       <img src="images/${p.image}">
       <h3>${p.name}</h3>
       <p>R${p.price}</p>
-      <button onclick="addToCart('${p.name}', ${p.price}, '${p.image}')">
+      <button class="add-btn" onclick="addToCart('${p.name}', ${p.price}, '${p.image}')">
         Add to cart
       </button>
     </div>
@@ -34,22 +34,19 @@ function addToCart(name, price, image) {
 
   const item = cart.find(i => i.name === name);
 
-  if (item) {
-    item.qty++;
-  } else {
-    cart.push({ name, price, image, qty: 1 });
-  }
+  if (item) item.qty++;
+  else cart.push({ name, price, image, qty: 1 });
 
   saveCart();
 }
 
-/* SAVE */
+/* SAVE + UPDATE */
 function saveCart() {
   localStorage.setItem("cart", JSON.stringify(cart));
   updateCart();
 }
 
-/* UPDATE CART DRAWER */
+/* UPDATE CART */
 function updateCart() {
 
   const cartEl = document.getElementById("cartItems");
@@ -58,7 +55,6 @@ function updateCart() {
   if (!cartEl) return;
 
   cartEl.innerHTML = "";
-
   let total = 0;
 
   cart.forEach(item => {
@@ -67,8 +63,9 @@ function updateCart() {
     total += subtotal;
 
     cartEl.innerHTML += `
-      <div>
-        ${item.name} x${item.qty} - R${subtotal}
+      <div class="cart-item">
+        ${item.name} x${item.qty}
+        <span>R${subtotal}</span>
       </div>
     `;
   });
@@ -76,7 +73,7 @@ function updateCart() {
   totalEl.textContent = total;
 }
 
-/* DRAWER */
+/* TOGGLE CART */
 function toggleCart() {
   document.getElementById("cartDrawer").classList.toggle("open");
 }
@@ -96,7 +93,6 @@ function renderCheckout() {
   if (!grid) return;
 
   grid.innerHTML = "";
-
   let total = 0;
 
   cart.forEach(item => {
@@ -131,7 +127,7 @@ function whatsappOrder() {
 
   message += `Total: R${total}`;
 
-  window.open(`https://wa.me/27720912943?text=${encodeURIComponent(message)}`);
+  window.open("https://wa.me/27720912943?text=" + encodeURIComponent(message));
 }
 
 /* PAYFAST */
@@ -160,6 +156,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   const products = await loadProducts();
+
   document.getElementById("products").innerHTML =
     products.map(buildCard).join("");
 
