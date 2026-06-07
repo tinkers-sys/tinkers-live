@@ -2,105 +2,60 @@
 
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-/* ============================
-   LOAD PRODUCTS FROM SHEET
-============================= */
+/* LOAD PRODUCTS */
 async function loadProducts() {
+
   const res = await fetch("https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1");
   const data = await res.json();
 
   return data.map(p => ({
-    name: p.name,
-    category: (p.category || "").toLowerCase(),
-    price: Number(p.price),
-    image: p.image
+    name: p.name || "Unknown",
+    price: Number(p.price) || 0,
+    image: p.image || "default.jpg"
   }));
 }
 
-/* ============================
-   BUILD PRODUCT CARD
-============================= */
+/* BUILD CARD */
 function buildCard(p) {
-
-  let badge = "";
-
-  if (p.price >= 1500) {
-    badge = `<span class="badge premium">PREMIUM</span>`;
-  } else if (p.price >= 700) {
-    badge = `<span class="badge hot">HOT</span>`;
-  }
-
   return `
     <div class="product-card">
-
-      ${badge}
-
-      <div class="img-wrap">
-        <img src="images/${p.image}" alt="${p.name}">
-      </div>
-
+      <img src="images/${p.image}">
       <h3>${p.name}</h3>
       <p>R${p.price}</p>
-
-      <!-- ✅ data attributes -->
-      <button class="add-btn"
-        data-name="${p.name}"
-        data-price="${p.price}"
-        data-image="${p.image}">
+      <button onclick="addToCart('${p.name}', ${p.price}, '${p.image}')">
         Add to cart
       </button>
-
     </div>
   `;
 }
 
-/* ============================
-   RENDER
-============================= */
-function render(id, products) {
-  const el = document.getElementById(id);
-  if (!el) return;
+/* ADD TO CART */
+function addToCart(name, price, image) {
 
-  el.innerHTML = products.map(buildCard).join("");
+  const item = cart.find(i => i.name === name);
+
+  if (item) {
+    item.qty++;
+  } else {
+    cart.push({ name, price, image, qty: 1 });
+  }
+
+  saveCart();
 }
 
-/* ============================
-   ADD TO CART (FIXED)
-============================= */
-document.addEventListener("click", function(e) {
+/* SAVE */
+function saveCart() {
+  localStorage.setItem("cart", JSON.stringify(cart));
+  updateCart();
+}
 
-  if (e.target.classList.contains("add-btn")) {
-
-    const product = {
-      name: e.target.dataset.name,
-      price: Number(e.target.dataset.price),
-      image: e.target.dataset.image,
-      qty: 1
-    };
-
-    // ✅ CHECK IF ALREADY IN CART
-    const existing = cart.find(i => i.name === product.name);
-
-    if (existing) {
-      existing.qty++;
-    } else {
-      cart.push(product);
-    }
-
-    updateCart();
-    toggleCart(true);
-  }
-});
-
-/* ============================
-   UPDATE CART UI (UPGRADED)
-============================= */
+/* UPDATE CART DRAWER */
 function updateCart() {
 
   const cartEl = document.getElementById("cartItems");
   const totalEl = document.getElementById("cartTotal");
 
-  if (!cartEl || !totalEl) return;
+  if (!cartEl) return;
 
   cartEl.innerHTML = "";
 
@@ -112,76 +67,60 @@ function updateCart() {
     total += subtotal;
 
     cartEl.innerHTML += `
-      <div class="cart-item">
-        <img src="images/${item.image}">
-
-        <div>
-          <p>${item.name}</p>
-          <small>R${item.price} x ${item.qty}</small>
-        </div>
-
-        <div class="cart-actions">
-          <button onclick="changeQty('${item.name}', 1)">+</button>
-          <button onclick="changeQty('${item.name}', -1)">-</button>
-          <button onclick="removeItem('${item.name}')">✕</button>
-        </div>
+      <div>
+        ${item.name} x${item.qty} - R${subtotal}
       </div>
     `;
   });
 
   totalEl.textContent = total;
-  localStorage.setItem("cart", JSON.stringify(cart));
- 
 }
 
-/* ============================
-   CART CONTROLS
-============================= */
-function changeQty(name, amount) {
-
-  const item = cart.find(i => i.name === name);
-  if (!item) return;
-
-  item.qty += amount;
-
-  if (item.qty <= 0) {
-    cart = cart.filter(i => i.name !== name);
-  }
-
-  updateCart();
+/* DRAWER */
+function toggleCart() {
+  document.getElementById("cartDrawer").classList.toggle("open");
 }
 
-function removeItem(name) {
-  cart = cart.filter(i => i.name !== name);
-  updateCart();
-}
-
+/* CLEAR */
 function clearCart() {
   cart = [];
-  updateCart();
+  saveCart();
 }
 
-/* ============================
-   DRAWER CONTROL
-============================= */
-function toggleCart(show = false) {
-  const drawer = document.getElementById("cartDrawer");
+/* CHECKOUT PAGE */
+function renderCheckout() {
 
-  if (show) drawer.classList.add("open");
-  else drawer.classList.toggle("open");
+  const grid = document.getElementById("checkoutGrid");
+  const totalEl = document.getElementById("checkoutTotal");
+
+  if (!grid) return;
+
+  grid.innerHTML = "";
+
+  let total = 0;
+
+  cart.forEach(item => {
+
+    const subtotal = item.price * item.qty;
+    total += subtotal;
+
+    grid.innerHTML += `
+      <div class="product-card">
+        <img src="images/${item.image}">
+        <h3>${item.name}</h3>
+        <p>${item.qty} x R${item.price}</p>
+        <strong>R${subtotal}</strong>
+      </div>
+    `;
+  });
+
+  totalEl.textContent = total;
 }
 
-/* ============================
-   WHATSAPP CHECKOUT
-============================= */
+/* WHATSAPP */
 function whatsappOrder() {
 
-  if (!cart.length) {
-    alert("Cart is empty ❌");
-    return;
-  }
-
-  let message = "🛍️ Tinkers Order\n\n";
+  let message = "Tinkers Order\n";
   let total = 0;
 
   cart.forEach(item => {
@@ -190,23 +129,13 @@ function whatsappOrder() {
     message += `${item.name} x${item.qty} - R${subtotal}\n`;
   });
 
-  message += `\nTotal: R${total}`;
+  message += `Total: R${total}`;
 
-  window.open(
-    `https://wa.me/27720912943?text=${encodeURIComponent(message)}`,
-    "_blank"
-  );
+  window.open(`https://wa.me/27720912943?text=${encodeURIComponent(message)}`);
 }
 
-/* ============================
-   PAYFAST
-============================= */
+/* PAYFAST */
 function payfastCheckout() {
-
-  if (!cart.length) {
-    alert("Cart is empty ❌");
-    return;
-  }
 
   let total = 0;
   cart.forEach(i => total += i.price * i.qty);
@@ -222,55 +151,17 @@ function payfastCheckout() {
     "https://sandbox.payfast.co.za/eng/process?" + params.toString();
 }
 
-/* ============================
-   INIT
-============================= */
+/* INIT */
 document.addEventListener("DOMContentLoaded", async () => {
 
-  const page = window.location.pathname;
-
-  if (page.includes("checkout")) {
+  if (window.location.pathname.includes("checkout")) {
     renderCheckout();
     return;
   }
 
   const products = await loadProducts();
+  document.getElementById("products").innerHTML =
+    products.map(buildCard).join("");
 
-  render("products", products);
-
-  render("featuredProducts", products.filter(p => p.price >= 1500));
-  render("trendingProducts", products.filter(p => p.price >= 500 && p.price < 1500));
-
+  updateCart();
 });
-function renderCheckout() {
-
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
-
-  const grid = document.getElementById("checkoutGrid");
-  const totalEl = document.getElementById("checkoutTotal");
-
-  if (!grid || !totalEl) return;
-
-  let total = 0;
-  grid.innerHTML = "";
-
-  cart.forEach(item => {
-
-    const subtotal = item.price * item.qty;
-    total += subtotal;
-
-    grid.innerHTML += `
-      <div class="checkout-card">
-        <img src="images/${item.image}">
-        <h3>${item.name}</h3>
-        <p>${item.qty} x R${item.price}</p>
-        <strong>R${subtotal}</strong>
-      </div>
-    `;
-  });
-
-  totalEl.textContent = total;
-}
-
-
-
