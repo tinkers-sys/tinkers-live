@@ -118,8 +118,8 @@ orders.slice(-5).reverse().forEach(order => {
     <div class="dashboard-card">
 
       <div class="order-header">
-        <h3>${order.orderID}</h3>
-        <span>${order.date || ""}</span>
+       <h3>${order.orderID || "Order"}</h3>
+      <span>${order.date || ""}</span>
       </div>
 
       <div class="customer-info">
