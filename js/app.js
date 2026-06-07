@@ -227,18 +227,50 @@ function payfastCheckout() {
 ============================= */
 document.addEventListener("DOMContentLoaded", async () => {
 
+  const page = window.location.pathname;
+
+  if (page.includes("checkout")) {
+    renderCheckout();
+    return;
+  }
+
   const products = await loadProducts();
 
   render("products", products);
 
-  render("featuredProducts",
-    products.filter(p => p.price >= 1500)
-  );
-
-  render("trendingProducts",
-    products.filter(p => p.price >= 500 && p.price < 1500)
-  );
+  render("featuredProducts", products.filter(p => p.price >= 1500));
+  render("trendingProducts", products.filter(p => p.price >= 500 && p.price < 1500));
 
 });
+function renderCheckout() {
+
+  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  const grid = document.getElementById("checkoutGrid");
+  const totalEl = document.getElementById("checkoutTotal");
+
+  if (!grid || !totalEl) return;
+
+  let total = 0;
+  grid.innerHTML = "";
+
+  cart.forEach(item => {
+
+    const subtotal = item.price * item.qty;
+    total += subtotal;
+
+    grid.innerHTML += `
+      <div class="checkout-card">
+        <img src="images/${item.image}">
+        <h3>${item.name}</h3>
+        <p>${item.qty} x R${item.price}</p>
+        <strong>R${subtotal}</strong>
+      </div>
+    `;
+  });
+
+  totalEl.textContent = total;
+}
+
 
 
