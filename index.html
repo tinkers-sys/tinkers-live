@@ -8,6 +8,25 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/additions.css">
 </head>
+<!-- CART DRAWER -->
+<div id="cartDrawer" class="cart-drawer">
+
+  <div class="cart-header">
+    <h3>Your Cart</h3>
+    <button onclick="toggleCart()">✕</button>
+  </div>
+
+  <div id="cartItems"></div>
+
+  <div class="cart-footer">
+    <p>Total: R<span id="cartTotal">0</span></p>
+
+    <button onclick="whatsappOrder()">WhatsApp Checkout</button>
+    <button onclick="payfastCheckout()">PayFast</button>
+    <button onclick="clearCart()">Clear</button>
+  </div>
+
+</div>
 
 <body>
 
