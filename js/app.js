@@ -46,7 +46,7 @@ async function loadProducts() {
 function buildCard(p) {
   return `
     <div class="product-card">
-      <img src="images/${p.image}" alt="${p.name}">
+      images/${p.image}
       <h3 class="product-title">${p.name}</h3>
       <p class="product-price">R${p.price}</p>
       <button class="add-btn" data-id="${p.id}">Add to cart</button>
