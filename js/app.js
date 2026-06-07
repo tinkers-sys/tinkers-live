@@ -82,6 +82,20 @@ function updateCart() {
 
   totalEl.textContent = total;
 }
+function changeQty(name, amount) {
+
+  const item = cart.find(i => i.name === name);
+  if (!item) return;
+
+  item.qty += amount;
+
+  if (item.qty <= 0) {
+    cart = cart.filter(i => i.name !== name);
+  }
+
+  saveCart();
+}
+
 
 /* FILTERS */
 function setupFilters(products) {
