@@ -338,18 +338,33 @@ function whatsappOrder() {
 =============================== */
 document.addEventListener("DOMContentLoaded", async () => {
 
-  updateCartUI();
+  try {
 
-  if (document.getElementById("checkoutGrid")) {
-    renderCheckout();
-  }
+    updateCartUI();
 
-  const productContainer = document.getElementById("products");
+    if (document.getElementById("checkoutGrid")) {
+      renderCheckout();
+    }
 
-  if (productContainer) {
-    const products = await loadProducts();
-    productContainer.innerHTML = products.map(buildCard).join("");
-    setupFilters(products);
+    const productContainer = document.getElementById("products");
+
+    if (productContainer) {
+
+      console.log("Loading products...");
+
+      const products = await loadProducts();
+
+      console.log("Products loaded:", products);
+
+      productContainer.innerHTML = products.map(buildCard).join("");
+
+      setupFilters(products);
+    }
+
+  } catch (err) {
+    console.error("❌ ERROR LOADING PRODUCTS:", err);
   }
 
 });
+
+
