@@ -185,6 +185,10 @@ function payfastCheckout() {
     merchant_key: "46f0cd694581a",
     amount: total.toFixed(2),
     item_name: "Tinkers Order"
+    <input type="hidden" name="return_url" value="https://yourdomain.com/success.html">
+  <input type="hidden" name="cancel_url" value="https://yourdomain.com/cancel.html">
+  <input type="hidden" name="notify_url" value="https://yourdomain.com/notify.php">
+
   });
 
   window.location.href =
