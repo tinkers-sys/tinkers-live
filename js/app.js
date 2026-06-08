@@ -14,7 +14,7 @@ function formatCurrency(amount) {
 /* ===============================
 ✅ CONFIG
 =============================== */
-const SCRIPT_URL = "PASTE_YOUR_GOOGLE_SCRIPT_URL_HERE";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzp2yPn_MyqzxjEHxuxkIP356GRRPDGYLDZXM0sSYM/dev";
 
 /* ===============================
 ✅ CART STATE
