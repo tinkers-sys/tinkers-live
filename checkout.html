@@ -1,24 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Checkout</title>
+  <meta charset="UTF-8">
+  <title>Checkout | Tinkers</title>
 
-<link rel="stylesheet" href="css/additions.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/additions.css">
 </head>
 
 <body class="container">
 
+<!-- ===============================
+✅ HEADER
+=============================== -->
 <h2>Checkout</h2>
 
+<!-- ===============================
+✅ CART ITEMS
+=============================== -->
 <div id="checkoutGrid" class="products"></div>
 
-<h3>Total: R<span id="checkoutTotal">0</span></h3>
+<!-- ===============================
+✅ TOTAL
+=============================== -->
+<h3>Total: R<span id="checkoutTotal">0.00</span></h3>
 
-<button onclick="whatsappOrder()">WhatsApp Checkout</button>
-<button onclick="payfastCheckout()">PayFast</button>
-<button onclick="clearCart()">Clear Cart</button>
+<!-- ===============================
+✅ ACTION BUTTONS
+=============================== -->
+<div style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;">
 
+  <button class="checkout-btn" onclick="whatsappOrder()">
+    WhatsApp Checkout
+  </button>
+
+</div>
+
+<!-- ===============================
+✅ PAYFAST FORM (FIXED)
+=============================== -->
+<form action="https://sandbox.payfast.co.za/eng/process"
+      method="post"
+      onsubmit="return prepareOrder()"
+      style="margin-top:20px;">
+
+  <!-- ✅ MERCHANT (SANDBOX) -->
+  <input type="hidden" name="merchant_id" value="10000100">
+  <input type="hidden" name="merchant_key" value="46f0cd694581a">
+
+  <!-- ✅ REQUIRED REDIRECTS -->
+  <input type="hidden" name="return_url" value="https://yourgithubsite.com/tinkers-live/success.html">
+  <input type="hidden" name="cancel_url" value="https://yourgithubsite.com/tinkers-live/cancel.html">
+  <input type="hidden" name="notify_url" value="https://yourgithubsite.com/tinkers-live/notify.php">
+
+  <!-- ✅ PAYMENT DATA -->
+  <input type="hidden" name="amount" id="payfast-amount">
+  <input type="hidden" name="item_name" value="Tinkers Order">
+
+  <!-- ✅ SUBMIT -->
+  <button class="checkout-btn" type="submit">
+    Pay with Card (PayFast)
+  </button>
+
+</form>
+
+<!-- ===============================
+✅ CLEAR CART
+=============================== -->
+<button onclick="clearCart()" style="margin-top:15px;">
+  Clear Cart
+</button>
+
+<!-- ===============================
+✅ NAVIGATION
+=============================== -->
+<div style="margin-top:20px;">
+  <a href="index.html">← Continue Shopping</a>
+</div>
+
+<!-- ===============================
+✅ SCRIPT
+=============================== -->
 <script src="js/app.js"></script>
 
 </body>
