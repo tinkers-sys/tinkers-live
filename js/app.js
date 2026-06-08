@@ -12,7 +12,7 @@ function formatCurrency(amount) {
 }
 
 /* ===============================
-✅ CONFIG (IMPORTANT)
+✅ CONFIG
 =============================== */
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzp2yPn_MyqzxjEHxuxkIP356GRRPDGYLDZXM0sSYM/exec";
 
@@ -22,7 +22,7 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzp2yPn_MyqzxjEHxuxk
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 /* ===============================
-✅ LOAD PRODUCTS (LIVE FROM SHEET)
+✅ LOAD PRODUCTS
 =============================== */
 async function loadProducts() {
 
@@ -30,25 +30,22 @@ async function loadProducts() {
     "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1?t=" + Date.now()
   );
 
-  // ✅ Check if request worked
   if (!res.ok) {
     throw new Error("Failed to fetch product data");
   }
 
-  // ✅ THIS WAS MISSING (MAIN BUG)
   const data = await res.json();
 
   console.log("✅ Data received:", data);
 
-return data.map(p => ({
-  id: p.id || p.name,
-  name: p.name || "Unknown",
-  price: parseFloat(p.price) || 0,
-  image: p.image || "default.jpg",
-  category: (p.category || "").toLowerCase(),
-  stock: parseInt(p.stock) || 0
+  return data.map(p => ({
+    id: p.id || p.name,
+    name: p.name || "Unknown",
+    price: parseFloat(p.price) || 0,
+    image: p.image || "default.jpg",
+    category: (p.category || "").toLowerCase(),
+    stock: parseInt(p.stock) || 0
   }));
-  console.log("Processed data:", data);
 }
 
 /* ===============================
@@ -200,15 +197,6 @@ function changeQty(id, amt) {
 }
 
 /* ===============================
-✅ CLEAR CART
-=============================== */
-function clearCart() {
-  cart = [];
-  localStorage.removeItem("cart");
-  saveCart();
-}
-
-/* ===============================
 ✅ CHECKOUT
 =============================== */
 function renderCheckout() {
@@ -233,11 +221,6 @@ function renderCheckout() {
 
         <p>${item.qty} x ${formatCurrency(item.price)}</p>
 
-        <div class="qty-controls">
-          <button onclick="changeQty('${item.id}',1)">+</button>
-          <button onclick="changeQty('${item.id}',-1)">-</button>
-        </div>
-
         <strong>${formatCurrency(subtotal)}</strong>
       </div>
     `;
@@ -249,96 +232,27 @@ function renderCheckout() {
 }
 
 /* ===============================
-✅ PAYFAST CHECKOUT
+✅ FILTERS (THIS FIXES YOUR ISSUE)
 =============================== */
-function prepareOrder() {
+function setupFilters(products) {
 
-  if (cart.length === 0) {
-    alert("Cart is empty ❌");
-    return false;
-  }
+  document.querySelectorAll("nav a[data-filter]").forEach(btn => {
 
-  let total = 0;
+    btn.addEventListener("click", e => {
+      e.preventDefault();
 
-  const items = cart.map(item => {
-    const subtotal = item.price * item.qty;
-    total += subtotal;
+      const filter = btn.dataset.filter;
 
-    return {
-      name: item.name,
-      qty: item.qty,
-      subtotal: subtotal.toFixed(2)
-    };
+      const filtered =
+        filter === "all"
+          ? products
+          : products.filter(p => p.category === filter);
+
+      document.getElementById("products").innerHTML =
+        filtered.map(buildCard).join("");
+    });
+
   });
-
-  const order = {
-    orderID: "TINK" + Date.now(),
-    date: new Date().toLocaleString(),
-    items,
-    total: total.toFixed(2)
-  };
-
-  console.log("Sending stock update...");
-
-  localStorage.setItem("lastOrder", JSON.stringify(order));
-
-  // ✅ UPDATE STOCK IN GOOGLE SHEET
-  cart.forEach(item => {
-    fetch(`${SCRIPT_URL}?id=${item.id}&qty=${item.qty}&t=${Date.now()}`)
-      .then(res => res.text())
-      .then(data => console.log("Stock updated:", data))
-      .catch(err => console.error(err));
-  });
-
-  const amountField = document.getElementById("payfast-amount");
-  if (amountField) {
-    amountField.value = total.toFixed(2);
-  }
-
-  return true;
-}
-
-/* ===============================
-✅ WHATSAPP ORDER
-=============================== */
-function whatsappOrder() {
-
-  if (cart.length === 0) {
-    alert("Cart is empty ❌");
-    return;
-  }
-
-  let msg = "🧾 Tinkers Order\n\n";
-  let total = 0;
-
-  cart.forEach(i => {
-
-    let sub = i.price * i.qty;
-    total += sub;
-
-    msg += `${i.name} x${i.qty} - ${formatCurrency(sub)}\n`;
-
-    // ✅ UPDATE STOCK
-    fetch(`${SCRIPT_URL}?id=${i.id}&qty=${i.qty}&t=${Date.now()}`)
-      .then(res => res.text())
-      .then(data => console.log("Stock updated:", data))
-      .catch(err => console.error(err));
-
-    // ✅ LOG ORDER
-    fetch(`${SCRIPT_URL}?product=${encodeURIComponent(i.name)}&qty=${i.qty}&total=${sub}`);
-  });
-
-  msg += `\nTotal: ${formatCurrency(total)}`;
-
-  window.open(
-    `https://wa.me/27720912943?text=${encodeURIComponent(msg)}`,
-    "_blank"
-  );
-
-  setTimeout(() => {
-    clearCart();
-    window.location.href = "success.html";
-  }, 2000);
 }
 
 /* ===============================
@@ -356,22 +270,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       renderCheckout();
     }
 
-    const productContainer = document.getElementById("products");
+    const container = document.getElementById("products");
 
-    if (productContainer) {
+    if (container) {
 
       console.log("🔄 Loading products...");
 
       const products = await loadProducts();
 
-      console.log("✅ Products received:", products);
+      console.log("✅ Products:", products);
 
-      if (!products || products.length === 0) {
-        productContainer.innerHTML = "<p>No products found ❌</p>";
-        return;
-      }
-
-      productContainer.innerHTML = products.map(buildCard).join("");
+      container.innerHTML = products.map(buildCard).join("");
 
       setupFilters(products);
 
@@ -380,6 +289,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
   } catch (err) {
+
     console.error("❌ ERROR:", err);
 
     document.getElementById("products").innerHTML =
@@ -387,5 +297,3 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
 });
-
-
