@@ -30,7 +30,7 @@ async function loadProducts() {
     "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1?t=" + Date.now()
   );
 
-  const data = await res.json(); // ✅ FIXED
+  const data = await res.json(); // ✅ THIS WAS MISSING
 
   return data.map(p => ({
     id: p.id,
@@ -41,6 +41,7 @@ async function loadProducts() {
     stock: Number(p.stock) || 0
   }));
 }
+
 
 /* ===============================
 ✅ PRODUCT CARD
