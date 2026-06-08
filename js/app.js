@@ -1,5 +1,8 @@
 "use strict";
-// ✅ PROFESSIONAL CURRENCY FORMATTER
+
+/* ===============================
+✅ CURRENCY FORMAT
+=============================== */
 function formatCurrency(amount) {
   return new Intl.NumberFormat('en-ZA', {
     style: 'currency',
@@ -9,29 +12,35 @@ function formatCurrency(amount) {
 }
 
 /* ===============================
-✅ GLOBAL CART STATE
+✅ CONFIG
+=============================== */
+const SCRIPT_URL = "PASTE_YOUR_GOOGLE_SCRIPT_URL_HERE";
+
+/* ===============================
+✅ CART STATE
 =============================== */
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 /* ===============================
-✅ LOAD PRODUCTS (GOOGLE SHEET)
+✅ LOAD PRODUCTS (LIVE FROM SHEET)
 =============================== */
 async function loadProducts() {
+
   const res = await fetch("https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1");
   const data = await res.json();
 
   return data.map(p => ({
-   id: p.id,
- // use name as ID
+    id: p.id,
     name: p.name || "Unknown",
     price: Number(p.price) || 0,
     image: p.image || "default.jpg",
-    category: (p.category || "").toLowerCase()
+    category: (p.category || "").toLowerCase(),
+    stock: Number(p.stock) || 0
   }));
 }
 
 /* ===============================
-✅ PRODUCT CARD
+✅ PRODUCT CARD (STOCK UI)
 =============================== */
 function buildCard(p) {
 
@@ -41,10 +50,10 @@ function buildCard(p) {
   if (p.stock <= 0) {
     stockMessage = `<p style="color:red;">Out of Stock</p>`;
     disabled = "disabled";
-  } 
+  }
   else if (p.stock <= 3) {
     stockMessage = `<p style="color:red;">Only ${p.stock} left 🔥</p>`;
-  } 
+  }
   else if (p.stock <= 5) {
     stockMessage = `<p style="color:orange;">Low stock (${p.stock} left)</p>`;
   }
@@ -69,7 +78,7 @@ function buildCard(p) {
 }
 
 /* ===============================
-✅ ADD TO CART (FIXED)
+✅ ADD TO CART (STOCK SAFE)
 =============================== */
 function addToCart(id, name, price, image, stock) {
 
@@ -100,7 +109,6 @@ function addToCart(id, name, price, image, stock) {
   saveCart();
 }
 
-
 /* ===============================
 ✅ SAVE CART
 =============================== */
@@ -111,7 +119,7 @@ function saveCart() {
 }
 
 /* ===============================
-✅ UPDATE CART UI (GLOBAL)
+✅ CART UI
 =============================== */
 function updateCartUI() {
 
@@ -123,20 +131,15 @@ function updateCartUI() {
     totalPrice += item.price * item.qty;
   });
 
-  // ✅ Badge
   const badge = document.querySelector(".cart-count");
-  if (badge) {
-    badge.innerText = totalItems;
-  }
+  if (badge) badge.innerText = totalItems;
 
-  // ✅ Drawer list
   const el = document.getElementById("cartItems");
-  if (el) {
 
+  if (el) {
     el.innerHTML = "";
 
     cart.forEach(item => {
-
       const subtotal = item.price * item.qty;
 
       el.innerHTML += `
@@ -149,22 +152,20 @@ function updateCartUI() {
             <button onclick="changeQty('${item.id}',-1)">-</button>
           </div>
 
-         <span>${formatCurrency(subtotal)}</span>
+          <span>${formatCurrency(subtotal)}</span>
         </div>
       `;
     });
   }
 
-  // ✅ Total
   const totalEl = document.getElementById("cartTotal");
   if (totalEl) {
-  totalEl.innerText = formatCurrency(totalPrice);
+    totalEl.innerText = formatCurrency(totalPrice);
   }
-
 }
 
 /* ===============================
-✅ CHANGE QUANTITY
+✅ CHANGE QTY
 =============================== */
 function changeQty(id, amt) {
 
@@ -190,6 +191,7 @@ function changeQty(id, amt) {
 =============================== */
 function clearCart() {
   cart = [];
+  localStorage.removeItem("cart");
   saveCart();
 }
 
@@ -224,7 +226,7 @@ function setupFilters(products) {
 }
 
 /* ===============================
-✅ CHECKOUT PAGE
+✅ CHECKOUT
 =============================== */
 function renderCheckout() {
 
@@ -246,7 +248,7 @@ function renderCheckout() {
         <img src="images/${item.image}">
         <h3>${item.name}</h3>
 
-        <p>${item.qty} x R${item.price}</p>
+        <p>${item.qty} x ${formatCurrency(item.price)}</p>
 
         <div class="qty-controls">
           <button onclick="changeQty('${item.id}',1)">+</button>
@@ -260,12 +262,11 @@ function renderCheckout() {
 
   if (totalEl) {
     totalEl.innerText = formatCurrency(total);
-
   }
 }
 
 /* ===============================
-✅ PREPARE ORDER (CRITICAL FIX)
+✅ PAYFAST CHECKOUT (SYNC STOCK)
 =============================== */
 function prepareOrder() {
 
@@ -290,31 +291,17 @@ function prepareOrder() {
   const order = {
     orderID: "TINK" + Date.now(),
     date: new Date().toLocaleString(),
-    items: items,
+    items,
     total: total.toFixed(2)
   };
 
-  // ✅ SAVE ORDER BEFORE PAYFAST
   localStorage.setItem("lastOrder", JSON.stringify(order));
 
-  // ✅ REDUCE STOCK AFTER PURCHASE
-let products = JSON.parse(localStorage.getItem("productsData")) || [];
+  // ✅ UPDATE STOCK IN GOOGLE SHEET
+  cart.forEach(item => {
+    fetch(`${SCRIPT_URL}?id=${item.id}&qty=${item.qty}`);
+  });
 
-cart.forEach(c => {
-  let product = products.find(p => p.id === c.id);
-
-  if (product) {
-    product.stock -= c.qty;
-
-    if (product.stock < 0) {
-      product.stock = 0;
-    }
-  }
-});
-
-localStorage.setItem("productsData", JSON.stringify(products));
-
-  // ✅ SET PAYFAST AMOUNT
   const amountField = document.getElementById("payfast-amount");
   if (amountField) {
     amountField.value = total.toFixed(2);
@@ -324,7 +311,7 @@ localStorage.setItem("productsData", JSON.stringify(products));
 }
 
 /* ===============================
-✅ WHATSAPP ORDER
+✅ WHATSAPP ORDER (SYNC + LOG)
 =============================== */
 function whatsappOrder() {
 
@@ -337,53 +324,30 @@ function whatsappOrder() {
   let total = 0;
 
   cart.forEach(i => {
+
     let sub = i.price * i.qty;
     total += sub;
-   msg += `${i.name} x${i.qty} - ${formatCurrency(sub)}\n`;
+
+    msg += `${i.name} x${i.qty} - ${formatCurrency(sub)}\n`;
+
+    // ✅ Update stock
+    fetch(`${SCRIPT_URL}?id=${i.id}&qty=${i.qty}`);
+
+    // ✅ Log order
+    fetch(`${SCRIPT_URL}?product=${encodeURIComponent(i.name)}&qty=${i.qty}&total=${sub}`);
   });
 
-  msg += `\nTotal: R${total}`;
+  msg += `\nTotal: ${formatCurrency(total)}`;
 
-  const phone = "27720912943";
+  window.open(
+    `https://wa.me/27720912943?text=${encodeURIComponent(msg)}`,
+    "_blank"
+  );
 
-  // ✅ OPEN WHATSAPP
-  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
-
-  // ✅ WAIT 2 SECONDS THEN CLEAR CART
+  // ✅ CLEAR CART AFTER SEND
   setTimeout(() => {
-
-    // Save order (optional, like PayFast)
-    const order = {
-      orderID: "TINK" + Date.now(),
-      date: new Date().toLocaleString(),
-      items: cart.map(item => ({
-        name: item.name,
-        qty: item.qty,
-        subtotal: (item.price * item.qty).toFixed(2)
-      })),
-      total: total.toFixed(2)
-    };
-
-    localStorage.setItem("lastOrder", JSON.stringify(order));
-
-    // ✅ Save history
-    let history = JSON.parse(localStorage.getItem("orderHistory") || "[]");
-
-    if (!history.find(o => o.orderID === order.orderID)) {
-      history.push(order);
-      localStorage.setItem("orderHistory", JSON.stringify(history));
-    }
-
-    // ✅ CLEAR CART
-    cart = [];
-    localStorage.removeItem("cart");
-
-    // ✅ UPDATE UI
-    updateCartUI();
-
-    // ✅ OPTIONAL REDIRECT
+    clearCart();
     window.location.href = "success.html";
-
   }, 2000);
 }
 
@@ -394,22 +358,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   updateCartUI();
 
-  // ✅ If checkout page
   if (document.getElementById("checkoutGrid")) {
     renderCheckout();
   }
 
-  // ✅ If products page
   const productContainer = document.getElementById("products");
 
   if (productContainer) {
-   let products = JSON.parse(localStorage.getItem("productsData"));
-
-if (!products) {
-  products = await loadProducts();
-  localStorage.setItem("productsData", JSON.stringify(products));
-}
-
+    const products = await loadProducts();
     productContainer.innerHTML = products.map(buildCard).join("");
     setupFilters(products);
   }
