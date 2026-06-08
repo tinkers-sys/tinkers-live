@@ -40,14 +40,15 @@ async function loadProducts() {
 
   console.log("✅ Data received:", data);
 
-  return data.map(p => ({
-    id: p.id || p.name,
-    name: p.name || "Unknown",
-    price: Number(p.price) || 0,
-    image: p.image || "default.jpg",
-    category: (p.category || "").toLowerCase(),
-    stock: Number(p.stock) || 0
+return data.map(p => ({
+  id: p.id || p.name,
+  name: p.name || "Unknown",
+  price: parseFloat(p.price) || 0,
+  image: p.image || "default.jpg",
+  category: (p.category || "").toLowerCase(),
+  stock: parseInt(p.stock) || 0
   }));
+  console.log("Processed data:", data);
 }
 
 /* ===============================
