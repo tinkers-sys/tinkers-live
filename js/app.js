@@ -1,13 +1,19 @@
 "use strict";
 
+/* ===============================
+✅ GLOBAL CART STATE
+=============================== */
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-/* LOAD */
+/* ===============================
+✅ LOAD PRODUCTS (GOOGLE SHEET)
+=============================== */
 async function loadProducts() {
   const res = await fetch("https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1");
   const data = await res.json();
 
   return data.map(p => ({
+    id: p.name, // use name as ID
     name: p.name || "Unknown",
     price: Number(p.price) || 0,
     image: p.image || "default.jpg",
@@ -15,7 +21,9 @@ async function loadProducts() {
   }));
 }
 
-/* CARD */
+/* ===============================
+✅ PRODUCT CARD
+=============================== */
 function buildCard(p) {
   return `
     <div class="product-card">
@@ -24,97 +32,133 @@ function buildCard(p) {
       <p>R${p.price}</p>
 
       <button class="add-btn"
-        onclick="addToCart('${p.name}', ${p.price}, '${p.image}')">
+        onclick="addToCart('${p.id}', '${p.name}', ${p.price}, '${p.image}')">
         Add to cart
       </button>
     </div>
   `;
 }
 
-/* ADD */
-function addToCart(name, price, image) {
-  let item = cart.find(i => i.name === name);
+/* ===============================
+✅ ADD TO CART (FIXED)
+=============================== */
+function addToCart(id, name, price, image) {
+  let item = cart.find(i => i.id === id);
 
-  if (item) item.qty++;
-  else cart.push({ name, price, image, qty: 1 });
+  if (item) {
+    item.qty += 1;
+  } else {
+    cart.push({
+      id,
+      name,
+      price: Number(price),
+      image,
+      qty: 1
+    });
+  }
 
   saveCart();
 }
 
-/* SAVE */
+/* ===============================
+✅ SAVE CART
+=============================== */
 function saveCart() {
   localStorage.setItem("cart", JSON.stringify(cart));
-  updateCart();
+  updateCartUI();
+  renderCheckout();
 }
 
-/* CART DISPLAY */
-function updateCart() {
+/* ===============================
+✅ UPDATE CART UI (GLOBAL)
+=============================== */
+function updateCartUI() {
 
-  const el = document.getElementById("cartItems");
-  const totalEl = document.getElementById("cartTotal");
-
-  if (!el) return;
-
-  el.innerHTML = "";
-  let total = 0;
+  let totalItems = 0;
+  let totalPrice = 0;
 
   cart.forEach(item => {
-
-    const subtotal = item.price * item.qty;
-    total += subtotal;
-
-    el.innerHTML += `
-      <div class="cart-item">
-
-        <span>${item.name}</span>
-
-        <div class="qty-controls">
-          <button onclick="changeQty('${item.name}',1)">+</button>
-          <button onclick="changeQty('${item.name}',-1)">-</button>
-        </div>
-
-        <span>R${subtotal}</span>
-      </div>
-    `;
+    totalItems += item.qty;
+    totalPrice += item.price * item.qty;
   });
 
-  totalEl.textContent = total;
+  // ✅ Badge
+  const badge = document.querySelector(".cart-count");
+  if (badge) {
+    badge.innerText = totalItems;
+  }
+
+  // ✅ Drawer list
+  const el = document.getElementById("cartItems");
+  if (el) {
+
+    el.innerHTML = "";
+
+    cart.forEach(item => {
+
+      const subtotal = item.price * item.qty;
+
+      el.innerHTML += `
+        <div class="cart-item">
+
+          <span>${item.name}</span>
+
+          <div class="qty-controls">
+            <button onclick="changeQty('${item.id}',1)">+</button>
+            <button onclick="changeQty('${item.id}',-1)">-</button>
+          </div>
+
+          <span>R${subtotal}</span>
+        </div>
+      `;
+    });
+  }
+
+  // ✅ Total
+  const totalEl = document.getElementById("cartTotal");
+  if (totalEl) {
+    totalEl.innerText = "R " + totalPrice.toFixed(2);
+  }
+
 }
 
-/* CHANGE QTY */
-function changeQty(name, amt) {
-  let item = cart.find(i => i.name === name);
+/* ===============================
+✅ CHANGE QUANTITY
+=============================== */
+function changeQty(id, amt) {
+  let item = cart.find(i => i.id === id);
   if (!item) return;
 
   item.qty += amt;
 
   if (item.qty <= 0) {
-    cart = cart.filter(i => i.name !== name);
+    cart = cart.filter(i => i.id !== id);
   }
 
   saveCart();
 }
-    // Update badge
-    const badge = document.querySelector('.cart-count');
-    if (badge) {
-        badge.innerText = totalItems;
-    }
 
-    // Optional: update totals display
-    const totalElement = document.querySelector('.cart-total');
-    if (totalElement) {
-        let totalPrice = 0;
-        cart.forEach(item => {
-            totalPrice += item.price * item.quantity;
-        });
-
-        totalElement.innerText = "R " + totalPrice.toFixed(2);
-    }
+/* ===============================
+✅ CLEAR CART
+=============================== */
+function clearCart() {
+  cart = [];
+  saveCart();
 }
 
-/* FILTERS */
+/* ===============================
+✅ CART DRAWER
+=============================== */
+function toggleCart() {
+  document.getElementById("cartDrawer").classList.toggle("open");
+}
+
+/* ===============================
+✅ FILTERS
+=============================== */
 function setupFilters(products) {
   document.querySelectorAll(".filters a").forEach(btn => {
+
     btn.addEventListener("click", e => {
       e.preventDefault();
 
@@ -128,20 +172,13 @@ function setupFilters(products) {
       document.getElementById("products").innerHTML =
         filtered.map(buildCard).join("");
     });
+
   });
 }
 
-/* DRAWER */
-function toggleCart() {
-  document.getElementById("cartDrawer").classList.toggle("open");
-}
-
-function clearCart() {
-  cart = [];
-  saveCart();
-}
-
-/* CHECKOUT */
+/* ===============================
+✅ CHECKOUT PAGE
+=============================== */
 function renderCheckout() {
 
   const grid = document.getElementById("checkoutGrid");
@@ -165,8 +202,8 @@ function renderCheckout() {
         <p>${item.qty} x R${item.price}</p>
 
         <div class="qty-controls">
-          <button onclick="changeQty('${item.name}',1)">+</button>
-          <button onclick="changeQty('${item.name}',-1)">-</button>
+          <button onclick="changeQty('${item.id}',1)">+</button>
+          <button onclick="changeQty('${item.id}',-1)">-</button>
         </div>
 
         <strong>R${subtotal}</strong>
@@ -174,12 +211,59 @@ function renderCheckout() {
     `;
   });
 
-  totalEl.textContent = total;
+  if (totalEl) {
+    totalEl.innerText = "R " + total.toFixed(2);
+  }
 }
 
-/* PAYMENTS */
+/* ===============================
+✅ PREPARE ORDER (CRITICAL FIX)
+=============================== */
+function prepareOrder() {
+
+  if (cart.length === 0) {
+    alert("Cart is empty ❌");
+    return false;
+  }
+
+  let total = 0;
+
+  const items = cart.map(item => {
+    const subtotal = item.price * item.qty;
+    total += subtotal;
+
+    return {
+      name: item.name,
+      qty: item.qty,
+      subtotal: subtotal.toFixed(2)
+    };
+  });
+
+  const order = {
+    orderID: "TINK" + Date.now(),
+    date: new Date().toLocaleString(),
+    items: items,
+    total: total.toFixed(2)
+  };
+
+  // ✅ SAVE ORDER BEFORE PAYFAST
+  localStorage.setItem("lastOrder", JSON.stringify(order));
+
+  // ✅ SET PAYFAST AMOUNT
+  const amountField = document.getElementById("payfast-amount");
+  if (amountField) {
+    amountField.value = total.toFixed(2);
+  }
+
+  return true;
+}
+
+/* ===============================
+✅ WHATSAPP ORDER
+=============================== */
 function whatsappOrder() {
-  let msg = "Tinkers Order\n";
+
+  let msg = "🧾 Tinkers Order\n\n";
   let total = 0;
 
   cart.forEach(i => {
@@ -188,53 +272,31 @@ function whatsappOrder() {
     msg += `${i.name} x${i.qty} - R${sub}\n`;
   });
 
-  msg += `Total: R${total}`;
+  msg += `\nTotal: R${total}`;
 
   window.open("https://wa.me/27720912943?text=" + encodeURIComponent(msg));
 }
 
-function payfastCheckout() {
-  let total = 0;
-  cart.forEach(i => total += i.price * i.qty);
-
-  const params = new URLSearchParams({
-    merchant_id: "10000100",
-    merchant_key: "46f0cd694581a",
-    amount: total.toFixed(2),
-    item_name: "Tinkers Order"
-    <input type="hidden" name="return_url" value="https://yourdomain.com/success.html">
-  <input type="hidden" name="cancel_url" value="https://yourdomain.com/cancel.html">
-  <input type="hidden" name="notify_url" value="https://yourdomain.com/notify.php">
-
-  });
-
-  window.location.href =
-    "https://sandbox.payfast.co.za/eng/process?" + params.toString();
-}
-
-/* INIT */
+/* ===============================
+✅ INIT
+=============================== */
 document.addEventListener("DOMContentLoaded", async () => {
 
-  if (window.location.pathname.includes("checkout")) {
+  updateCartUI();
+
+  // ✅ If checkout page
+  if (document.getElementById("checkoutGrid")) {
     renderCheckout();
-    return;
   }
 
-  const products = await loadProducts();
+  // ✅ If products page
+  const productContainer = document.getElementById("products");
 
-  document.getElementById("products").innerHTML =
-    products.map(buildCard).join("");
+  if (productContainer) {
+    const products = await loadProducts();
 
-  setupFilters(products);
-  updateCart();
+    productContainer.innerHTML = products.map(buildCard).join("");
+    setupFilters(products);
+  }
+
 });
-function updateCartUI() {
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-    // Count total items
-    let totalItems = 0;
-    cart.forEach(item => {
-        totalItems += item.quantity;
-    });
-
-
