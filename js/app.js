@@ -12,9 +12,9 @@ function formatCurrency(amount) {
 }
 
 /* ===============================
-✅ CONFIG
+✅ CONFIG (IMPORTANT)
 =============================== */
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzp2yPn_MyqzxjEHxuxkIP356GRRPDGYLDZXM0sSYM/dev";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzp2yPn_MyqzxjEHxuxkIP356GRRPDGYLDZXM0sSYM/exec";
 
 /* ===============================
 ✅ CART STATE
@@ -27,9 +27,10 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 async function loadProducts() {
 
   const res = await fetch(
-  "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1?t=" + Date.now()
-);
+    "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1?t=" + Date.now()
+  );
 
+  const data = await res.json(); // ✅ FIXED
 
   return data.map(p => ({
     id: p.id,
@@ -42,7 +43,7 @@ async function loadProducts() {
 }
 
 /* ===============================
-✅ PRODUCT CARD (STOCK UI)
+✅ PRODUCT CARD
 =============================== */
 function buildCard(p) {
 
@@ -80,7 +81,7 @@ function buildCard(p) {
 }
 
 /* ===============================
-✅ ADD TO CART (STOCK SAFE)
+✅ ADD TO CART
 =============================== */
 function addToCart(id, name, price, image, stock) {
 
@@ -142,6 +143,7 @@ function updateCartUI() {
     el.innerHTML = "";
 
     cart.forEach(item => {
+
       const subtotal = item.price * item.qty;
 
       el.innerHTML += `
@@ -198,36 +200,6 @@ function clearCart() {
 }
 
 /* ===============================
-✅ CART DRAWER
-=============================== */
-function toggleCart() {
-  document.getElementById("cartDrawer").classList.toggle("open");
-}
-
-/* ===============================
-✅ FILTERS
-=============================== */
-function setupFilters(products) {
-  document.querySelectorAll(".filters a, nav a[data-filter]").forEach(btn => {
-
-    btn.addEventListener("click", e => {
-      e.preventDefault();
-
-      const f = btn.dataset.filter.toLowerCase();
-
-      const filtered =
-        f === "all"
-          ? products
-          : products.filter(p => p.category === f);
-
-      document.getElementById("products").innerHTML =
-        filtered.map(buildCard).join("");
-    });
-
-  });
-}
-
-/* ===============================
 ✅ CHECKOUT
 =============================== */
 function renderCheckout() {
@@ -268,7 +240,7 @@ function renderCheckout() {
 }
 
 /* ===============================
-✅ PAYFAST CHECKOUT (SYNC STOCK)
+✅ PAYFAST CHECKOUT
 =============================== */
 function prepareOrder() {
 
@@ -295,17 +267,18 @@ function prepareOrder() {
     date: new Date().toLocaleString(),
     items,
     total: total.toFixed(2)
-    console.log("Sending stock update...");
   };
+
+  console.log("Sending stock update...");
 
   localStorage.setItem("lastOrder", JSON.stringify(order));
 
   // ✅ UPDATE STOCK IN GOOGLE SHEET
   cart.forEach(item => {
-   fetch(`${SCRIPT_URL}?id=${item.id}&qty=${item.qty}&t=${Date.now()}`)
-  .then(res => res.text())
-  .then(data => console.log("Stock updated:", data))
-  .catch(err => console.error(err));
+    fetch(`${SCRIPT_URL}?id=${item.id}&qty=${item.qty}&t=${Date.now()}`)
+      .then(res => res.text())
+      .then(data => console.log("Stock updated:", data))
+      .catch(err => console.error(err));
   });
 
   const amountField = document.getElementById("payfast-amount");
@@ -317,7 +290,7 @@ function prepareOrder() {
 }
 
 /* ===============================
-✅ WHATSAPP ORDER (SYNC + LOG)
+✅ WHATSAPP ORDER
 =============================== */
 function whatsappOrder() {
 
@@ -336,13 +309,13 @@ function whatsappOrder() {
 
     msg += `${i.name} x${i.qty} - ${formatCurrency(sub)}\n`;
 
-    // ✅ Update stock
-    fetch(`${SCRIPT_URL}?id=${item.id}&qty=${item.qty}&t=${Date.now()}`)
-  .then(res => res.text())
-  .then(data => console.log("Stock updated:", data))
-  .catch(err => console.error(err));
+    // ✅ UPDATE STOCK
+    fetch(`${SCRIPT_URL}?id=${i.id}&qty=${i.qty}&t=${Date.now()}`)
+      .then(res => res.text())
+      .then(data => console.log("Stock updated:", data))
+      .catch(err => console.error(err));
 
-    // ✅ Log order
+    // ✅ LOG ORDER
     fetch(`${SCRIPT_URL}?product=${encodeURIComponent(i.name)}&qty=${i.qty}&total=${sub}`);
   });
 
@@ -353,7 +326,6 @@ function whatsappOrder() {
     "_blank"
   );
 
-  // ✅ CLEAR CART AFTER SEND
   setTimeout(() => {
     clearCart();
     window.location.href = "success.html";
