@@ -21,7 +21,8 @@ async function loadProducts() {
   const data = await res.json();
 
   return data.map(p => ({
-    id: p.name, // use name as ID
+   id: p.id,
+ // use name as ID
     name: p.name || "Unknown",
     price: Number(p.price) || 0,
     image: p.image || "default.jpg",
@@ -33,16 +34,36 @@ async function loadProducts() {
 ✅ PRODUCT CARD
 =============================== */
 function buildCard(p) {
+
+  let stockMessage = "";
+  let disabled = "";
+
+  if (p.stock <= 0) {
+    stockMessage = `<p style="color:red;">Out of Stock</p>`;
+    disabled = "disabled";
+  } 
+  else if (p.stock <= 3) {
+    stockMessage = `<p style="color:red;">Only ${p.stock} left 🔥</p>`;
+  } 
+  else if (p.stock <= 5) {
+    stockMessage = `<p style="color:orange;">Low stock (${p.stock} left)</p>`;
+  }
+
   return `
     <div class="product-card">
+
       <img src="images/${p.image}">
       <h3>${p.name}</h3>
-      <p>R${p.price}</p>
+      <p>${formatCurrency(p.price)}</p>
+
+      ${stockMessage}
 
       <button class="add-btn"
-        onclick="addToCart('${p.id}', '${p.name}', ${p.price}, '${p.image}')">
-        Add to cart
+        onclick="addToCart('${p.id}', '${p.name}', ${p.price}, '${p.image}', ${p.stock})"
+        ${disabled}>
+        ${p.stock <= 0 ? "Out of Stock" : "Add to cart"}
       </button>
+
     </div>
   `;
 }
@@ -50,23 +71,35 @@ function buildCard(p) {
 /* ===============================
 ✅ ADD TO CART (FIXED)
 =============================== */
-function addToCart(id, name, price, image) {
+function addToCart(id, name, price, image, stock) {
+
   let item = cart.find(i => i.id === id);
 
   if (item) {
+
+    if (item.qty >= stock) {
+      alert("Only " + stock + " items available ❌");
+      return;
+    }
+
     item.qty += 1;
+
   } else {
+
     cart.push({
       id,
       name,
-      price: Number(price),
+      price,
       image,
-      qty: 1
+      qty: 1,
+      stock
     });
+
   }
 
   saveCart();
 }
+
 
 /* ===============================
 ✅ SAVE CART
@@ -134,8 +167,14 @@ function updateCartUI() {
 ✅ CHANGE QUANTITY
 =============================== */
 function changeQty(id, amt) {
+
   let item = cart.find(i => i.id === id);
   if (!item) return;
+
+  if (amt > 0 && item.qty >= item.stock) {
+    alert("Max stock reached ❌");
+    return;
+  }
 
   item.qty += amt;
 
@@ -258,6 +297,23 @@ function prepareOrder() {
   // ✅ SAVE ORDER BEFORE PAYFAST
   localStorage.setItem("lastOrder", JSON.stringify(order));
 
+  // ✅ REDUCE STOCK AFTER PURCHASE
+let products = JSON.parse(localStorage.getItem("productsData")) || [];
+
+cart.forEach(c => {
+  let product = products.find(p => p.id === c.id);
+
+  if (product) {
+    product.stock -= c.qty;
+
+    if (product.stock < 0) {
+      product.stock = 0;
+    }
+  }
+});
+
+localStorage.setItem("productsData", JSON.stringify(products));
+
   // ✅ SET PAYFAST AMOUNT
   const amountField = document.getElementById("payfast-amount");
   if (amountField) {
@@ -347,7 +403,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   const productContainer = document.getElementById("products");
 
   if (productContainer) {
-    const products = await loadProducts();
+   let products = JSON.parse(localStorage.getItem("productsData"));
+
+if (!products) {
+  products = await loadProducts();
+  localStorage.setItem("productsData", JSON.stringify(products));
+}
 
     productContainer.innerHTML = products.map(buildCard).join("");
     setupFilters(products);
