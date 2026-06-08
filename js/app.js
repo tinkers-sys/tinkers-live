@@ -30,10 +30,21 @@ async function loadProducts() {
     "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1?t=" + Date.now()
   );
 
-  const data = await res.json(); // ✅ THIS WAS MISSING
+  if (!res.ok) {
+    throw new Error("Failed to fetch products");
+  }
+
+  const data = await res.json();
+
+  // DEBUG
+  console.log("Raw data from sheet:", data);
+
+  if (!Array.isArray(data)) {
+    throw new Error("Invalid data format from sheet");
+  }
 
   return data.map(p => ({
-    id: p.id,
+    id: p.id || p.name,
     name: p.name || "Unknown",
     price: Number(p.price) || 0,
     image: p.image || "default.jpg",
