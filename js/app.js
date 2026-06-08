@@ -30,18 +30,15 @@ async function loadProducts() {
     "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1?t=" + Date.now()
   );
 
+  // ✅ Check if request worked
   if (!res.ok) {
-    throw new Error("Failed to fetch products");
+    throw new Error("Failed to fetch product data");
   }
 
+  // ✅ THIS WAS MISSING (MAIN BUG)
   const data = await res.json();
 
-  // DEBUG
-  console.log("Raw data from sheet:", data);
-
-  if (!Array.isArray(data)) {
-    throw new Error("Invalid data format from sheet");
-  }
+  console.log("✅ Data received:", data);
 
   return data.map(p => ({
     id: p.id || p.name,
@@ -52,7 +49,6 @@ async function loadProducts() {
     stock: Number(p.stock) || 0
   }));
 }
-
 
 /* ===============================
 ✅ PRODUCT CARD
