@@ -254,6 +254,31 @@ function setupFilters(products) {
 
   });
 }
+/* ===============================
+✅ FILTERS
+=============================== */
+function setupFilters(products) {
+
+  document.querySelectorAll("nav a[data-filter]").forEach(btn => {
+
+    btn.addEventListener("click", e => {
+      e.preventDefault();
+
+      const filter = btn.dataset.filter;
+
+      const filtered =
+        filter === "all"
+          ? products
+          : products.filter(p => p.category === filter);
+
+      document.getElementById("products").innerHTML =
+        filtered.map(buildCard).join("");
+    });
+
+  });
+
+}
+
 
 /* ===============================
 ✅ INIT
