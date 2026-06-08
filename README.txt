@@ -4,7 +4,7 @@ TINKERS E-COMMERCE SYSTEM
 Project Name:
 Tinkers Live Store
 
-Description:
+Description: 
 ------------
 Tinkers is a lightweight e-commerce web application designed to sell African handcrafted products,
 apparel, beadwork, and accessories. The system runs entirely on frontend technologies and integrates
