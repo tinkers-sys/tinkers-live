@@ -117,7 +117,7 @@ function updateCartUI() {
   // ✅ Total
   const totalEl = document.getElementById("cartTotal");
   if (totalEl) {
-    totalEl.innerText = "R " + totalPrice.toFixed(2);
+    totalEl.innerText = "" + totalPrice.toFixed(2);
   }
 
 }
@@ -263,6 +263,11 @@ function prepareOrder() {
 =============================== */
 function whatsappOrder() {
 
+  if (cart.length === 0) {
+    alert("Cart is empty ❌");
+    return;
+  }
+
   let msg = "🧾 Tinkers Order\n\n";
   let total = 0;
 
@@ -274,7 +279,47 @@ function whatsappOrder() {
 
   msg += `\nTotal: R${total}`;
 
-  window.open("https://wa.me/27720912943?text=" + encodeURIComponent(msg));
+  const phone = "27720912943";
+
+  // ✅ OPEN WHATSAPP
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, "_blank");
+
+  // ✅ WAIT 2 SECONDS THEN CLEAR CART
+  setTimeout(() => {
+
+    // Save order (optional, like PayFast)
+    const order = {
+      orderID: "TINK" + Date.now(),
+      date: new Date().toLocaleString(),
+      items: cart.map(item => ({
+        name: item.name,
+        qty: item.qty,
+        subtotal: (item.price * item.qty).toFixed(2)
+      })),
+      total: total.toFixed(2)
+    };
+
+    localStorage.setItem("lastOrder", JSON.stringify(order));
+
+    // ✅ Save history
+    let history = JSON.parse(localStorage.getItem("orderHistory") || "[]");
+
+    if (!history.find(o => o.orderID === order.orderID)) {
+      history.push(order);
+      localStorage.setItem("orderHistory", JSON.stringify(history));
+    }
+
+    // ✅ CLEAR CART
+    cart = [];
+    localStorage.removeItem("cart");
+
+    // ✅ UPDATE UI
+    updateCartUI();
+
+    // ✅ OPTIONAL REDIRECT
+    window.location.href = "success.html";
+
+  }, 2000);
 }
 
 /* ===============================
