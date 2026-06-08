@@ -1,25 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Payment Cancelled</title>
+  <meta charset="UTF-8">
+  <title>Payment Cancelled | Tinkers</title>
 
-<link rel="stylesheet" href="css/styles.css">
-<link rel="stylesheet" href="css/additions.css">
+  css/styles.css
+  css/additions.css
 </head>
 
 <body>
 
-<div style="text-align:center; margin-top:100px;">
+<!-- ===============================
+✅ HEADER
+=============================== -->
+<header class="header">
+  <h2>Tinkers</h2>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="checkout.html">Checkout</a>
+  </nav>
+</header>
 
-  <h1>❌ Payment Cancelled</h1>
+<!-- ===============================
+✅ MAIN CONTENT
+=============================== -->
+<main style="text-align:center; margin-top:80px;">
+
+  <h1 style="color:#e74c3c;">❌ Payment Cancelled</h1>
 
   <p>Your payment was not completed.</p>
 
-  <a href="checkout.html">Back to Checkout</a>
+  <p style="max-width:500px; margin:10px auto;">
+    Don’t worry — your cart is still saved.
+    You can return to checkout and complete your order anytime.
+  </p>
 
-</div>
+  <!-- ✅ ACTION BUTTONS -->
+  <div style="margin-top:25px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
+
+    <button class="checkout-btn" onclick="goCheckout()">
+      Return to Checkout
+    </button>
+
+    <button onclick="goHome()">
+      Continue Shopping
+    </button>
+
+  </div>
+
+</main>
+
+<!-- ===============================
+✅ SCRIPT
+=============================== -->
+<script>
+
+// ✅ KEEP CART (no clearing)
+// User may retry payment
+
+// ✅ NAVIGATION
+function goCheckout(){
+  window.location.href = "checkout.html";
+}
+
+function goHome(){
+  window.location.href = "index.html";
+}
+
+// ✅ OPTIONAL: Log cancellation for debugging
+console.log("Payment was cancelled by user.");
+
+</script>
 
 </body>
 </html>
-``
