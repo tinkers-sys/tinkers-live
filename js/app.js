@@ -26,8 +26,10 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 =============================== */
 async function loadProducts() {
 
-  const res = await fetch("https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1");
-  const data = await res.json();
+  const res = await fetch(
+  "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1?t=" + Date.now()
+);
+
 
   return data.map(p => ({
     id: p.id,
@@ -293,6 +295,7 @@ function prepareOrder() {
     date: new Date().toLocaleString(),
     items,
     total: total.toFixed(2)
+    console.log("Sending stock update...");
   };
 
   localStorage.setItem("lastOrder", JSON.stringify(order));
