@@ -211,3 +211,29 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupFilters(products);
   updateCart();
 });
+function updateCartUI() {
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // Count total items
+    let totalItems = 0;
+    cart.forEach(item => {
+        totalItems += item.quantity;
+    });
+
+    // Update badge
+    const badge = document.querySelector('.cart-count');
+    if (badge) {
+        badge.innerText = totalItems;
+    }
+
+    // Optional: update totals display
+    const totalElement = document.querySelector('.cart-total');
+    if (totalElement) {
+        let totalPrice = 0;
+        cart.forEach(item => {
+            totalPrice += item.price * item.quantity;
+        });
+
+        totalElement.innerText = "R " + totalPrice.toFixed(2);
+    }
+}
