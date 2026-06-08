@@ -299,7 +299,10 @@ function prepareOrder() {
 
   // ✅ UPDATE STOCK IN GOOGLE SHEET
   cart.forEach(item => {
-    fetch(`${SCRIPT_URL}?id=${item.id}&qty=${item.qty}`);
+   fetch(`${SCRIPT_URL}?id=${item.id}&qty=${item.qty}&t=${Date.now()}`)
+  .then(res => res.text())
+  .then(data => console.log("Stock updated:", data))
+  .catch(err => console.error(err));
   });
 
   const amountField = document.getElementById("payfast-amount");
@@ -331,7 +334,10 @@ function whatsappOrder() {
     msg += `${i.name} x${i.qty} - ${formatCurrency(sub)}\n`;
 
     // ✅ Update stock
-    fetch(`${SCRIPT_URL}?id=${i.id}&qty=${i.qty}`);
+    fetch(`${SCRIPT_URL}?id=${item.id}&qty=${item.qty}&t=${Date.now()}`)
+  .then(res => res.text())
+  .then(data => console.log("Stock updated:", data))
+  .catch(err => console.error(err));
 
     // ✅ Log order
     fetch(`${SCRIPT_URL}?product=${encodeURIComponent(i.name)}&qty=${i.qty}&total=${sub}`);
