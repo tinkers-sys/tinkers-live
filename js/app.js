@@ -157,12 +157,12 @@ function toggleCart() {
 ✅ FILTERS
 =============================== */
 function setupFilters(products) {
-  document.querySelectorAll(".filters a").forEach(btn => {
+  document.querySelectorAll(".filters a, nav a[data-filter]").forEach(btn => {
 
     btn.addEventListener("click", e => {
       e.preventDefault();
 
-      const f = btn.dataset.filter;
+      const f = btn.dataset.filter.toLowerCase();
 
       const filtered =
         f === "all"
