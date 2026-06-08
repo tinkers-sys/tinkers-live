@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Order Receipt</title>
+  <title>Order Receipt | Tinkers</title>
 
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/additions.css">
@@ -18,81 +18,122 @@
 
   <h3 id="receiptTotal"></h3>
 
-  <button onclick="sendReceipt()">Send via WhatsApp</button>
-  <button onclick="goHome()">Return to Store</button>
+  <div style="margin-top:20px;">
+    <button onclick="sendReceipt()">Send via WhatsApp</button>
+    <button onclick="goHome()">Return to Store</button>
+  </div>
 
 </div>
 
 <script>
 
-  // ✅ GET SAVED ORDER (NOT CART)
-  const order = JSON.parse(localStorage.getItem("lastOrder"));
+// ✅ SAFE LOAD ORDER
+let order;
 
-  const receiptBox = document.getElementById("receiptBox");
-  const receiptTotal = document.getElementById("receiptTotal");
+try {
+  order = JSON.parse(localStorage.getItem("lastOrder"));
+} catch {
+  order = null;
+}
 
-  if(!order || !order.items){
-    receiptBox.innerHTML = "<p>No order found ❌</p>";
-  } else {
+const receiptBox = document.getElementById("receiptBox");
+const receiptTotal = document.getElementById("receiptTotal");
 
-    let html = "";
-    let text = "";
+// ❌ NO ORDER FOUND
+if (!order || !order.items) {
 
-    order.items.forEach(item => {
-      html += `<p>${item.name} x${item.qty} - R${item.subtotal}</p>`;
-      text += `• ${item.name} x${item.qty} - R${item.subtotal}\n`;
-    });
+  receiptBox.innerHTML = `
+    <p>No order found ❌</p>
+    <p>Please contact support or try again.</p>
+  `;
 
-    receiptBox.innerHTML = `
-      <p><strong>Order ID:</strong> ${order.orderID}</p>
-      <p><strong>Date:</strong> ${order.date || ""}</p>
-      <hr>
-      ${html}
-    `;
+} else {
 
-    receiptTotal.innerText = "Total Paid: R" + order.total;
+  let html = "";
+  let text = "";
 
-    // ✅ SAVE ORDER HISTORY
-    const history = JSON.parse(localStorage.getItem("orderHistory") || "[]");
+  order.items.forEach(item => {
+    html += `<p>${item.name} x${item.qty} - R${item.subtotal}</p>`;
+    text += `• ${item.name} x${item.qty} - R${item.subtotal}\n`;
+  });
+
+  receiptBox.innerHTML = `
+    <p><strong>Order ID:</strong> ${order.orderID}</p>
+    <p><strong>Date:</strong> ${order.date || ""}</p>
+    <hr>
+    ${html}
+  `;
+
+  receiptTotal.innerText = "Total Paid: R" + order.total;
+
+  // ✅ PREVENT DUPLICATE ORDER HISTORY
+  let history;
+
+  try {
+    history = JSON.parse(localStorage.getItem("orderHistory")) || [];
+  } catch {
+    history = [];
+  }
+
+  const exists = history.find(o => o.orderID === order.orderID);
+
+  if (!exists) {
     history.push(order);
     localStorage.setItem("orderHistory", JSON.stringify(history));
-
-    // ✅ STORE FOR WHATSAPP
-    localStorage.setItem("lastReceipt", JSON.stringify({
-      id: order.orderID,
-      text: text,
-      total: order.total
-    }));
-
-    // ✅ CLEAR CART
-    localStorage.removeItem("cart");
   }
 
-  function goHome(){
-    window.location.href = "/tinkers-live/index.html";
+  // ✅ SAVE RECEIPT FOR WHATSAPP
+  localStorage.setItem("lastReceipt", JSON.stringify({
+    id: order.orderID,
+    text: text,
+    total: order.total
+  }));
+
+  // ✅ CLEAR CART ONLY IF VALID ORDER
+  localStorage.removeItem("cart");
+}
+
+
+// ✅ NAVIGATION
+function goHome(){
+  window.location.href = "/tinkers-live/index.html";
+}
+
+
+// ✅ WHATSAPP RECEIPT
+function sendReceipt(){
+
+  let receipt;
+
+  try {
+    receipt = JSON.parse(localStorage.getItem("lastReceipt"));
+  } catch {
+    receipt = null;
   }
 
-  function sendReceipt(){
-
-    const receipt = JSON.parse(localStorage.getItem("lastReceipt"));
-
-    if(!receipt){
-      alert("No receipt found ❌");
-      return;
-    }
-
-    let message = `🧾 Tinkers Receipt\n\n`;
-    message += `Order ID: ${receipt.id}\n\n`;
-    message += receipt.text;
-    message += `\nTotal Paid: R${receipt.total}`;
-
-    const phone = "27720912943"; // ✅ your number
-
-    window.open(
-      `https://wa.me/${phone}?text=${encodeURIComponent(message)}`,
-      "_blank"
-    );
+  if(!receipt){
+    alert("No receipt found ❌");
+    return;
   }
+
+  let message = `🧾 Tinkers Receipt\n\n`;
+  message += `Order ID: ${receipt.id}\n\n`;
+  message += receipt.text;
+  message += `\nTotal Paid: R${receipt.total}`;
+
+  const phone = "27720912943";
+
+  window.open(
+    `https://wa.me/${phone}?text=${encodeURIComponent(message)}`,
+    "_blank"
+  );
+}
+
+
+// ✅ AUTO REDIRECT (optional UX)
+setTimeout(() => {
+  window.location.href = "/tinkers-live/index.html";
+}, 12000);
 
 </script>
 
