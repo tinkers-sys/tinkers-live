@@ -1,4 +1,12 @@
 "use strict";
+// ✅ PROFESSIONAL CURRENCY FORMATTER
+function formatCurrency(amount) {
+  return new Intl.NumberFormat('en-ZA', {
+    style: 'currency',
+    currency: 'ZAR',
+    minimumFractionDigits: 2
+  }).format(amount);
+}
 
 /* ===============================
 ✅ GLOBAL CART STATE
