@@ -1,14 +1,22 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
+
   "name": "tinkers-live",
-  "compatibility_date": "2026-05-03",
+
+  // ✅ Use latest stable compatibility date
+  "compatibility_date": "2026-01-01",
+
+  // ✅ Enable node compatibility ONLY if needed (you don't actually need it for this project)
+  "compatibility_flags": [],
+
+  // ✅ Static site hosting (your entire store)
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS"
+  },
+
+  // ✅ Observability (optional but good)
   "observability": {
     "enabled": true
-  },
-  "assets": {
-    "directory": "."
-  },
-  "compatibility_flags": [
-    "nodejs_compat"
-  ]
+  }
 }
