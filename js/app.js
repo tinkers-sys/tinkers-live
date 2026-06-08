@@ -283,7 +283,7 @@ function whatsappOrder() {
   cart.forEach(i => {
     let sub = i.price * i.qty;
     total += sub;
-    msg += `${i.name} x${i.qty} - R${sub}\n`;
+   msg += `${i.name} x${i.qty} - ${formatCurrency(sub)}\n`;
   });
 
   msg += `\nTotal: R${total}`;
