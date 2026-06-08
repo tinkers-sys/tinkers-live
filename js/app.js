@@ -116,7 +116,7 @@ function updateCartUI() {
             <button onclick="changeQty('${item.id}',-1)">-</button>
           </div>
 
-          <span>R${subtotal}</span>
+         <span>${formatCurrency(subtotal)}</span>
         </div>
       `;
     });
@@ -125,7 +125,7 @@ function updateCartUI() {
   // ✅ Total
   const totalEl = document.getElementById("cartTotal");
   if (totalEl) {
-   totalEl.innerText = formatCurrency(total);
+  totalEl.innerText = formatCurrency(totalPrice);
   }
 
 }
@@ -214,13 +214,14 @@ function renderCheckout() {
           <button onclick="changeQty('${item.id}',-1)">-</button>
         </div>
 
-        <strong>R${subtotal}</strong>
+        <strong>${formatCurrency(subtotal)}</strong>
       </div>
     `;
   });
 
   if (totalEl) {
-    totalEl.innerText = "R " + total.toFixed(2);
+    totalEl.innerText = formatCurrency(total);
+
   }
 }
 
