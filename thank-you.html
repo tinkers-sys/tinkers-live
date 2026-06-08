@@ -5,19 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thank You | Tinkers</title>
 
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/additions.css">
- <!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-5GFFP9FW2T"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-5GFFP9FW2T');
-</script>
+  css/styles.css
+  css/additions.css
+
+  <!-- ✅ Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5GFFP9FW2T"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-5GFFP9FW2T');
+  </script>
 </head>
+
 <body>
 
+<!-- ===============================
+✅ HEADER
+=============================== -->
 <header class="header">
   <h2>Tinkers</h2>
   <nav>
@@ -25,6 +30,9 @@
   </nav>
 </header>
 
+<!-- ===============================
+✅ MAIN
+=============================== -->
 <main class="checkout-wrap">
 
   <h2>Thank you for your order 🎉</h2>
@@ -34,9 +42,8 @@
   </p>
 
   <div class="checkout-summary" style="margin-top: 24px;">
-    <p>
-      <strong>Order reference:</strong>
-    </p>
+
+    <p><strong>Order reference:</strong></p>
     <p id="orderRef"></p>
 
     <p>
@@ -52,64 +59,71 @@
     <a href="index.html" class="primary-btn">
       Continue shopping
     </a>
+
   </div>
 
 </main>
 
+<!-- ===============================
+✅ SCRIPT
+=============================== -->
 <script>
-  // ✅ Generate simple order reference
-  const ref = "TNK-" + Math.random().toString(36).substring(2, 8).toUpperCase();
-  document.getElementById("orderRef").textContent = ref;
 
-  // ✅ STEP 1: Get cart data
-  const cart = JSON.parse(localStorage.getItem("tinkers_cart_v1") || "[]");
+// ✅ LOAD ORDER (FROM YOUR SYSTEM)
+let order;
 
-  // ✅ STEP 2: Your Google Script URL (PASTE YOURS HERE)
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3ZleL6269FAtILm43fwUz6mDB-XpzZwmizsTNFkpkYW6hxdYugiPS-uDE_gRmkrB-/exec";
-
-  // ✅ STEP 3: Send stock update requests
-  cart.forEach(item => {
-    fetch(`${SCRIPT_URL}?id=${item.id}&qty=${item.qty}`)
-      .then(res => res.text())
-      .then(data => console.log("Stock update:", data))
-      .catch(err => console.error("Error updating stock:", err));
-  });
-  // ✅ TRACK PURCHASE IN GA4
-if (typeof gtag !== "undefined") {
-
-  let total = 0;
-  const items = [];
-
-  cart.forEach(item => {
-    const product = window.__products?.find(p => p.id === item.id);
-
-    if (!product) return;
-
-    const value = product.price * item.qty;
-    total += value;
-
-    items.push({
-      item_name: product.name,
-      quantity: item.qty,
-      price: product.price
-    });
-  });
-
-  gtag('event', 'purchase', {
-    value: total,
-    currency: 'ZAR',
-    items: items
-  });
+try {
+  order = JSON.parse(localStorage.getItem("lastOrder"));
+} catch {
+  order = null;
 }
 
+// ✅ DISPLAY ORDER ID
+const refEl = document.getElementById("orderRef");
 
-  // ✅ STEP 4: Clear cart AFTER sending updates
-  localStorage.removeItem("tinkers_cart_v1");
+if (order && order.orderID) {
+  refEl.textContent = order.orderID;
+} else {
+  refEl.textContent = "N/A";
+}
 
-  // ✅ OPTIONAL: Refresh page data
-  setTimeout(() => location.reload(), 1000);
+// ✅ GOOGLE SCRIPT STOCK UPDATE
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3ZleL6269FAtILm43fwUz6mDB-XpzZwmizsTNFkpkYW6hxdYugiPS-uDE_gRmkrB-/exec";
+
+if (order && order.items && order.items.length) {
+
+  order.items.forEach(item => {
+
+    fetch(`${SCRIPT_URL}?name=${encodeURIComponent(item.name)}&qty=${item.qty}`)
+      .then(res => res.text())
+      .then(data => console.log("Stock updated:", data))
+      .catch(err => console.error("Stock update error:", err));
+
+  });
+
+}
+
+// ✅ GOOGLE ANALYTICS PURCHASE TRACKING
+if (typeof gtag !== "undefined" && order) {
+
+  gtag('event', 'purchase', {
+    transaction_id: order.orderID,
+    value: Number(order.total),
+    currency: 'ZAR',
+    items: order.items.map(item => ({
+      item_name: item.name,
+      quantity: item.qty,
+      price: Number(item.subtotal) / item.qty
+    }))
+  });
+
+}
+
+// ✅ CLEAR SESSION CART
+// (Cart should already be cleared on success page — this is backup safety)
+localStorage.removeItem("cart");
+
 </script>
 
 </body>
 </html>
-location.reload();
