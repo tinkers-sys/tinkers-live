@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Order History</title>
+  <title>Order History | Tinkers</title>
 
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/additions.css">
+  css/styles.css
+  css/additions.css
 </head>
 
 <body>
 
+<!-- ===============================
+✅ HEADER
+=============================== -->
 <header class="header">
   <div class="container">
     <h2>Order History</h2>
@@ -18,6 +21,9 @@
   </div>
 </header>
 
+<!-- ===============================
+✅ MAIN
+=============================== -->
 <main style="max-width:900px; margin:40px auto;">
 
   <h2>📦 Your Orders</h2>
@@ -26,55 +32,82 @@
 
 </main>
 
+<!-- ===============================
+✅ SCRIPT
+=============================== -->
 <script>
 
-  const orders = JSON.parse(localStorage.getItem("orderHistory") || "[]");
+function loadOrders() {
+
+  let orders;
+
+  try {
+    orders = JSON.parse(localStorage.getItem("orderHistory")) || [];
+  } catch {
+    orders = [];
+  }
 
   const container = document.getElementById("ordersList");
 
-  if(orders.length === 0){
-    container.innerHTML = "<p>No orders found ❌</p>";
-  } else {
+  // ✅ EMPTY STATE
+  if (!orders || orders.length === 0) {
+    container.innerHTML = `
+      <div style="
+        background:white;
+        padding:20px;
+        border-radius:10px;
+        text-align:center;
+      ">
+        <p>No orders found ❌</p>
+        <a href="index.html">Start Shopping</a>
+      </div>
+    `;
+    return;
+  }
 
-    let html = "";
+  let html = "";
 
-    orders.reverse().forEach(order => {
+  // ✅ SHOW LATEST FIRST
+  orders.slice().reverse().forEach(order => {
 
-      let itemsHTML = "";
+    let itemsHTML = "";
 
+    if (order.items && order.items.length) {
       order.items.forEach(item => {
         itemsHTML += `
           <p>${item.name} x${item.qty} - R${item.subtotal}</p>
         `;
       });
+    }
 
-      html += `
-        <div style="
-          background:white;
-          padding:20px;
-          margin-bottom:20px;
-          border-radius:10px;
-        ">
+    html += `
+      <div style="
+        background:white;
+        padding:20px;
+        margin-bottom:20px;
+        border-radius:10px;
+        box-shadow:0 2px 8px rgba(0,0,0,0.1);
+      ">
 
-          <h3>Order ID: ${order.orderID}</h3>
+        <h3>Order ID: ${order.orderID || "N/A"}</h3>
 
-          <p><strong>Date:</strong> ${order.date}</p>
-          <p><strong>Name:</strong> ${order.customer.name}</p>
-          <p><strong>Phone:</strong> ${order.customer.phone}</p>
-          <p><strong>Delivery:</strong> ${order.customer.delivery}</p>
+        <p><strong>Date:</strong> ${order.date || "N/A"}</p>
 
-          <hr>
+        <hr>
 
-          ${itemsHTML}
+        ${itemsHTML || "<p>No items found</p>"}
 
-          <h3>Total: R${order.total}</h3>
+        <h3 style="color:#27ae60;">Total: R${order.total || "0.00"}</h3>
 
-        </div>
-      `;
-    });
+      </div>
+    `;
+  });
 
-    container.innerHTML = html;
-  }
+  container.innerHTML = html;
+}
+
+// ✅ INIT
+document.addEventListener("DOMContentLoaded", loadOrders);
 
 </script>
 
