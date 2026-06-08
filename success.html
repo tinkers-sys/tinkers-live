@@ -63,8 +63,14 @@ if (!order || !order.items) {
     <hr>
     ${html}
   `;
-
-  receiptTotal.innerText = "Total Paid: R" + order.total;
+function formatCurrency(amount) {
+  return new Intl.NumberFormat('en-ZA', {
+    style: 'currency',
+    currency: 'ZAR',
+    minimumFractionDigits: 2
+  }).format(amount);
+}
+  receiptTotal.innerText = "Total Paid: " + formatCurrency(Number(order.total));
 
   // ✅ PREVENT DUPLICATE ORDER HISTORY
   let history;
