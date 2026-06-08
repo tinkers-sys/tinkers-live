@@ -125,7 +125,7 @@ function updateCartUI() {
   // ✅ Total
   const totalEl = document.getElementById("cartTotal");
   if (totalEl) {
-    totalEl.innerText = "" + totalPrice.toFixed(2);
+   totalEl.innerText = formatCurrency(total);
   }
 
 }
