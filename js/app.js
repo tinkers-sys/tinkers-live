@@ -340,6 +340,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
 
+    console.log("✅ Page loaded");
+
     updateCartUI();
 
     if (document.getElementById("checkoutGrid")) {
@@ -350,19 +352,30 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (productContainer) {
 
-      console.log("Loading products...");
+      console.log("🔄 Loading products...");
 
       const products = await loadProducts();
 
-      console.log("Products loaded:", products);
+      console.log("✅ Products received:", products);
+
+      if (!products || products.length === 0) {
+        productContainer.innerHTML = "<p>No products found ❌</p>";
+        return;
+      }
 
       productContainer.innerHTML = products.map(buildCard).join("");
 
       setupFilters(products);
+
+      console.log("✅ Products rendered");
+
     }
 
   } catch (err) {
-    console.error("❌ ERROR LOADING PRODUCTS:", err);
+    console.error("❌ ERROR:", err);
+
+    document.getElementById("products").innerHTML =
+      "<p style='color:red;'>Error loading products ❌</p>";
   }
 
 });
