@@ -30,8 +30,11 @@ function buildCard(p) {
   let stockText = "";
   let stock = parseInt(p.stock) || 0;
 
+  let disabled = "";
+
   if (stock <= 0) {
     stockText = "<p style='color:red;'>Out of Stock</p>";
+    disabled = "disabled";
   } else if (stock <= 3) {
     stockText = "<p style='color:red;'>Only " + stock + " left 🔥</p>";
   } else if (stock <= 5) {
@@ -39,13 +42,29 @@ function buildCard(p) {
   }
 
   return `
-    <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+    <div class="product-card" style="border:1px solid #ccc; padding:15px; margin:10px; border-radius:8px;">
+      
+      <img src="images/${p.image}" style="width:100%; height:200px; object-fit:cover;">
+      
       <h3>${p.name}</h3>
+      
       <p>${formatCurrency(p.price)}</p>
+
       ${stockText}
+
+      <button onclick="addToCart('${p.id}','${p.name}',${p.price},'${p.image}',${stock})"
+        ${disabled}
+        style="padding:8px 12px; background:#ff6600; color:white; border:none; border-radius:5px; cursor:pointer;">
+        Add to Cart
+      </button>
+
     </div>
   `;
 }
+function addToCart(id, name) {
+  alert(name + " added to cart ✅");
+}
+
 
 /* ===============================
 ✅ INIT
