@@ -1,90 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Checkout | Tinkers</title>
 
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/additions.css">
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 
-<body class="container">
+<body style="padding:20px; font-family:Arial;">
 
-<!-- ===============================
-✅ HEADER
-=============================== -->
-<h2>Checkout</h2>
+<h1>Checkout</h1>
 
-<!-- ===============================
-✅ CART ITEMS
-=============================== -->
-<div id="checkoutGrid" class="products"></div>
+<div id="checkoutGrid"></div>
 
-<!-- ===============================
-✅ TOTAL
-=============================== -->
-<h3 id="checkoutTotal">0.00</span></h3>
+<h2 id="checkoutTotal">R 0.00</h2>
 
-<!-- ===============================
-✅ ACTION BUTTONS
-=============================== -->
-<div style="margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;">
+<button onclick="whatsappCheckout()" style="background:#28a745; color:white; padding:12px; width:100%; margin-top:10px;">
+  WhatsApp Checkout
+</button>
 
-  <button class="checkout-btn" onclick="whatsappOrder()">
-    WhatsApp Checkout
-  </button>
+<button onclick="payFastCheckout()" style="background:#28a745; color:white; padding:12px; width:100%; margin-top:10px;">
+  Pay with Card (PayFast)
+</button>
 
-</div>
-
-<!-- ===============================
-✅ PAYFAST FORM (FIXED)
-=============================== -->
-<form action="https://sandbox.payfast.co.za/eng/process"
-      method="post"
-      onsubmit="return prepareOrder()"
-      style="margin-top:20px;">
-
-  <!-- ✅ MERCHANT (SANDBOX) -->
-  <input type="hidden" name="merchant_id" value="10000100">
-  <input type="hidden" name="merchant_key" value="46f0cd694581a">
-
-  <!-- ✅ REQUIRED REDIRECTS -->
- <input type="hidden" name="return_url"
-  value="https://tinkers-sys.github.io/tinkers-live/success.html">
-
-<input type="hidden" name="cancel_url"
-  value="https://tinkers-sys.github.io/tinkers-live/cancel.html">
-  <input type="hidden" name="notify_url" value="https://tinkers-sys.github.io/tinkers-live/notify.php">
-
-  <!-- ✅ PAYMENT DATA -->
-  <input type="hidden" name="amount" id="payfast-amount">
-  <input type="hidden" name="item_name" value="Tinkers Order">
-
-  <!-- ✅ SUBMIT -->
-  <button class="checkout-btn" type="submit">
-    Pay with Card (PayFast)
-  </button>
-
-</form>
-
-<!-- ===============================
-✅ CLEAR CART
-=============================== -->
-<button onclick="clearCart()" style="margin-top:15px;">
+<button onclick="clearCart()" style="margin-top:10px;">
   Clear Cart
 </button>
 
-<!-- ===============================
-✅ NAVIGATION
-=============================== -->
-<div style="margin-top:20px;">
-  <a href="index.html">← Continue Shopping</a>
-</div>
+<br><br>
+<a href="index.html">← Continue Shopping</a>
 
-<!-- ===============================
-✅ SCRIPT
-=============================== -->
-<script src="js/app.js"></script>
+<script>
+
+/* ===============================
+✅ LOAD CHECKOUT
+=============================== */
+function loadCheckout() {
+
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  let total = 0;
+  let html = "";
+
+  if (cart.length === 0) {
+    document.getElementById("checkoutGrid").innerHTML =
+      "<p>Your cart is empty</p>";
+    return;
+  }
+
+  cart.forEach(item => {
+
+    let subtotal = item.price * item.qty;
+    total += subtotal;
+
+    html += `
+      <div style="padding:10px; border-bottom:1px solid #ccc;">
+        <strong>${item.name}</strong><br>
+        ${item.qty} x R ${item.price} = <strong>R ${subtotal.toFixed(2)}</strong>
+      </div>
+    `;
+  });
+
+  document.getElementById("checkoutGrid").innerHTML = html;
+  document.getElementById("checkoutTotal").innerText = "Total: R " + total.toFixed(2);
+}
+
+/* ===============================
+✅ CLEAR CART
+=============================== */
+function clearCart() {
+  localStorage.removeItem("cart");
+  location.reload();
+}
+
+/* ===============================
+✅ WHATSAPP CHECKOUT
+=============================== */
+function whatsappCheckout() {
+
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  let msg = "🧾 Tinkers Order\n\n";
+  let total = 0;
+
+  cart.forEach(item => {
+    let sub = item.price * item.qty;
+    total += sub;
+
+    msg += `${item.name} x${item.qty} - R ${sub.toFixed(2)}\n`;
+  });
+
+  msg += `\nTotal: R ${total.toFixed(2)}`;
+
+  window.open(
+    `https://wa.me/27720912943?text=${encodeURIComponent(msg)}`,
+    "_blank"
+  );
+}
+
+/* ===============================
+✅ PAYFAST (BASIC)
+=============================== */
+function payFastCheckout() {
+
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let total = 0;
+
+  cart.forEach(item => {
+    total += item.price * item.qty;
+  });
+
+  if (total === 0) {
+    alert("Cart is empty ❌");
+    return;
+  }
+
+  // TEMP: simulate payment
+  alert("Redirecting to PayFast with amount: R " + total.toFixed(2));
+
+  // REAL PayFast integration comes next step
+}
+
+/* ===============================
+✅ INIT
+=============================== */
+document.addEventListener("DOMContentLoaded", loadCheckout);
+
+</script>
 
 </body>
 </html>
