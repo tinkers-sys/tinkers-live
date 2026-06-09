@@ -332,4 +332,14 @@ body {
   background: #1f2f36;
   color: white;
 }
+.hero-content h1 {
+  color: white;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.hero-content p {
+  color: #f1f1f1;
+}
+
 
