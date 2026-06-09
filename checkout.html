@@ -12,24 +12,19 @@
 
 <h1>Checkout</h1>
 
-<!-- ✅ PRODUCT GRID -->
 <div id="checkoutGrid" class="checkout-grid"></div>
 
-<!-- ✅ TOTAL -->
 <h2 id="checkoutTotal">Total: R 0.00</h2>
 
-<!-- ✅ ACTION BUTTONS -->
-<button onclick="whatsappCheckout()" class="checkout-btn">
+<button class="checkout-btn whats" onclick="whatsappCheckout()">
   WhatsApp Checkout
 </button>
 
-<button onclick="payFastCheckout()" class="checkout-btn">
+<button class="checkout-btn pay" onclick="payFastCheckout()">
   Pay with Card (PayFast)
 </button>
 
-<button onclick="clearCart()">
-  Clear Cart
-</button>
+<button onclick="clearCart()">Clear Cart</button>
 
 <br><br>
 <a href="index.html">← Continue Shopping</a>
@@ -37,7 +32,7 @@
 <script>
 
 /* ===============================
-✅ CART HELPERS
+✅ HELPERS
 =============================== */
 function getCart() {
   return JSON.parse(localStorage.getItem("cart")) || [];
@@ -59,7 +54,6 @@ function loadCheckout() {
   if (cart.length === 0) {
     document.getElementById("checkoutGrid").innerHTML =
       "<p>Your cart is empty</p>";
-    document.getElementById("checkoutTotal").innerText = "";
     return;
   }
 
@@ -79,7 +73,7 @@ function loadCheckout() {
 
         <div class="qty-controls">
           <button onclick="changeQty('${item.id}', 1)">+</button>
-          <button onclick="changeQty('${item.id}', -1)">-</button>
+          <button onclick="changeQty('${item.id}', -1)">−</button>
         </div>
 
         <strong>R ${subtotal.toFixed(2)}</strong>
@@ -94,16 +88,16 @@ function loadCheckout() {
 }
 
 /* ===============================
-✅ CHANGE QUANTITY
+✅ QUANTITY UPDATE
 =============================== */
-function changeQty(id, amount) {
+function changeQty(id, amt) {
 
   let cart = getCart();
 
   let item = cart.find(i => i.id === id);
   if (!item) return;
 
-  item.qty += amount;
+  item.qty += amt;
 
   if (item.qty <= 0) {
     cart = cart.filter(i => i.id !== id);
@@ -122,12 +116,11 @@ function clearCart() {
 }
 
 /* ===============================
-✅ WHATSAPP CHECKOUT
+✅ WHATSAPP
 =============================== */
 function whatsappCheckout() {
 
   let cart = getCart();
-
   let msg = "🧾 Tinkers Order\n\n";
   let total = 0;
 
@@ -147,7 +140,7 @@ function whatsappCheckout() {
 }
 
 /* ===============================
-✅ PAYFAST (READY FOR NEXT STEP)
+✅ PAYFAST (PLACEHOLDER)
 =============================== */
 function payFastCheckout() {
 
@@ -163,12 +156,9 @@ function payFastCheckout() {
     return;
   }
 
-  alert("Proceeding to PayFast: R " + total.toFixed(2));
+  alert("Proceed to PayFast: R " + total.toFixed(2));
 }
 
-/* ===============================
-✅ INIT
-=============================== */
 document.addEventListener("DOMContentLoaded", loadCheckout);
 
 </script>
