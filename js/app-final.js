@@ -52,6 +52,7 @@ async function loadProducts() {
 /* ===============================
 ✅ BUILD CARD
 =============================== */
+
 function buildCard(p) {
 
   var stockText = "";
@@ -66,14 +67,19 @@ function buildCard(p) {
     stockText = "<p style='color:orange;'>Low stock (" + p.stock + ")</p>";
   }
 
-  return '<div class="product-card">' +
-    '<img src="images/' + p.image + '">' +
-    '<h3>' + p.name + '</h3>' +
-    '<p>' + formatCurrency(p.price) + '</p>' +
-    stockText +
-    '<button onclick="addToCart(\'' + p.id + '\',\'' + p.name + '\',' + p.price + ',\'' + p.image + '\',' + p.stock + ')" ' + disabled + '>Add to cart</button>' +
-    '</div>';
+  return `
+    <div class="product-card">
+      <img src="images/${p.image}">
+      <h3>${p.name}</h3>
+      <p>${formatCurrency(p.price)}</p>
+      ${stockText}
+      <button onclick="addToCart('${p.id}','${p.name}',${p.price},'${p.image}',${p.stock})" ${disabled}>
+        Add to cart
+      </button>
+    </div>
+  `;
 }
+
 
 /* ===============================
 ✅ ADD TO CART
@@ -206,7 +212,7 @@ document.addEventListener("DOMContentLoaded", async function(){
     console.error(err);
 
     document.getElementById("products").innerHTML =
-      "<p style='color:red;'>Failed to load products ❌</p>";
+     "<p style='color:red;'>Failed to load products ❌</p>";
 
   }
 
