@@ -192,3 +192,21 @@ button[onclick="clearCart()"]:hover {
   border: none;
   cursor: pointer;
 }
+.product-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.product-card img {
+  height: 180px;
+}
+
+.product-card h3 {
+  min-height: 40px;
+}
+
+/* ✅ PUSH BUTTON DOWN */
+.product-card button {
+  margin-top: auto;
+}
