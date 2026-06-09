@@ -23,6 +23,7 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 /* ===============================
 ✅ LOAD PRODUCTS
 =============================== */
+
 async function loadProducts() {
 
   const url = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1?t=" + Date.now();
@@ -33,8 +34,6 @@ async function loadProducts() {
 
   const data = await res.json();
 
-  console.log("✅ DATA:", data);
-
   return data.map(p => ({
     id: p.id || p.name,
     name: p.name || "Unknown",
@@ -44,7 +43,6 @@ async function loadProducts() {
     stock: parseInt(p.stock) || 0
   }));
 }
-
 /* ===============================
 ✅ PRODUCT CARD
 =============================== */
