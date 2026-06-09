@@ -1,5 +1,6 @@
 "use strict";
 let allProducts = [];
+let cart = [];
 
 /* ===============================
 ✅ FORMAT
@@ -62,8 +63,75 @@ function buildCard(p) {
     </div>
   `;
 }
-function addToCart(id, name) {
-  alert(name + " added to cart ✅");
+function addToCart(id, name, price, image, stock) {
+
+  let item = cart.find(function(i){
+    return i.id === id;
+  });
+
+  if (item) {
+    item.qty += 1;
+  } else {
+    cart.push({
+      id: id,
+      name: name,
+      price: price,
+      image: image,
+      qty: 1
+    });
+  }
+
+  updateCartUI();
+}
+function updateCartUI() {
+
+  let totalItems = 0;
+  let totalPrice = 0;
+
+  cart.forEach(function(item){
+    totalItems += item.qty;
+    totalPrice += item.qty * item.price;
+  });
+
+  // Update cart badge
+  let badge = document.querySelector(".cart-count");
+  if (badge) badge.innerText = totalItems;
+
+  // Update cart drawer
+  let cartItems = document.getElementById("cartItems");
+
+  if (cartItems) {
+
+    cartItems.innerHTML = "";
+
+    cart.forEach(function(item){
+
+      cartItems.innerHTML += `
+        <div style="padding:10px; border-bottom:1px solid #ccc;">
+          <strong>${item.name}</strong><br>
+          ${item.qty} x R ${item.price}
+        </div>
+      `;
+    });
+  }
+
+  // Update total
+  let totalEl = document.getElementById("cartTotal");
+  if (totalEl) {
+    totalEl.innerText = "R " + totalPrice.toFixed(2);
+  }
+}
+function toggleCart() {
+
+  let drawer = document.getElementById("cartDrawer");
+
+  if (!drawer) return;
+
+  if (drawer.style.right === "0px") {
+    drawer.style.right = "-400px";
+  } else {
+    drawer.style.right = "0px";
+  }
 }
 
 function renderProducts(products) {
