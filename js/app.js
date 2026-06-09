@@ -22,42 +22,26 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 /* ===============================
 ✅ LOAD PRODUCTS
-=============================== */async function loadProducts() {
+=============================== */
+async function loadProducts() {
+  const url = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1?t=" + Date.now();
 
-  try {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Sheet fetch failed");
 
-    const url = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1?t=" + Date.now();
+  const data = await res.json();
 
-    console.log("Fetching:", url);
+  console.log("DATA:", data);
 
-    const res = await fetch(url);
-
-    console.log("Fetch status:", res.status);
-
-    const text = await res.text();
-
-    console.log("Raw response:", text);
-
-    const data = JSON.parse(text);
-
-    console.log("Parsed data:", data);
-
-    return data.map(p => ({
-      id: p.id || p.name,
-      name: p.name,
-      price: parseFloat(p.price) || 0,
-      image: p.image || "default.jpg",
-      category: (p.category || "").toLowerCase(),
-      stock: parseInt(p.stock) || 0
-    }));
-
-  } catch (err) {
-
-    console.error("LOAD ERROR:", err);
-    throw err;
-  }
+  return data.map(p => ({
+    id: p.id || p.name,
+    name: p.name || "Unknown",
+    price: parseFloat(p.price) || 0,
+    image: p.image || "default.jpg",
+    category: (p.category || "").toLowerCase(),
+    stock: parseInt(p.stock) || 0
+  }));
 }
-
 
 /* ===============================
 ✅ PRODUCT CARD
@@ -147,7 +131,7 @@ function setupFilters(products) {
 
   document.querySelectorAll("nav a[data-filter]").forEach(btn => {
 
-    btn.onclick = (e) => {
+    btn.addEventListener("click", e => {
       e.preventDefault();
 
       const filter = btn.dataset.filter;
@@ -159,48 +143,9 @@ function setupFilters(products) {
 
       document.getElementById("products").innerHTML =
         filtered.map(buildCard).join("");
-    };
+    });
+
   });
-}
-
-/* ===============================
-✅ STOCK UPDATE
-=============================== */
-function updateStock(id, qty) {
-  fetch(`${SCRIPT_URL}?id=${id}&qty=${qty}&t=${Date.now()}`)
-    .then(res => res.text())
-    .then(data => console.log("Stock updated:", data))
-    .catch(err => console.error(err));
-}
-
-/* ===============================
-✅ WHATSAPP ORDER
-=============================== */
-function whatsappOrder() {
-
-  if (!cart.length) return alert("Cart empty ❌");
-
-  let msg = "🧾 Tinkers Order\n\n";
-  let total = 0;
-
-  cart.forEach(i => {
-    let sub = i.price * i.qty;
-    total += sub;
-
-    msg += `${i.name} x${i.qty} - ${formatCurrency(sub)}\n`;
-
-    updateStock(i.id, i.qty);
-  });
-
-  msg += `\nTotal: ${formatCurrency(total)}`;
-
-  window.open(`https://wa.me/27720912943?text=${encodeURIComponent(msg)}`);
-
-  setTimeout(() => {
-    cart = [];
-    localStorage.removeItem("cart");
-    location.reload();
-  }, 2000);
 }
 
 /* ===============================
@@ -209,8 +154,6 @@ function whatsappOrder() {
 document.addEventListener("DOMContentLoaded", async () => {
 
   try {
-
-    console.log("Loading...");
 
     updateCartUI();
 
@@ -224,7 +167,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     setupFilters(products);
 
-    console.log("✅ LOADED SUCCESSFULLY");
+    console.log("✅ PRODUCTS LOADED");
 
   } catch (err) {
 
