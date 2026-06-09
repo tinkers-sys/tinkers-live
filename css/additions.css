@@ -208,42 +208,69 @@ body {
 }
 
 /* ===============================
-✅ CHECKOUT GRID
+✅ CHECKOUT GRID (FIXED)
 =============================== */
 .checkout-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+
+  overflow-x: hidden; /* ✅ prevents scrolling issue */
 }
 
 /* ===============================
-✅ CHECKOUT CARD
+✅ CHECKOUT CARD (COMPACT)
 =============================== */
 .checkout-card {
   background: white;
-  padding: 20px;
-  border-radius: 12px;
-  text-align: center;
-}
-
-/* ===============================
-✅ CHECKOUT BUTTONS
-=============================== */
-.checkout-btn {
-  width: 100%;
   padding: 12px;
-  margin-top: 10px;
-  border-radius: 6px;
-  font-weight: bold;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* ✅ SMALL IMAGE */
+.checkout-card img {
+  width: 100%;
+  height: 100px;        /* ✅ SMALL ✅ */
+  object-fit: contain;
+  margin-bottom: 5px;
+}
+
+/* ✅ TEXT SIZE */
+.checkout-card h3 {
+  font-size: 13px;
+  margin-bottom: 3px;
+  min-height: 30px;
+}
+
+.checkout-card p {
+  font-size: 12px;
+  margin: 2px 0;
+}
+
+/* ✅ PRICE */
+.checkout-card strong {
+  font-size: 13px;
+  margin-top: 5px;
+}
+
+/* ✅ BUTTONS SMALLER */
+.qty-controls {
+  margin-top: 5px;
+}
+
+.qty-controls button {
+  margin: 2px;
+  padding: 4px 8px;
+  font-size: 12px;
+  background: #ff6600;
+  color: white;
   border: none;
-}
-
-.checkout-btn.whats {
-  background: #25d366;
-  color: white;
-}
-
-.checkout-btn.pay {
-  background: #0070c9;
-  color: white;
+  border-radius: 4px;
+  cursor: pointer;
 }
