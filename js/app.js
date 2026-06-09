@@ -60,6 +60,10 @@ function getCart() {
   return JSON.parse(localStorage.getItem("cart")) || [];
 }
 
+function saveCart(cart) {
+  localStorage.setItem("cart", JSON.stringify(cart));
+}
+
 function addToCart(id, name, price, image) {
 
   let cart = getCart();
@@ -72,8 +76,7 @@ function addToCart(id, name, price, image) {
     cart.push({ id, name, price, image, qty: 1 });
   }
 
-  localStorage.setItem("cart", JSON.stringify(cart));
-
+  saveCart(cart);
   updateCartUI();
 }
 
@@ -82,7 +85,7 @@ function addToCart(id, name, price, image) {
 =============================== */
 function updateCartUI() {
 
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let cart = getCart();
 
   let totalItems = 0;
   let totalPrice = 0;
@@ -120,17 +123,19 @@ function updateCartUI() {
 
   });
 
-  // ✅ Update badge
   let badge = document.querySelector(".cart-count");
   if (badge) badge.innerText = totalItems;
 
-  // ✅ Update total
   let totalEl = document.getElementById("cartTotal");
   if (totalEl) totalEl.innerText = "R " + totalPrice.toFixed(2);
 }
+
+/* ===============================
+✅ CHANGE QTY
+=============================== */
 function changeQty(id, amount) {
 
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+  let cart = getCart();
 
   let item = cart.find(i => i.id === id);
 
@@ -142,9 +147,18 @@ function changeQty(id, amount) {
     cart = cart.filter(i => i.id !== id);
   }
 
-  localStorage.setItem("cart", JSON.stringify(cart));
+  saveCart(cart);
   updateCartUI();
 }
+
+/* ===============================
+✅ CLEAR CART
+=============================== */
+function clearCart() {
+  localStorage.removeItem("cart");
+  updateCartUI();
+}
+
 /* ===============================
 ✅ TOGGLE CART
 =============================== */
@@ -217,7 +231,7 @@ document.addEventListener("DOMContentLoaded", async function(){
 
     renderProducts(products);
     setupFilters();
-    updateCartUI(); // ✅ important for badge
+    updateCartUI();
 
     console.log("✅ PRODUCTS LOADED");
 
@@ -230,3 +244,4 @@ document.addEventListener("DOMContentLoaded", async function(){
   }
 
 });
+``
