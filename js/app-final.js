@@ -53,6 +53,7 @@ async function loadProducts() {
 ✅ BUILD CARD
 =============================== */
 
+
 function buildCard(p) {
 
   var stockText = "";
@@ -78,7 +79,9 @@ function buildCard(p) {
       </button>
     </div>
   `;
+
 }
+
 
 
 /* ===============================
