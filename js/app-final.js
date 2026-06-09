@@ -9,7 +9,7 @@ function formatCurrency(amount) {
     currency: 'ZAR'
   });
   return f.format(amount);
-}
+} 
 
 /* ===============================
 ✅ CART
