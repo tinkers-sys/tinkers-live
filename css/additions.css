@@ -201,3 +201,48 @@ body {
 .checkout-btn.pay:hover {
   background: #005fa3;
 }
+/* ===============================
+✅ NAV ALIGNMENT FIX
+=============================== */
+
+.header nav {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* ✅ Make links consistent */
+.header nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+/* ✅ FIX CART BUTTON (match links) */
+.cart-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  background: transparent;
+  border: none;
+  color: white;
+
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* ✅ Cart badge */
+.cart-count {
+  background: red;
+  color: white;
+  font-size: 12px;
+  border-radius: 50%;
+  padding: 2px 6px;
+}
+
+/* ✅ Hover effect */
+.cart-btn:hover {
+  opacity: 0.8;
+}
+
