@@ -219,30 +219,83 @@ body {
 }
 
 /* ✅ FIX CART BUTTON (match links) */
+/* ✅ CART BUTTON UPGRADE */
 .cart-btn {
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 
-  background: transparent;
-  border: none;
+  background: rgba(255,255,255,0.1);
   color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 20px;
 
-  font-size: 14px;
   cursor: pointer;
+  transition: 0.3s;
 }
 
-/* ✅ Cart badge */
+.cart-btn:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* ✅ CART COUNT BADGE */
 .cart-count {
   background: red;
   color: white;
-  font-size: 12px;
   border-radius: 50%;
   padding: 2px 6px;
+  font-size: 12px;
+
+  animation: pulse 1s infinite;
 }
+
+/* ✅ Pulse animation */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
 
 /* ✅ Hover effect */
 .cart-btn:hover {
   opacity: 0.8;
 }
+/* ===============================
+✅ HEADER UPGRADE
+=============================== */
+
+.header {
+  background: linear-gradient(90deg, #1f2f36, #24333a);
+  padding: 15px 20px;
+}
+
+/* ✅ Header title */
+.header h1 {
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* ✅ Navigation text */
+.header nav {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+/* ✅ FIX DARK TEXT */
+.header nav a {
+  color: #e6f0f3;   /* lighter text ✅ */
+  font-size: 14px;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+/* ✅ Hover effect */
+.header nav a:hover {
+  color: #ffffff;
+}
+
 
