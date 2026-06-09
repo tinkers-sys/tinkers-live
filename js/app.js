@@ -68,7 +68,6 @@ function buildCard(p) {
       <h3>${p.name}</h3>
       <p>${formatCurrency(p.price)}</p>
       ${stockText}
-
       <button class="add-btn"
         onclick="addToCart('${p.id}', '${p.name}', ${p.price}, '${p.image}', ${p.stock})"
         ${disabled}>
@@ -151,6 +150,16 @@ function setupFilters(products) {
 }
 
 /* ===============================
+✅ STOCK UPDATE
+=============================== */
+function updateStock(id, qty) {
+  fetch(`${SCRIPT_URL}?id=${id}&qty=${qty}&t=${Date.now()}`)
+    .then(res => res.text())
+    .then(data => console.log("Stock updated:", data))
+    .catch(err => console.error(err));
+}
+
+/* ===============================
 ✅ INIT
 =============================== */
 document.addEventListener("DOMContentLoaded", async () => {
@@ -173,12 +182,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   } catch (err) {
 
-    console.error(err);
+    console.error("❌ ERROR:", err);
 
-    const container = document.getElementById("products");
-    if (container) {
-      container.innerHTML = "<p style='color:red;'>Failed to load products ❌</p>";
-    }
+    document.getElementById("products").innerHTML =
+      "<p style='color:red;'>Failed to load products ❌</p>";
   }
 
 });
