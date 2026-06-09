@@ -78,6 +78,15 @@ function addToCart(id, name, price, image) {
 
   saveCart(cart);
   updateCartUI();
+
+  // ✅ Animate cart button
+  let cartBtn = document.querySelector(".cart-btn");
+  if (cartBtn) {
+    cartBtn.style.transform = "scale(1.1)";
+    setTimeout(() => {
+      cartBtn.style.transform = "scale(1)";
+    }, 200);
+  }
 }
 
 /* ===============================
