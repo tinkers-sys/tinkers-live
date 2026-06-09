@@ -1,207 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sales Dashboard</title>
+  <meta charset="UTF-8">
+  <title>Tinkers Dashboard</title>
 
-<link rel="stylesheet" href="css/styles.css">
-<link rel="stylesheet" href="css/additions.css">
- 
-  <!-- ✅ ADD CHART.JS HERE -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
+  <link rel="stylesheet" href="css/additions.css">
 </head>
 
-<body>
+<body class="container">
 
-<header class="header">
-  <div class="container">
-    <h2>📊 Sales Dashboard</h2>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="orders.html">Orders</a>
-    </nav>
+<h1>📊 Tinkers Admin Dashboard</h1>
+
+<!-- ===============================
+✅ SUMMARY STATS
+=============================== -->
+<div class="dashboard-stats">
+  <div class="stat-box">
+    <h2 id="totalSales">R 0.00</h2>
+    <p>Total Sales</p>
   </div>
-</header>
 
-<main class="dashboard-container">
+  <div class="stat-box">
+    <h2 id="totalOrders">0</h2>
+    <p>Orders</p>
+  </div>
 
-  <!-- ✅ SUMMARY -->
-  <section class="summary">
-    <div class="summary-card">
-      <h3>Total Revenue</h3>
-      <p id="totalRevenue">R0</p>
-    </div>
+  <div class="stat-box">
+    <h2 id="lowStockCount">0</h2>
+    <p>Low Stock Items</p>
+  </div>
+</div>
 
-    <div class="summary-card">
-      <h3>Total Orders</h3>
-      <p id="totalOrders">0</p>
-    </div>
-  </section>
+<!-- ===============================
+✅ ORDER TABLE
+=============================== -->
+<h2>Orders</h2>
+<table class="dashboard-table">
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Product</th>
+      <th>Qty</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody id="ordersTable"></tbody>
+</table>
 
-  <!-- ✅ TOP PRODUCTS -->
-  <section>
-    <h2>🔥 Top Products</h2>
-    <div id="topProducts" class="dashboard-grid"></div>
-  </section>
-
-<!-- ✅ ✅ ADD THIS HERE -->
-  <section>
-    <h2>📊 Sales Chart</h2>
-    <canvas id="salesChart"></canvas>
-  </section>
-
-  <!-- ✅ RECENT ORDERS -->
-  <section>
-    <h2>🧾 Recent Orders</h2>
-    <div id="recentOrders"></div>
-  </section>
-
-</main>
-
+<!-- ===============================
+✅ SCRIPT
+=============================== -->
 <script>
 
-const orders = JSON.parse(localStorage.getItem("orderHistory") || "[]");
+const SHEET_URL = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc";
 
-/* =============================
-   ✅ SUMMARY
-============================= */
-let totalRevenue = 0;
+/* ===============================
+✅ LOAD DASHBOARD
+=============================== */
+async function loadDashboard() {
 
-orders.forEach(order => {
-  totalRevenue += order.total || 0;
-});
+  const orders = await fetch(SHEET_URL + "/Orders").then(r => r.json());
+  const products = await fetch(SHEET_URL + "/Sheet1").then(r => r.json());
 
-document.getElementById("totalRevenue").innerText = "R" + totalRevenue;
-document.getElementById("totalOrders").innerText = orders.length;
+  let totalSales = 0;
+  let totalOrders = orders.length;
 
+  let html = "";
 
-/* =============================
-   ✅ TOP PRODUCTS
-============================= */
-const productSales = {};
+  orders.forEach(o => {
+    totalSales += parseFloat(o.total || 0);
 
-orders.forEach(order => {
-  if(!order.items) return;
-
-  order.items.forEach(item => {
-    if(!productSales[item.name]){
-      productSales[item.name] = 0;
-    }
-    productSales[item.name] += item.qty;
-  });
-});
-
-/* DISPLAY TOP PRODUCTS */
-let topHTML = "";
-
-Object.entries(productSales)
-  .sort((a,b) => b[1] - a[1])
-  .slice(0,5)
-  .forEach(product => {
-
-    topHTML += `
-      <div class="dashboard-card">
-        <h3>${product[0]}</h3>
-        <p>${product[1]} sold</p>
-      </div>
+    html += `
+      <tr>
+        <td>${o.timestamp}</td>
+        <td>${o.name}</td>
+        <td>${o.qty}</td>
+        <td>R ${o.total}</td>
+      </tr>
     `;
   });
 
-document.getElementById("topProducts").innerHTML =
-  topHTML || "<p>No sales yet</p>";
+  document.getElementById("ordersTable").innerHTML = html;
 
+  document.getElementById("totalSales").innerText =
+    "R " + totalSales.toFixed(2);
 
-/* =============================
-   ✅ RECENT ORDERS
-============================= */
-let ordersHTML = "";
+  document.getElementById("totalOrders").innerText =
+    totalOrders;
 
-orders.slice(-5).reverse().forEach(order => {
+  /* ===============================
+  ✅ LOW STOCK CHECK
+  =============================== */
+  let lowStock = 0;
 
-  let itemsHTML = "";
-
-  if(order.items){
-    order.items.forEach(i => {
-      itemsHTML += `<li>${i.name} x${i.qty}</li>`;
-    });
-  }
-
-  ordersHTML += `
-    <div class="dashboard-card">
-
-      <div class="order-header">
-        <h3>${order.orderID || "Order"}</h3>
-        <span>${order.date || ""}</span>
-      </div>
-
-      <div class="customer-info">
-        <p>${order.customer?.name || "N/A"}</p>
-        <p>${order.customer?.phone || ""}</p>
-      </div>
-
-      <ul class="order-items">
-        ${itemsHTML}
-      </ul>
-
-      <div class="order-total">
-        Total: R${order.total || 0}
-      </div>
-
-    </div>
-  `;
-});
-
-document.getElementById("recentOrders").innerHTML =
-  ordersHTML || "<p>No orders yet</p>";
-
-
-/* =============================
-   ✅ SALES CHART (FINAL FIXED)
-============================= */
-
-const productNames = [];
-const productValues = [];
-
-Object.entries(productSales)
-  .sort((a,b) => b[1] - a[1])
-  .slice(0,5)
-  .forEach(product => {
-    productNames.push(product[0]);
-    productValues.push(product[1]);
-  });
-
-const ctx = document.getElementById("salesChart");
-
-/* ✅ ONLY CREATE CHART IF CANVAS EXISTS */
-if(ctx){
-  new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: productNames,
-      datasets: [{
-        label: "Units Sold",
-        data: productValues,
-        backgroundColor: "#c55a11",
-        borderRadius: 6
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { display: false }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          ticks: {
-            stepSize: 1
-          }
-        }
-      }
+  products.forEach(p => {
+    if (parseInt(p.stock) <= 3) {
+      lowStock++;
     }
   });
+
+  document.getElementById("lowStockCount").innerText =
+    lowStock;
 }
 
+/* ===============================
+✅ INIT
+=============================== */
+document.addEventListener("DOMContentLoaded", loadDashboard);
+
 </script>
+
+</body>
+</html>
