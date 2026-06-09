@@ -188,35 +188,42 @@ function setupFilters(products){
 /* ===============================
 ✅ INIT
 =============================== */
+
 document.addEventListener("DOMContentLoaded", async function(){
 
   try{
 
-    updateCartUI();
+    console.log("STARTING LOAD...");
 
     var container = document.getElementById("products");
-    if(!container) return;
+
+    if(!container){
+      console.log("NO CONTAINER FOUND ❌");
+      return;
+    }
 
     var products = await loadProducts();
 
+    console.log("PRODUCTS:", products);
+
     var html = "";
+
     for (var i = 0; i < products.length; i++) {
       html += buildCard(products[i]);
     }
 
     container.innerHTML = html;
 
-    setupFilters(products);
-
-    console.log("✅ PRODUCTS LOADED");
+    console.log("✅ RENDER COMPLETE");
 
   } catch(err){
 
-    console.error(err);
+    console.error("🔥 ERROR:", err);
 
     document.getElementById("products").innerHTML =
-     "<p style='color:red;'>Failed to load products ❌</p>";
+      "<p style='color:red;'>Failed to load products ❌</p>";
 
   }
 
 });
+
