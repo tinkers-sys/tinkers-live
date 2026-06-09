@@ -65,33 +65,43 @@ function buildCard(p) {
 }
 function addToCart(id, name, price, image, stock) {
 
-  let item = cart.find(function(i){
-    return i.id === id;
-  });
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+  let item = cart.find(i => i.id === id);
 
   if (item) {
     item.qty += 1;
   } else {
     cart.push({
-      id: id,
-      name: name,
-      price: price,
-      image: image,
+      id,
+      name,
+      price,
+      image,
       qty: 1
     });
   }
 
+  localStorage.setItem("cart", JSON.stringify(cart));
+
   updateCartUI();
+}
+function getCart() {
+  return JSON.parse(localStorage.getItem("cart")) || [];
 }
 function updateCartUI() {
 
-  let totalItems = 0;
-  let totalPrice = 0;
+  let cart = getCart();
 
-  cart.forEach(function(item){
+  let totalItems = 0;
+
+  cart.forEach(item => {
     totalItems += item.qty;
-    totalPrice += item.qty * item.price;
   });
+
+  let badge = document.querySelector(".cart-count");
+
+  if (badge) badge.innerText = totalItems;
+}
 
   // Update cart badge
   let badge = document.querySelector(".cart-count");
