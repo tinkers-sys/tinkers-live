@@ -1,4 +1,5 @@
 "use strict";
+let allProducts = [];
 
 /* ===============================
 ✅ FORMAT
@@ -65,6 +66,43 @@ function addToCart(id, name) {
   alert(name + " added to cart ✅");
 }
 
+function renderProducts(products) {
+
+  let html = "";
+
+  for (let i = 0; i < products.length; i++) {
+    html += buildCard(products[i]);
+  }
+
+  document.getElementById("products").innerHTML = html;
+}
+function setupFilters() {
+
+  const buttons = document.querySelectorAll("nav a[data-filter]");
+
+  buttons.forEach(function(btn){
+
+    btn.addEventListener("click", function(e){
+      e.preventDefault();
+
+      const filter = btn.dataset.filter.toLowerCase();
+
+      let filtered;
+
+      if (filter === "all") {
+        filtered = allProducts;
+      } else {
+        filtered = allProducts.filter(function(p){
+          return (p.category || "").toLowerCase() === filter;
+        });
+      }
+
+      renderProducts(filtered);
+    });
+
+  });
+
+}
 
 /* ===============================
 ✅ INIT
@@ -76,14 +114,11 @@ document.addEventListener("DOMContentLoaded", async function(){
   try {
 
     const products = await loadProducts();
+    allProducts = products; // ✅ store globally
 
-    let html = "";
+    renderProducts(products); // ✅ initial load
 
-    for (let i = 0; i < products.length; i++) {   // ✅ correct <
-      html += buildCard(products[i]);
-    }
-
-    container.innerHTML = html;
+    setupFilters(); // ✅ activate filters
 
     console.log("✅ PRODUCTS DISPLAYED");
 
@@ -93,7 +128,6 @@ document.addEventListener("DOMContentLoaded", async function(){
 
     container.innerHTML =
       "<p style='color:red;'>Failed to load products ❌</p>";
-
   }
 
 });
