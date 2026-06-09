@@ -16,7 +16,7 @@ body {
 }
 
 /* ===============================
-✅ PRODUCT CARDS
+✅ PRODUCT CARD
 =============================== */
 .product-card {
   background: white;
@@ -40,12 +40,10 @@ body {
 
 .product-card h3 {
   margin: 10px 0;
-  font-size: 16px;
 }
 
 .product-card p {
   font-weight: bold;
-  margin: 5px 0;
 }
 
 /* ✅ ADD TO CART BUTTON */
@@ -68,7 +66,6 @@ body {
 
 .product-card button:disabled {
   background: #ccc;
-  cursor: not-allowed;
 }
 
 /* ===============================
@@ -88,11 +85,56 @@ body {
   overflow-y: auto;
 }
 
+/* ===============================
+✅ CART ITEM (FIXED VERSION)
+=============================== */
 .cart-item {
+  display: flex;
+  gap: 10px;
   padding: 10px 0;
   border-bottom: 1px solid #ddd;
 }
 
+.cart-item img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 5px;
+}
+
+.cart-info {
+  flex: 1;
+}
+
+.cart-info p {
+  margin: 3px 0;
+}
+
+/* ===============================
+✅ SHARED +/- BUTTONS
+=============================== */
+.qty-controls {
+  margin-top: 5px;
+}
+
+.qty-controls button {
+  margin: 3px;
+  padding: 5px 10px;
+  background: #ff6600;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.qty-controls button:hover {
+  background: #e65c00;
+}
+
+/* ===============================
+✅ CART TOTAL
+=============================== */
 .cart-total {
   margin-top: 15px;
   font-weight: bold;
@@ -127,45 +169,6 @@ body {
   margin-bottom: 10px;
 }
 
-.checkout-card h3 {
-  font-size: 16px;
-  margin-bottom: 5px;
-}
-
-.checkout-card p {
-  font-size: 14px;
-  margin: 5px 0;
-}
-
-.checkout-card strong {
-  display: block;
-  margin-top: 10px;
-  font-size: 16px;
-}
-
-/* ===============================
-✅ QUANTITY BUTTONS (+ / -)
-=============================== */
-.qty-controls {
-  margin-top: 10px;
-}
-
-.qty-controls button {
-  margin: 5px;
-  padding: 6px 12px;
-  background: #ff6600;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.qty-controls button:hover {
-  background: #e65c00;
-}
-
 /* ===============================
 ✅ CHECKOUT BUTTONS
 =============================== */
@@ -177,10 +180,9 @@ body {
   border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
-  transition: 0.3s;
 }
 
-/* WhatsApp Button */
+/* WhatsApp */
 .checkout-btn.whats {
   background: #25d366;
   color: white;
@@ -190,7 +192,7 @@ body {
   background: #1ebd5a;
 }
 
-/* PayFast Button */
+/* PayFast */
 .checkout-btn.pay {
   background: #0070c9;
   color: white;
@@ -199,45 +201,3 @@ body {
 .checkout-btn.pay:hover {
   background: #005fa3;
 }
-/* ===============================
-✅ CART ITEMS (LIKE SCREENSHOT)
-=============================== */
-
-.cart-item {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #ddd;
-}
-
-.cart-item img {
-  width: 60px;
-  height: 60px;
-  object-fit: contain;
-  border-radius: 5px;
-}
-
-.cart-info {
-  flex: 1;
-}
-
-.cart-info p {
-  margin: 3px 0;
-}
-
-/* ✅ Quantity buttons (shared with checkout) */
-.qty-controls button {
-  margin: 3px;
-  padding: 5px 10px;
-  background: #ff6600;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.qty-controls button:hover {
-  background: #e65c00;
-}
-
