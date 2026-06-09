@@ -22,28 +22,42 @@ let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 /* ===============================
 ✅ LOAD PRODUCTS
-=============================== */
-async function loadProducts() {
+=============================== */async function loadProducts() {
 
-  const res = await fetch(
-    "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1?t=" + Date.now()
-  );
+  try {
 
-  if (!res.ok) throw new Error("Sheet fetch failed");
+    const url = "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1?t=" + Date.now();
 
-  const data = await res.json();
+    console.log("Fetching:", url);
 
-  console.log("DATA:", data);
+    const res = await fetch(url);
 
-  return data.map(p => ({
-    id: p.id || p.name,
-    name: p.name || "Unknown",
-    price: parseFloat(p.price) || 0,
-    image: p.image || "default.jpg",
-    category: (p.category || "").toLowerCase(),
-    stock: parseInt(p.stock) || 0
-  }));
+    console.log("Fetch status:", res.status);
+
+    const text = await res.text();
+
+    console.log("Raw response:", text);
+
+    const data = JSON.parse(text);
+
+    console.log("Parsed data:", data);
+
+    return data.map(p => ({
+      id: p.id || p.name,
+      name: p.name,
+      price: parseFloat(p.price) || 0,
+      image: p.image || "default.jpg",
+      category: (p.category || "").toLowerCase(),
+      stock: parseInt(p.stock) || 0
+    }));
+
+  } catch (err) {
+
+    console.error("LOAD ERROR:", err);
+    throw err;
+  }
 }
+
 
 /* ===============================
 ✅ PRODUCT CARD
