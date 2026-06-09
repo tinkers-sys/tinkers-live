@@ -341,5 +341,19 @@ body {
 .hero-content p {
   color: #f1f1f1;
 }
+.primary-btn {
+  background: #ff6600;
+  color: white;
+  padding: 12px 18px;
+  border-radius: 6px;
+  font-weight: bold;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 10px;
+}
+
+.primary-btn:hover {
+  background: #e65c00;
+}
 
 
