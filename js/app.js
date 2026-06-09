@@ -82,38 +82,69 @@ function addToCart(id, name, price, image) {
 =============================== */
 function updateCartUI() {
 
-  let cart = getCart();
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
   let totalItems = 0;
   let totalPrice = 0;
 
+  let cartItems = document.getElementById("cartItems");
+
+  if (cartItems) cartItems.innerHTML = "";
+
   cart.forEach(item => {
+
     totalItems += item.qty;
     totalPrice += item.qty * item.price;
+
+    if (cartItems) {
+      cartItems.innerHTML += `
+        <div class="cart-item">
+
+          <img src="images/${item.image}">
+
+          <div class="cart-info">
+            <strong>${item.name}</strong>
+            <p>${item.qty} x R ${item.price}</p>
+
+            <div class="qty-controls">
+              <button onclick="changeQty('${item.id}', 1)">+</button>
+              <button onclick="changeQty('${item.id}', -1)">−</button>
+            </div>
+
+            <strong>R ${(item.qty * item.price).toFixed(2)}</strong>
+          </div>
+
+        </div>
+      `;
+    }
+
   });
 
+  // ✅ Update badge
   let badge = document.querySelector(".cart-count");
   if (badge) badge.innerText = totalItems;
 
-  let cartItems = document.getElementById("cartItems");
+  // ✅ Update total
+  let totalEl = document.getElementById("cartTotal");
+  if (totalEl) totalEl.innerText = "R " + totalPrice.toFixed(2);
+}
+function changeQty(id, amount) {
 
-  if (cartItems) {
-    cartItems.innerHTML = "";
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-    cart.forEach(item => {
-      cartItems.innerHTML += `
-        <div style="padding:10px; border-bottom:1px solid #ccc;">
-          <strong>${item.name}</strong><br>
-          ${item.qty} x ${formatCurrency(item.price)}
-        </div>
-      `;
-    });
+  let item = cart.find(i => i.id === id);
+
+  if (!item) return;
+
+  item.qty += amount;
+
+  if (item.qty <= 0) {
+    cart = cart.filter(i => i.id !== id);
   }
 
-  let totalEl = document.getElementById("cartTotal");
-  if (totalEl) totalEl.innerText = formatCurrency(totalPrice);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  updateCartUI();
 }
-
 /* ===============================
 ✅ TOGGLE CART
 =============================== */
