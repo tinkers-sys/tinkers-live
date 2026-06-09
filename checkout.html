@@ -144,20 +144,29 @@ function whatsappCheckout() {
 =============================== */
 function payFastCheckout() {
 
-  let cart = getCart();
-  let total = 0;
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-  cart.forEach(item => {
-    total += item.price * item.qty;
-  });
+  let total = 0;
+  cart.forEach(i => total += i.qty * i.price);
 
   if (total === 0) {
-    alert("Cart is empty ❌");
+    alert("Cart empty");
     return;
   }
 
-  alert("Proceed to PayFast: R " + total.toFixed(2));
+  // ✅ LOG + UPDATE STOCK
+  cart.forEach(item => {
+    fetch(`YOUR_GOOGLE_SCRIPT_URL?id=${item.id}&qty=${item.qty}`);
+  });
+
+  // ✅ CLEAR CART
+  localStorage.removeItem("cart");
+
+  // ✅ REDIRECT TO PAYFAST
+  window.location.href =
+    "https://www.payfast.co.za/eng/process?amount=" + total.toFixed(2);
 }
+
 
 document.addEventListener("DOMContentLoaded", loadCheckout);
 
