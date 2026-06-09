@@ -1,229 +1,161 @@
-"use strict";
+Option Explicit
 
-/* ===============================
-✅ FORMAT
-=============================== */
-function formatCurrency(amount) {
-  var f = new Intl.NumberFormat('en-ZA', {
-    style: 'currency',
-    currency: 'ZAR'
-  });
-  return f.format(amount);
-} 
+' Requires Microsoft XML, v6.0 and Microsoft Scripting Runtime references
 
-/* ===============================
-✅ CART
-=============================== */
-var cart = JSON.parse(localStorage.getItem("cart")) || [];
+Dim cart
+Set cart = CreateObject("Scripting.Dictionary")
 
-/* ===============================
-✅ LOAD PRODUCTS
-=============================== */
-async function loadProducts() {
+Function FormatCurrencyZAR(amount)
+    FormatCurrencyZAR = "R" & FormatNumber(amount, 2, vbTrue, vbFalse, vbTrue)
+End Function
 
-  var res = await fetch("https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1");
+Function LoadProducts()
+    Dim http, json, products, i, p, dict, stockVal
+    Set products = CreateObject("Scripting.Dictionary")
+    Set http = CreateObject("MSXML2.XMLHTTP.6.0")
+    http.Open "GET", "https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1", False
+    http.Send
+    If http.Status <> 200 Then
+        Err.Raise vbObjectError + 1, , "Fetch failed"
+    End If
+    Dim responseText
+    responseText = http.responseText
 
-  if (!res.ok) throw new Error("Fetch failed");
+    Set json = ParseJson(responseText)
+    For i = 0 To json.Count - 1
+        Set p = json(i)
+        stockVal = 0
+        If IsNumeric(p("stock")) Then
+            stockVal = CInt(p("stock"))
+        End If
+        Dim prod
+        Set prod = CreateObject("Scripting.Dictionary")
+        prod.Add "id", p("id")
+        prod.Add "name", p("name")
+        prod.Add "price", CDbl(p("price"))
+        prod.Add "image", p("image")
+        If IsEmpty(p("category")) Or IsNull(p("category")) Then
+            prod.Add "category", ""
+        Else
+            prod.Add "category", LCase(p("category"))
+        End If
+        prod.Add "stock", stockVal
+        products.Add p("id"), prod
+    Next
+    Set LoadProducts = products
+End Function
 
-  var data = await res.json();
+Function BuildCard(p)
+    Dim stockText, disabled, html
+    stockText = ""
+    disabled = ""
+    If p("stock") <= 0 Then
+        stockText = "<p style='color:red;'>Out of Stock</p>"
+        disabled = "disabled"
+    ElseIf p("stock") <= 3 Then
+        stockText = "<p style='color:red;'>Only " & p("stock") & " left 🔥</p>"
+    ElseIf p("stock") <= 5 Then
+        stockText = "<p style='color:orange;'>Low stock (" & p("stock") & ")</p>"
+    End If
 
-  console.log("DATA:", data);
+    html = "<div class=""product-card"">" & _
+           "<img src=""images/" & p("image") & """>" & _
+           "<h3>" & p("name") & "</h3>" & _
+           "<p>" & FormatCurrencyZAR(p("price")) & "</p>" & _
+           stockText & _
+           "<button onclick=""AddToCart '" & p("id") & "','" & p("name") & "'," & p("price") & ",'" & p("image") & "'," & p("stock") & """ " & disabled & ">" & _
+           "Add to cart</button>" & _
+           "</div>"
+    BuildCard = html
+End Function
 
-  var products = [];
+Sub AddToCart(id, name, price, image, stock)
+    Dim itemKey, item
+    itemKey = id
+    If cart.Exists(itemKey) Then
+        Set item = cart(itemKey)
+        If item("qty") >= stock Then
+            MsgBox "Stock limit reached", vbExclamation
+            Exit Sub
+        End If
+        item("qty") = item("qty") + 1
+        cart(itemKey) = item
+    Else
+        Dim newItem
+        Set newItem = CreateObject("Scripting.Dictionary")
+        newItem.Add "id", id
+        newItem.Add "name", name
+        newItem.Add "price", price
+        newItem.Add "image", image
+        newItem.Add "qty", 1
+        newItem.Add "stock", stock
+        cart.Add itemKey, newItem
+    End If
+    SaveCart
+End Sub
 
-  for (var i = 0; i < data.length; i++) {
+Sub SaveCart()
+    Dim fso, file, jsonText
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Set file = fso.CreateTextFile("cart.json", True)
+    jsonText = JsonStringifyCart(cart)
+    file.Write jsonText
+    file.Close
+    UpdateCartUI
+End Sub
 
-    var p = data[i];
+Sub UpdateCartUI()
+    Dim total, count, key, item
+    total = 0
+    count = 0
+    For Each key In cart.Keys
+        Set item = cart(key)
+        total = total + item("price") * item("qty")
+        count = count + item("qty")
+    Next
+    ' Assuming you have a way to update UI elements in your environment
+    ' For example, if using HTA or IE automation:
+    ' document.querySelector(".cart-count").innerText = count
+    ' document.getElementById("cartTotal").innerText = FormatCurrencyZAR(total)
+End Sub
 
-    products.push({
-      id: p.id,
-      name: p.name,
-      price: parseFloat(p.price),
-      image: p.image,
-      category: (p.category || "").toLowerCase(),
-      stock: parseInt(p.stock)
-    });
+Sub SetupFilters(products)
+    ' This is a placeholder: VBScript does not handle DOM events like JS
+    ' You would need to implement UI event handling in your environment
+End Sub
 
-  }
+' JSON parsing and stringifying functions (simple versions)
+Function ParseJson(jsonText)
+    Dim sc, result
+    Set sc = CreateObject("ScriptControl")
+    sc.Language = "JScript"
+    sc.AddCode "function parse(json){return JSON.parse(json);}"
+    Set result = sc.Run("parse", jsonText)
+    Set ParseJson = result
+End Function
 
-  return products;
-}
-
-/* ===============================
-✅ BUILD CARD
-=============================== */
-
-
-function buildCard(p) {
-
-  var stockText = "";
-  var disabled = "";
-
-  if (p.stock <= 0) {
-    stockText = "<p style='color:red;'>Out of Stock</p>";
-    disabled = "disabled";
-  } else if (p.stock <= 3) {
-    stockText = "<p style='color:red;'>Only " + p.stock + " left 🔥</p>";
-  } else if (p.stock <= 5) {
-    stockText = "<p style='color:orange;'>Low stock (" + p.stock + ")</p>";
-  }
-
-  return `
-    <div class="product-card">
-      <img src="images/${p.image}">
-      <h3>${p.name}</h3>
-      <p>${formatCurrency(p.price)}</p>
-      ${stockText}
-      <button onclick="addToCart('${p.id}','${p.name}',${p.price},'${p.image}',${p.stock})" ${disabled}>
-        Add to cart
-      </button>
-    </div>
-  `;
-
-}
-
-
-
-/* ===============================
-✅ ADD TO CART
-=============================== */
-function addToCart(id, name, price, image, stock){
-
-  var item = null;
-
-  for (var i = 0; i < cart.length; i++) {
-    if (cart[i].id === id) {
-      item = cart[i];
-      break;
-    }
-  }
-
-  if(item){
-    if(item.qty >= stock){
-      alert("Stock limit reached");
-      return;
-    }
-    item.qty++;
-  } else {
-    cart.push({
-      id:id,
-      name:name,
-      price:price,
-      image:image,
-      qty:1,
-      stock:stock
-    });
-  }
-
-  saveCart();
-}
-
-/* ===============================
-✅ SAVE CART
-=============================== */
-function saveCart(){
-  localStorage.setItem("cart", JSON.stringify(cart));
-  updateCartUI();
-}
-
-/* ===============================
-✅ CART UI
-=============================== */
-function updateCartUI(){
-
-  var total = 0;
-  var count = 0;
-
-  for (var i = 0; i < cart.length; i++) {
-    total += cart[i].price * cart[i].qty;
-    count += cart[i].qty;
-  }
-
-  var badge = document.querySelector(".cart-count");
-  if(badge) badge.innerText = count;
-
-  var totalEl = document.getElementById("cartTotal");
-  if(totalEl) totalEl.innerText = formatCurrency(total);
-}
-
-/* ===============================
-✅ FILTERS
-=============================== */
-function setupFilters(products){
-
-  var buttons = document.querySelectorAll("nav a[data-filter]");
-
-  for (var i = 0; i < buttons.length; i++) {
-
-    buttons[i].addEventListener("click", function(e){
-      e.preventDefault();
-
-      var filter = this.dataset.filter;
-
-      var filtered = [];
-
-      if(filter === "all"){
-        filtered = products;
-      } else {
-        for (var j = 0; j < products.length; j++) {
-          if (products[j].category === filter) {
-            filtered.push(products[j]);
-          }
-        }
-      }
-
-      var html = "";
-
-      for (var k = 0; k < filtered.length; k++) {
-        html += buildCard(filtered[k]);
-      }
-
-      document.getElementById("products").innerHTML = html;
-
-    });
-
-  }
-}
-
-/* ===============================
-✅ INIT
-=============================== */
-
-document.addEventListener("DOMContentLoaded", async function(){
-
-  try{
-
-    console.log("STARTING LOAD...");
-
-    var container = document.getElementById("products");
-
-    if(!container){
-      console.log("NO CONTAINER FOUND ❌");
-      return;
-    }
-
-    var products = await loadProducts();
-
-    console.log("PRODUCTS:", products);
-
-    var html = "";
-
-    for (var i = 0; i < products.length; i++) {
-      html += buildCard(products[i]);
-    }
-
-    container.innerHTML = html;
-
-    console.log("✅ RENDER COMPLETE");
-
-  } catch(err){
-
-    console.error("🔥 ERROR:", err);
-
-    document.getElementById("products").innerHTML =
-      "<p style='color:red;'>Failed to load products ❌</p>";
-
-  }
-
-});
-
+Function JsonStringifyCart(cartDict)
+    Dim sc, arr, key, item, jsonStr
+    Set sc = CreateObject("ScriptControl")
+    sc.Language = "JScript"
+    Set arr = CreateObject("Scripting.Dictionary")
+    Dim items()
+    ReDim items(cartDict.Count - 1)
+    Dim i: i = 0
+    For Each key In cartDict.Keys
+        Set item = cartDict(key)
+        Dim obj
+        Set obj = CreateObject("Scripting.Dictionary")
+        obj.Add "id", item("id")
+        obj.Add "name", item("name")
+        obj.Add "price", item("price")
+        obj.Add "image", item("image")
+        obj.Add "qty", item("qty")
+        obj.Add "stock", item("stock")
+        items(i) = obj
+        i = i + 1
+    Next
+    sc.AddObject "items", items
+    jsonStr = sc.Eval("JSON.stringify(items)")
+    JsonStringifyCart = jsonStr
+End Function
