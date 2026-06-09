@@ -1,4 +1,5 @@
 "use strict";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxMJDXaelAPuERs83_0IQU0mi8VDwcr9h08dEZPph90LJE5bKWuNzHZ-fuJIp3N2xdY/exec ";
 
 let allProducts = [];
 
@@ -143,6 +144,31 @@ function changeQty(id, amount) {
   saveCart(cart);
   updateCartUI();
 }
+function processOrder() {
+
+  let cart = getCart();
+
+  if (cart.length === 0) {
+    alert("Cart empty ❌");
+    return;
+  }
+
+  cart.forEach(item => {
+
+    // ✅ Deduct stock
+    fetch(`${SCRIPT_URL}?id=${item.id}&qty=${item.qty}`);
+
+    // ✅ Log order
+    fetch(`${SCRIPT_URL}?log=1&id=${item.id}&name=${item.name}&qty=${item.qty}&price=${item.price}`);
+
+  });
+
+  localStorage.removeItem("cart");
+  updateCartUI();
+
+  alert("✅ Order processed successfully");
+}
+
 
 /* ===============================
 ✅ CART UI
