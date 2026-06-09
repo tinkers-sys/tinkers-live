@@ -7,36 +7,47 @@ body {
 }
 
 /* ===============================
-✅ HEADER (FIXED VISIBILITY)
+✅ AFRICAN INSPIRED HEADER
 =============================== */
 .header {
-  background: linear-gradient(90deg, #1c2a30, #24333a);
+  background: linear-gradient(90deg,
+    #2c2c54,
+    #1f2f36,
+    #ff6600,
+    #d62828
+  );
   padding: 15px 20px;
 }
 
+/* ✅ STORE NAME */
 .header h1 {
   color: #ffffff;
   font-size: 18px;
   font-weight: bold;
+  letter-spacing: 0.5px;
 }
 
-/* ✅ NAV (SINGLE CLEAN VERSION) */
+/* ✅ NAV BAR */
 .header nav {
   display: flex;
   align-items: center;
   gap: 18px;
 }
 
+/* ✅ NAV LINKS (VISIBLE + CLEAN) */
 .header nav a {
-  color: #d9f1f8;
-  text-decoration: none;
+  color: #f8f9fa;
   font-size: 14px;
+  text-decoration: none;
   font-weight: 500;
+  transition: 0.3s;
 }
 
+/* ✅ HOVER EFFECT */
 .header nav a:hover {
-  color: #ffffff;
+  color: #ffd166; /* African gold tone */
 }
+
 
 /* ===============================
 ✅ CART BUTTON (PREMIUM)
@@ -48,11 +59,13 @@ body {
 
   background: rgba(255,255,255,0.15);
   color: white;
-  border: none;
-  padding: 6px 12px;
+
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 6px 14px;
   border-radius: 20px;
 
   cursor: pointer;
+  font-size: 14px;
   transition: 0.3s;
 }
 
@@ -60,14 +73,12 @@ body {
   background: rgba(255,255,255,0.3);
 }
 
-/* ✅ CART BADGE */
+/* ✅ BADGE */
 .cart-count {
-  background: red;
-  color: white;
+  background: #ff3b30;
   border-radius: 50%;
   padding: 2px 6px;
   font-size: 12px;
-  animation: pulse 1s infinite;
 }
 
 /* ✅ Pulse animation */
