@@ -17,13 +17,9 @@ async function loadProducts() {
 
   const res = await fetch("https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1");
 
-  if (!res.ok) throw new Error("Failed to fetch");
+  if (!res.ok) throw new Error("Fetch failed");
 
-  const data = await res.json();
-
-  console.log("✅ DATA:", data); // Debug
-
-  return data;
+  return await res.json();
 }
 
 /* ===============================
@@ -32,11 +28,14 @@ async function loadProducts() {
 function buildCard(p) {
 
   let stockText = "";
+  let stock = parseInt(p.stock) || 0;
 
-  if (parseInt(p.stock) <= 0) {
+  if (stock <= 0) {
     stockText = "<p style='color:red;'>Out of Stock</p>";
-  } else if (parseInt(p.stock) <= 3) {
-    stockText = "<p style='color:red;'>Only " + p.stock + " left 🔥</p>";
+  } else if (stock <= 3) {
+    stockText = "<p style='color:red;'>Only " + stock + " left 🔥</p>";
+  } else if (stock <= 5) {
+    stockText = "<p style='color:orange;'>Low stock (" + stock + ")</p>";
   }
 
   return `
@@ -61,7 +60,7 @@ document.addEventListener("DOMContentLoaded", async function(){
 
     let html = "";
 
-    for (let i = 0; i < products.length; i++) {
+    for (let i = 0; i < products.length; i++) {   // ✅ correct <
       html += buildCard(products[i]);
     }
 
@@ -71,10 +70,11 @@ document.addEventListener("DOMContentLoaded", async function(){
 
   } catch (err) {
 
-    console.error("ERROR:", err);
+    console.error(err);
 
     container.innerHTML =
       "<p style='color:red;'>Failed to load products ❌</p>";
+
   }
 
 });
