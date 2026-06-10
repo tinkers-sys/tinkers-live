@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Tinkers | African Curio Shop</title>
 
@@ -28,15 +28,11 @@
     <!-- ✅ CART -->
     <button onclick="toggleCart()" class="cart-btn">
       Cart 
-      <span class="cart-count"
-        style="background:red; color:white; border-radius:50%; padding:2px 6px; margin-left:5px;">
-        0
-      </span>
+      <span class="cart-count">0</span>
     </button>
 
     <a href="checkout.html">Checkout</a>
     <a href="dashboard.html">Dashboard</a>
-
   </nav>
 </header>
 
@@ -45,7 +41,9 @@
 =============================== -->
 <section class="hero"
   style="background-image: linear-gradient(rgba(36,51,58,0.45), rgba(36,51,58,0.45)), url('images/tinkers-theme.jpg');">
+
   <div class="hero-content">
+
     <h1>Artisanal African Treasures, Curated for You</h1>
 
     <p>
@@ -53,22 +51,23 @@
       inspired by heritage and made to last.
     </p>
 
-   <div class="hero-actions">
-  <a href="#products" class="primary-btn">
-    Shop the Collection
-  </a>
+    <div class="hero-actions">
+      <a href="#products" class="primary-btn">
+        Shop the Collection
+      </a>
 
-  <button onclick="toggleCart()" class="secondary-btn">
-    View Cart
-  </button>
-</div>>
+      <button onclick="toggleCart()" class="secondary-btn">
+        View Cart
+      </button>
+    </div>
 
+  </div>
 </section>
 
 <div class="hero-divider"></div>
 
 <!-- ===============================
-✅ PRODUCTS GRID
+✅ PRODUCTS GRID (IMPORTANT)
 =============================== -->
 <section class="products container" id="products"></section>
 
@@ -103,7 +102,7 @@
 </div>
 
 <!-- ===============================
-✅ JS SCRIPT
+✅ JS
 =============================== -->
 <script src="js/app.js"></script>
 
@@ -112,7 +111,7 @@ function openChat() {
   const phone = "27720912943";
   const msg = "Hi, I'm interested in your products at Tinkers.";
   window.open(
-    `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`,
+    "https://wa.me/" + phone + "?text=" + encodeURIComponent(msg),
     "_blank"
   );
 }
