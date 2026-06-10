@@ -17,10 +17,24 @@ function formatCurrency(amount) {
 ✅ LOAD PRODUCTS
 =============================== */
 async function loadProducts() {
-  const res = await fetch("https://opensheet.elk.sh/1ObeXTE1sUyh5yXuGL4EV34fn1BM_bfSzzMuI7WiLASc/Sheet1");
-  if (!res.ok) throw new Error("Fetch failed");
-  return await res.json();
+
+  const res = await fetch("https://tinkers-8375.myshopify.com/products.json");
+  const data = await res.json();
+
+  return data.products.map(p => {
+
+    return {
+      id: p.variants[0].id,   // ✅ IMPORTANT (variant ID for checkout)
+      name: p.title,          // ✅ Product name
+      price: parseFloat(p.variants[0].price),
+      image: p.images[0]?.src || "",
+      stock: p.variants[0].inventory_quantity || 10
+    };
+
+  });
+
 }
+
 
 /* ===============================
 ✅ BUILD PRODUCT CARD
@@ -32,7 +46,7 @@ function buildCard(p) {
 
   return `
     <div class="product-card">
-      <img src="images/${p.image}">
+      img src="${p.image}">
       <h3>${p.name}</h3>
       <p>${formatCurrency(p.price)}</p>
 
