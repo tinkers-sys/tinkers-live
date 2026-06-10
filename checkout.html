@@ -10,9 +10,9 @@
 
 <body class="container">
 
-<h1>🛒 Checkout</h1> 
+<h1>🛒 Checkout</h1>
 
-<!-- ✅ GRID -->
+<!-- ✅ PRODUCTS GRID -->
 <div id="checkoutGrid" class="checkout-grid"></div>
 
 <!-- ✅ TOTAL -->
@@ -69,7 +69,8 @@ function loadCheckout() {
     html += `
       <div class="checkout-card">
 
-        <img src="images/${item.image}" alt="${item.name}">
+        <!-- ✅ FIXED IMAGE (SHOPIFY URL) -->
+        <img src="${item.image}" alt="${item.name}">
 
         <h3>${item.name}</h3>
 
@@ -92,12 +93,12 @@ function loadCheckout() {
 }
 
 /* ===============================
-✅ CHANGE QTY
+✅ CHANGE QUANTITY
 =============================== */
 function changeQty(id, amt) {
 
   let cart = getCart();
-  let item = cart.find(i => i.id === id);
+  let item = cart.find(i => i.id == id);
 
   if (!item) return;
 
@@ -120,30 +121,32 @@ function clearCart() {
 }
 
 /* ===============================
-✅ SHOPIFY CHECKOUT (FINAL)
+✅ SHOPIFY CHECKOUT (CLEAN)
 =============================== */
 function goToShopifyCheckout() {
 
   let cart = getCart();
 
   if (cart.length === 0) {
-    alert("Cart is empty ❌");
+    alert("Cart is empty");
     return;
   }
 
+  // ✅ build Shopify cart format
   let cartString = cart.map(item => {
-    let variantId = item.id.split('/').pop();
-    return variantId + ":" + item.qty;
+    return item.id + ":" + item.qty;
   }).join(",");
 
-  window.location.href =
+  let checkoutURL =
     "https://tinkers-8375.myshopify.com/cart/" +
     cartString +
     "?checkout";
+
+  window.location.href = checkoutURL;
 }
 
 /* ===============================
-✅ WHATSAPP
+✅ WHATSAPP CHECKOUT
 =============================== */
 function whatsappCheckout() {
 
@@ -161,7 +164,7 @@ function whatsappCheckout() {
   msg += `\nTotal: R ${total.toFixed(2)}`;
 
   window.open(
-    `https://wa.me/27720912943?text=${encodeURIComponent(msg)}`,
+    "https://wa.me/27720912943?text=" + encodeURIComponent(msg),
     "_blank"
   );
 }
