@@ -17,22 +17,34 @@ function formatCurrency(amount) {
 ✅ LOAD PRODUCTS
 =============================== */
 async function loadProducts() {
+  try {
+    const res = await fetch(
+      "https://tinkers-8375.myshopify.com/products.json"
+    );
 
-  const res = await fetch("https://tinkers-8375.myshopify.com/products.json");
-  const data = await res.json();
+    const data = await res.json();
 
-  return data.products.map(p => {
+    if (!data.products || data.products.length === 0) {
+      document.querySelector(".products").innerHTML =
+        "<p>No products available</p>";
+      return [];
+    }
 
-    return {
-      id: p.variants[0].id,   // ✅ IMPORTANT (variant ID for checkout)
-      name: p.title,          // ✅ Product name
+    return data.products.map(p => ({
+      id: p.variants[0].id,
+      name: p.title,
       price: parseFloat(p.variants[0].price),
-      image: p.images[0]?.src || "",
-      stock: p.variants[0].inventory_quantity || 10
-    };
+      image: p.images[0]?.src || ""
+    }));
 
-  });
+  } catch (err) {
+    console.error("Product load error:", err);
 
+    document.querySelector(".products").innerHTML =
+      "<p>Failed to load products. Check connection.</p>";
+
+    return [];
+  }
 }
 
 
@@ -241,5 +253,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   } catch (err) {
     console.error(err);
   }
+  document.addEventListener("DOMContentLoaded", displayProducts);
 
 });
