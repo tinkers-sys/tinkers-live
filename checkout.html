@@ -10,18 +10,21 @@
 
 <body class="container">
 
-<h1>Checkout</h1>
+<h1>🛒 Checkout</h1>
 
+<!-- ✅ GRID -->
 <div id="checkoutGrid" class="checkout-grid"></div>
 
+<!-- ✅ TOTAL -->
 <h2 id="checkoutTotal">Total: R 0.00</h2>
 
+<!-- ✅ ACTION BUTTONS -->
 <button class="checkout-btn whats" onclick="whatsappCheckout()">
-  WhatsApp Checkout
+  WhatsApp Order
 </button>
 
-<button class="checkout-btn pay" onclick="payFastCheckout()">
-  Pay with Card (PayFast)
+<button class="checkout-btn pay" onclick="goToShopifyCheckout()">
+  Pay Securely
 </button>
 
 <button onclick="clearCart()">Clear Cart</button>
@@ -32,7 +35,7 @@
 <script>
 
 /* ===============================
-✅ HELPERS
+✅ CART HELPERS
 =============================== */
 function getCart() {
   return JSON.parse(localStorage.getItem("cart")) || [];
@@ -43,7 +46,7 @@ function saveCart(cart) {
 }
 
 /* ===============================
-✅ LOAD CHECKOUT GRID
+✅ LOAD CHECKOUT
 =============================== */
 function loadCheckout() {
 
@@ -54,6 +57,7 @@ function loadCheckout() {
   if (cart.length === 0) {
     document.getElementById("checkoutGrid").innerHTML =
       "<p>Your cart is empty</p>";
+    document.getElementById("checkoutTotal").innerText = "";
     return;
   }
 
@@ -65,11 +69,11 @@ function loadCheckout() {
     html += `
       <div class="checkout-card">
 
-        <img src="images/${item.image}">
+        <img src="images/${item.image}" alt="${item.name}">
 
         <h3>${item.name}</h3>
 
-        <p>${item.qty} x R ${item.price}</p>
+        <p>${item.qty} × R ${item.price}</p>
 
         <div class="qty-controls">
           <button onclick="changeQty('${item.id}', 1)">+</button>
@@ -88,13 +92,13 @@ function loadCheckout() {
 }
 
 /* ===============================
-✅ QUANTITY UPDATE
+✅ CHANGE QTY
 =============================== */
 function changeQty(id, amt) {
 
   let cart = getCart();
-
   let item = cart.find(i => i.id === id);
+
   if (!item) return;
 
   item.qty += amt;
@@ -113,6 +117,29 @@ function changeQty(id, amt) {
 function clearCart() {
   localStorage.removeItem("cart");
   loadCheckout();
+}
+
+/* ===============================
+✅ SHOPIFY CHECKOUT (FINAL)
+=============================== */
+function goToShopifyCheckout() {
+
+  let cart = getCart();
+
+  if (cart.length === 0) {
+    alert("Cart is empty ❌");
+    return;
+  }
+
+  let cartString = cart.map(item => {
+    let variantId = item.id.split('/').pop();
+    return variantId + ":" + item.qty;
+  }).join(",");
+
+  window.location.href =
+    "https://tinkers-8375.myshopify.com/cart/" +
+    cartString +
+    "?checkout";
 }
 
 /* ===============================
@@ -140,51 +167,8 @@ function whatsappCheckout() {
 }
 
 /* ===============================
-✅ PAYFAST (TEMP)
+✅ INIT
 =============================== */
-function payFastCheckout() {
-
-  let cart = getCart();
-  let total = 0;
-
-  cart.forEach(item => {
-    total += item.price * item.qty;
-  });
-
-  if (total === 0) {
-    alert("Cart empty ❌");
-    return;
-  }
-
-  // ✅ PROCESS ORDER FIRST (STOCK + LOGGING)
-  processOrder();
-
-  // ✅ REDIRECT TO PAYFAST
-  window.location.href =
-    "https://www.payfast.co.za/eng/process?amount=" +
-    total.toFixed(2) +
-    "&item_name=Tinkers Order";
-}
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzU07QVrqfQvatPuU3136oIp_tKTDI7rGko5lV-z_BmH8u5e_2DmbTFhDHzMKRgPO2E/exec";
-
-function processOrder() {
-
-  let cart = getCart();
-
-  cart.forEach(item => {
-
-    // ✅ Deduct stock
-    fetch(`${SCRIPT_URL}?id=${item.id}&qty=${item.qty}`);
-
-    // ✅ Log order
-    fetch(`${SCRIPT_URL}?log=1&id=${item.id}&name=${item.name}&qty=${item.qty}&price=${item.price}`);
-
-  });
-
-  localStorage.removeItem("cart");
-}
-
-
 document.addEventListener("DOMContentLoaded", loadCheckout);
 
 </script>
