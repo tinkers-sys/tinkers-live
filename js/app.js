@@ -10,7 +10,7 @@ function formatCurrency(amount) {
     style: "currency",
     currency: "ZAR"
   }).format(amount);
-}
+} 
 
 /* ===============================
 ✅ LOAD PRODUCTS (GOOGLE SCRIPT)
