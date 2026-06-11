@@ -355,5 +355,13 @@ body {
 .primary-btn:hover {
   background: #e65c00;
 }
+/* ✅ FIX PRODUCT GRID DISPLAY */
+.products {
+  min-height: 400px;              /* prevents empty collapse */
+  padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
 
 
