@@ -6,53 +6,59 @@ let allProducts = [];
 ✅ FORMAT CURRENCY
 =============================== */
 function formatCurrency(amount) {
-  return new Intl.NumberFormat('en-ZA', {
-    style: 'currency',
-    currency: 'ZAR'
+  return new Intl.NumberFormat("en-ZA", {
+    style: "currency",
+    currency: "ZAR"
   }).format(amount);
 }
 
 /* ===============================
-✅ LOAD PRODUCTS FROM SHOPIFY
+✅ LOAD PRODUCTS (WITH CORS FIX)
 =============================== */
 async function loadProducts() {
   try {
 
-    const res = await fetch("https://tinkers-8375.myshopify.com/products.json");
+    const shopUrl = "https://tinkers-8375.myshopify.com/products.json";
+    const proxy = "https://corsproxy.io/?";
+    const res = await fetch(proxy + encodeURIComponent(shopUrl));
 
     if (!res.ok) {
-      throw new Error("Failed to fetch products");
+      throw new Error("Network error loading products");
     }
 
     const data = await res.json();
 
-    console.log("✅ LIVE Shopify products:", data);
+    console.log("✅ Products fetched:", data);
 
-    const products = data.products;
-
-    if (!products || products.length === 0) {
+    if (!data.products || data.products.length === 0) {
       return [];
     }
 
-    return products.map(p => {
+    const products = data.products.map(p => {
+
+      if (!p.variants || p.variants.length === 0) return null;
+
       const variant = p.variants[0];
 
       return {
         id: variant.id,
         name: p.title,
         price: parseFloat(variant.price),
-        image: p.images.length > 0 ? p.images[0].src : ""
+        image: (p.images && p.images.length > 0) ? p.images[0].src : ""
       };
+
     });
 
+    return products.filter(p => p !== null);
+
   } catch (error) {
-    console.error("❌ ERROR LOADING PRODUCTS:", error);
+    console.error("❌ PRODUCT LOAD FAILED:", error);
     return [];
   }
 }
 
 /* ===============================
-✅ BUILD PRODUCT CARD (FIXED)
+✅ BUILD PRODUCT CARD
 =============================== */
 function buildCard(p) {
   return `
@@ -81,12 +87,12 @@ function renderProducts(products) {
   const container = document.querySelector(".products");
 
   if (!container) {
-    console.error("❌ Products container NOT FOUND");
+    console.error("❌ Products container not found");
     return;
   }
 
   if (!products || products.length === 0) {
-    container.innerHTML = "<p>No products found</p>";
+    container.innerHTML = "<p>No products available</p>";
     return;
   }
 
@@ -110,7 +116,7 @@ function saveCart(cart) {
 function addToCart(id, name, price, image) {
 
   let cart = getCart();
-  let item = cart.find(i => i.id == id);
+  let item = cart.find(i => i.id === id);
 
   if (item) {
     item.qty++;
@@ -120,6 +126,13 @@ function addToCart(id, name, price, image) {
 
   saveCart(cart);
   updateCartUI();
+
+  // ✅ small animation
+  const btn = document.querySelector(".cart-btn");
+  if (btn) {
+    btn.style.transform = "scale(1.1)";
+    setTimeout(() => btn.style.transform = "scale(1)", 200);
+  }
 }
 
 /* ===============================
@@ -130,11 +143,9 @@ function updateCartUI() {
   let cart = getCart();
   let totalItems = 0;
 
-  cart.forEach(item => {
-    totalItems += item.qty;
-  });
+  cart.forEach(item => totalItems += item.qty);
 
-  let badge = document.querySelector(".cart-count");
+  const badge = document.querySelector(".cart-count");
   if (badge) badge.innerText = totalItems;
 }
 
@@ -142,7 +153,7 @@ function updateCartUI() {
 ✅ CART DRAWER
 =============================== */
 function toggleCart() {
-  let drawer = document.getElementById("cartDrawer");
+  const drawer = document.getElementById("cartDrawer");
   if (!drawer) return;
 
   drawer.style.right =
@@ -150,7 +161,7 @@ function toggleCart() {
 }
 
 /* ===============================
-✅ INIT (CLEAN)
+✅ INIT
 =============================== */
 document.addEventListener("DOMContentLoaded", async () => {
 
