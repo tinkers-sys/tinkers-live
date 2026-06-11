@@ -3,7 +3,7 @@
 let allProducts = [];
 
 /* ===============================
-✅ FORMAT
+✅ FORMAT CURRENCY
 =============================== */
 function formatCurrency(amount) {
   return new Intl.NumberFormat('en-ZA', {
@@ -13,15 +13,14 @@ function formatCurrency(amount) {
 }
 
 /* ===============================
-✅ LOAD PRODUCTS (SHOPIFY)
+✅ LOAD PRODUCTS FROM SHOPIFY
 =============================== */
 async function loadProducts() {
   try {
-    const res = await fetch(
-      "https://tinkers-8375.myshopify.com/products.json"
-    );
-
+    const res = await fetch("https://tinkers-8375.myshopify.com/products.json");
     const data = await res.json();
+
+    console.log("✅ Shopify products:", data); // DEBUG
 
     if (!data.products || data.products.length === 0) {
       document.querySelector(".products").innerHTML =
@@ -30,17 +29,17 @@ async function loadProducts() {
     }
 
     return data.products.map(p => ({
-      id: p.variants[0].id,
+      id: p.variants[0].id, // ✅ USE VARIANT ID
       name: p.title,
       price: parseFloat(p.variants[0].price),
       image: p.images[0]?.src || ""
     }));
 
   } catch (err) {
-    console.error("Product load error:", err);
+    console.error("❌ Product load error:", err);
 
     document.querySelector(".products").innerHTML =
-      "<p>Failed to load products</p>";
+      "<p style='color:red;'>Failed to load products</p>";
 
     return [];
   }
@@ -56,7 +55,12 @@ function buildCard(p) {
       <h3>${p.name}</h3>
       <p>${formatCurrency(p.price)}</p>
 
-      <button onclick="addToCart('${p.id}','${p.name}',${p.price},'${p.image}')">
+      <button onclick="addToCart(
+        '${p.id}',
+        '${p.name.replace(/'/g, "\\'")}',
+        ${p.price},
+        '${p.image}'
+      )">
         Add to Cart
       </button>
     </div>
@@ -64,13 +68,26 @@ function buildCard(p) {
 }
 
 /* ===============================
-✅ RENDER PRODUCTS (FIXED TARGET)
+✅ RENDER PRODUCTS
 =============================== */
 function renderProducts(products) {
+
+  const container = document.querySelector(".products");
+
+  if (!container) {
+    console.error("❌ Products container NOT FOUND");
+    return;
+  }
+
+  if (!products || products.length === 0) {
+    container.innerHTML = "<p>No products found</p>";
+    return;
+  }
+
   let html = "";
   products.forEach(p => html += buildCard(p));
 
-  document.querySelector(".products").innerHTML = html;
+  container.innerHTML = html;
 }
 
 /* ===============================
@@ -87,7 +104,7 @@ function saveCart(cart) {
 function addToCart(id, name, price, image) {
 
   let cart = getCart();
-  let item = cart.find(i => i.id === id);
+  let item = cart.find(i => i.id == id);
 
   if (item) {
     item.qty++;
@@ -100,7 +117,7 @@ function addToCart(id, name, price, image) {
 }
 
 /* ===============================
-✅ UPDATE CART
+✅ UPDATE CART UI
 =============================== */
 function updateCartUI() {
 
@@ -116,7 +133,18 @@ function updateCartUI() {
 }
 
 /* ===============================
-✅ INIT (CLEAN VERSION)
+✅ CART DRAWER
+=============================== */
+function toggleCart() {
+  let drawer = document.getElementById("cartDrawer");
+  if (!drawer) return;
+
+  drawer.style.right =
+    drawer.style.right === "0px" ? "-350px" : "0px";
+}
+
+/* ===============================
+✅ INIT (CLEAN)
 =============================== */
 document.addEventListener("DOMContentLoaded", async () => {
 
@@ -124,5 +152,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   allProducts = products;
   renderProducts(products);
+  updateCartUI();
 
 });
