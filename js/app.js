@@ -18,45 +18,45 @@ function formatCurrency(amount) {
 async function loadProducts() {
   try {
 
-    const shopUrl = "https://tinkers-8375.myshopify.com/products.json";
-    const proxy = "https://corsproxy.io/?";
-    const res = await fetch(proxy + encodeURIComponent(shopUrl));
+    const url = "https://tinkers-8375.myshopify.com/products.json";
+
+    // ✅ WORKING proxy (stable)
+    const proxy = "https://api.allorigins.win/raw?url=" + encodeURIComponent(url);
+
+    const res = await fetch(proxy);
 
     if (!res.ok) {
-      throw new Error("Network error loading products");
+      throw new Error("Failed to fetch data");
     }
 
     const data = await res.json();
 
-    console.log("✅ Products fetched:", data);
+    console.log("✅ Shopify products:", data);
 
     if (!data.products || data.products.length === 0) {
       return [];
     }
 
-    const products = data.products.map(p => {
+    return data.products.map(p => {
 
       if (!p.variants || p.variants.length === 0) return null;
 
-      const variant = p.variants[0];
+      const v = p.variants[0];
 
       return {
-        id: variant.id,
+        id: v.id,
         name: p.title,
-        price: parseFloat(variant.price),
+        price: parseFloat(v.price),
         image: (p.images && p.images.length > 0) ? p.images[0].src : ""
       };
 
-    });
+    }).filter(Boolean);
 
-    return products.filter(p => p !== null);
-
-  } catch (error) {
-    console.error("❌ PRODUCT LOAD FAILED:", error);
+  } catch (err) {
+    console.error("❌ LOAD FAILED:", err);
     return [];
   }
 }
-
 /* ===============================
 ✅ BUILD PRODUCT CARD
 =============================== */
