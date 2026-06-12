@@ -1,19 +1,36 @@
 "use strict";
 
+/* ===============================
+✅ PRODUCT DATA (FINAL CLEAN VERSION)
+=============================== */
 let allProducts = [
 
   {
-    id: 45758375591970, // ✅ Shopify variant ID
+    id: 45758375591970,
     name: "African Print Off-Shoulder Dress",
     price: 850,
-    image: "https://cdn.shopify.com/s/files/your-image-link.jpg"
+    image: "https://tinkers-8375.myshopify.com/cdn/shop/files/Summer-Dress_1.jpg?v=1781125743"
   },
 
   {
     id: 45758375591971,
     name: "African Map Earrings",
     price: 250,
-    image: "images/africa-map-earrings.jpg"
+    image: "https://tinkers-8375.myshopify.com/cdn/shop/files/africa-map-earrings_1.jpg?v=1781125203"
+  },
+
+  {
+    id: 45758375591972,
+    name: "African Warrior Shirt",
+    price: 450,
+    image: "https://tinkers-8375.myshopify.com/cdn/shop/files/African-Warrior-Shirt_1.jpg?v=1781108429"
+  },
+
+  {
+    id: 45758375591973,
+    name: "Beadwork Necklace",
+    price: 300,
+    image: "https://tinkers-8375.myshopify.com/cdn/shop/files/beadwork-necklace.jpg?v=1781124977"
   }
 
 ];
@@ -40,7 +57,7 @@ function buildCard(p) {
 
       <button onclick="addToCart(
         '${p.id}',
-        '${escapeQuotes(p.name)}',
+        '${p.name.replace(/'/g, "\\'")}',
         ${p.price},
         '${p.image}'
       )">
@@ -48,10 +65,6 @@ function buildCard(p) {
       </button>
     </div>
   `;
-}
-
-function escapeQuotes(text) {
-  return text.replace(/'/g, "\\'");
 }
 
 /* ===============================
@@ -97,7 +110,6 @@ function addToCart(id, name, price, image) {
   saveCart(cart);
   updateCartUI();
 
-  // ✅ animation
   const btn = document.querySelector(".cart-btn");
   if (btn) {
     btn.style.transform = "scale(1.1)";
@@ -160,4 +172,3 @@ document.addEventListener("DOMContentLoaded", function () {
   renderProducts(allProducts);
   updateCartUI();
 });
-``
