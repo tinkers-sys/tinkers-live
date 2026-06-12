@@ -1,6 +1,22 @@
 "use strict";
 
-let allProducts = [];
+let allProducts = [
+
+  {
+    id: 45758375591970, // ✅ Shopify variant ID
+    name: "African Print Off-Shoulder Dress",
+    price: 850,
+    image: "https://cdn.shopify.com/s/files/your-image-link.jpg"
+  },
+
+  {
+    id: 45758375591971,
+    name: "African Map Earrings",
+    price: 250,
+    image: "images/africa-map-earrings.jpg"
+  }
+
+];
 
 /* ===============================
 ✅ FORMAT CURRENCY
@@ -10,34 +26,6 @@ function formatCurrency(amount) {
     style: "currency",
     currency: "ZAR"
   }).format(amount);
-}  
-
-/* ===============================
-✅ LOAD PRODUCTS (GOOGLE SCRIPT)
-=============================== */
-async function loadProducts() {
-  try {
-
-    const res = await fetch("https://script.google.com/macros/s/AKfycbxMJDXaelAPuERs83_0IQU0mi8VDwcr9h08dEZPph90LJE5bKWuNzHZ-fuJIp3N2xdY/exec");
-    const data = await res.json();
-
-    console.log("✅ Products loaded:", data);
-
-    if (!data || data.length === 0) {
-      return [];
-    }
-
-    return data.map(p => ({
-      id: p.id,                      // ✅ MUST be Shopify variant ID
-      name: p.name,
-      price: parseFloat(p.price),
-      image: p.image                // must be full URL
-    }));
-
-  } catch (err) {
-    console.error("❌ LOAD FAILED:", err);
-    return [];
-  }
 }
 
 /* ===============================
@@ -50,16 +38,18 @@ function buildCard(p) {
       <h3>${p.name}</h3>
       <p>${formatCurrency(p.price)}</p>
 
-      <button onclick="addToCart('${p.id}','${escapeQuotes(p.name)}',${p.price},'${p.image}')">
+      <button onclick="addToCart(
+        '${p.id}',
+        '${escapeQuotes(p.name)}',
+        ${p.price},
+        '${p.image}'
+      )">
         Add to Cart
       </button>
     </div>
   `;
 }
 
-/* ===============================
-✅ ESCAPE QUOTES (IMPORTANT)
-=============================== */
 function escapeQuotes(text) {
   return text.replace(/'/g, "\\'");
 }
@@ -72,12 +62,7 @@ function renderProducts(products) {
   const container = document.querySelector(".products");
 
   if (!container) {
-    console.error("❌ Products container not found");
-    return;
-  }
-
-  if (!products || products.length === 0) {
-    container.innerHTML = "<p>No products available</p>";
+    console.error("Products container missing");
     return;
   }
 
@@ -147,14 +132,32 @@ function toggleCart() {
 }
 
 /* ===============================
+✅ SHOPIFY CHECKOUT
+=============================== */
+function goToShopifyCheckout() {
+
+  const cart = getCart();
+
+  if (cart.length === 0) {
+    alert("Cart is empty");
+    return;
+  }
+
+  let cartString = cart.map(item =>
+    item.id + ":" + item.qty
+  ).join(",");
+
+  window.location.href =
+    "https://tinkers-8375.myshopify.com/cart/" +
+    cartString +
+    "?checkout";
+}
+
+/* ===============================
 ✅ INIT
 =============================== */
-document.addEventListener("DOMContentLoaded", async () => {
-
-  const products = await loadProducts();
-
-  allProducts = products;
-  renderProducts(products);
+document.addEventListener("DOMContentLoaded", function () {
+  renderProducts(allProducts);
   updateCartUI();
-
 });
+``
