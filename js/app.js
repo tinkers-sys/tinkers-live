@@ -13,31 +13,24 @@ function formatCurrency(amount) {
 }
 
 /* ===============================
-✅ LOAD PRODUCTS (AUTO SYNC ✅)
+✅ LOAD PRODUCTS (CORS-FREE ✅)
 =============================== */
-async function loadProducts() {
-  try {
-    const res = await fetch(
-      "https://script.google.com/macros/s/AKfycbwKGMUdmQrftvySLZFbhzSnfWSXSfQJNOVy9FmUun_c6TN_zuF2Zdk9IWfqYFgagpSe/exec"
-    );
+function loadProducts() {
 
-    if (!res.ok) {
-      throw new Error("Failed to fetch products");
-    }
+  return new Promise((resolve) => {
 
-    const data = await res.json();
-    console.log("✅ Auto-sync products:", data);
+    window.handleProducts = function(data) {
+      console.log("✅ Products loaded:", data);
+      resolve(data || []);
+    };
 
-    if (!data || data.length === 0) {
-      return [];
-    }
+    const script = document.createElement("script");
+    script.src = "https://script.google.com/macros/s/AKfycbwKGMUdmQrftvySLZFbhzSnfWSXSfQJNOVy9FmUun_c6TN_zuF2Zdk9IWfqYFgagpSe/exec?callback=handleProducts";
 
-    return data;
+    document.body.appendChild(script);
 
-  } catch (error) {
-    console.error("❌ LOAD ERROR:", error);
-    return [];
-  }
+  });
+
 }
 
 /* ===============================
@@ -69,7 +62,7 @@ function renderProducts(products) {
   const container = document.querySelector(".products");
 
   if (!container) {
-    console.error("❌ Products container not found");
+    console.error("Products container missing");
     return;
   }
 
@@ -80,6 +73,7 @@ function renderProducts(products) {
 
   let html = "";
   products.forEach(p => html += buildCard(p));
+
   container.innerHTML = html;
 }
 
@@ -108,7 +102,6 @@ function addToCart(id, name, price, image) {
   saveCart(cart);
   updateCartUI();
 
-  // ✅ subtle animation
   const btn = document.querySelector(".cart-btn");
   if (btn) {
     btn.style.transform = "scale(1.1)";
@@ -117,7 +110,7 @@ function addToCart(id, name, price, image) {
 }
 
 /* ===============================
-✅ UPDATE CART UI
+✅ UPDATE CART
 =============================== */
 function updateCartUI() {
 
@@ -134,7 +127,6 @@ function updateCartUI() {
 ✅ CART DRAWER
 =============================== */
 function toggleCart() {
-
   const drawer = document.getElementById("cartDrawer");
   if (!drawer) return;
 
