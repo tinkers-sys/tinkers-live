@@ -25,7 +25,7 @@ function loadProducts() {
     };
 
     const script = document.createElement("script");
-    script.src = "https://script.google.com/macros/s/AKfycbwo9mFy7pUgQN5BtfVx-DQXn4kRFJbQPKkvXw93yE3budYgAWiv6k3xJeBmZrPXe2YR/exec?callback=handleProducts";
+    script.src = "https://script.google.com/macros/s/AKfycbwo9mFy7pUgQN5BtfVx-DQXn4kRFJbQPKkvXw93yE3budYgAWiv6k3xJeBmZrPXe2YR/exec";
 
     document.body.appendChild(script);
 
