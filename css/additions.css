@@ -386,5 +386,16 @@ body {
   margin-top: 10px;
   cursor: pointer;
 }
-
+/* ✅ PRODUCT IMAGE NORMALIZATION */
+.product-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+/* ✅ HOVER EFFECT (PREMIUM FEEL) */
+.product-card:hover {
+  transform: translateY(-5px);
+  transition: 0.3s ease;
+}
 
