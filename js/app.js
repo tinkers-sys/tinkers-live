@@ -1,39 +1,6 @@
 "use strict";
 
-/* ===============================
-✅ PRODUCT DATA (FINAL CLEAN VERSION)
-=============================== */
-let allProducts = [
-
-  {
-    id: 45758375591970,
-    name: "African Print Off-Shoulder Dress",
-    price: 850,
-    image: "https://tinkers-8375.myshopify.com/cdn/shop/files/Summer-Dress_1.jpg?v=1781125743"
-  },
-
-  {
-    id: 45758375591971,
-    name: "African Map Earrings",
-    price: 250,
-    image: "https://tinkers-8375.myshopify.com/cdn/shop/files/africa-map-earrings_1.jpg?v=1781125203"
-  },
-
-  {
-    id: 45758375591972,
-    name: "African Warrior Shirt",
-    price: 450,
-    image: "https://tinkers-8375.myshopify.com/cdn/shop/files/African-Warrior-Shirt_1.jpg?v=1781108429"
-  },
-
-  {
-    id: 45758375591973,
-    name: "Beadwork Necklace",
-    price: 300,
-    image: "https://tinkers-8375.myshopify.com/cdn/shop/files/beadwork-necklace.jpg?v=1781124977"
-  }
-
-];
+let allProducts = [];
 
 /* ===============================
 ✅ FORMAT CURRENCY
@@ -43,6 +10,34 @@ function formatCurrency(amount) {
     style: "currency",
     currency: "ZAR"
   }).format(amount);
+}
+
+/* ===============================
+✅ LOAD PRODUCTS (AUTO SYNC ✅)
+=============================== */
+async function loadProducts() {
+  try {
+    const res = await fetch(
+      "https://script.google.com/macros/s/AKfycbwKGMUdmQrftvySLZFbhzSnfWSXSfQJNOVy9FmUun_c6TN_zuF2Zdk9IWfqYFgagpSe/exec"
+    );
+
+    if (!res.ok) {
+      throw new Error("Failed to fetch products");
+    }
+
+    const data = await res.json();
+    console.log("✅ Auto-sync products:", data);
+
+    if (!data || data.length === 0) {
+      return [];
+    }
+
+    return data;
+
+  } catch (error) {
+    console.error("❌ LOAD ERROR:", error);
+    return [];
+  }
 }
 
 /* ===============================
@@ -71,17 +66,20 @@ function buildCard(p) {
 ✅ RENDER PRODUCTS
 =============================== */
 function renderProducts(products) {
-
   const container = document.querySelector(".products");
 
   if (!container) {
-    console.error("Products container missing");
+    console.error("❌ Products container not found");
+    return;
+  }
+
+  if (!products || products.length === 0) {
+    container.innerHTML = "<p>No products available</p>";
     return;
   }
 
   let html = "";
   products.forEach(p => html += buildCard(p));
-
   container.innerHTML = html;
 }
 
@@ -110,6 +108,7 @@ function addToCart(id, name, price, image) {
   saveCart(cart);
   updateCartUI();
 
+  // ✅ subtle animation
   const btn = document.querySelector(".cart-btn");
   if (btn) {
     btn.style.transform = "scale(1.1)";
@@ -168,7 +167,12 @@ function goToShopifyCheckout() {
 /* ===============================
 ✅ INIT
 =============================== */
-document.addEventListener("DOMContentLoaded", function () {
-  renderProducts(allProducts);
+document.addEventListener("DOMContentLoaded", async () => {
+
+  const products = await loadProducts();
+
+  allProducts = products;
+  renderProducts(products);
   updateCartUI();
+
 });
