@@ -13,24 +13,23 @@ function formatCurrency(amount) {
 }
 
 /* ===============================
-✅ LOAD PRODUCTS (CORS-FREE ✅)
+✅ LOAD PRODUCTS (YOUR SCRIPT ✅)
 =============================== */
 function loadProducts() {
 
   return new Promise((resolve) => {
 
     window.handleProducts = function(data) {
-      console.log("✅ Products loaded:", data);
+      console.log("✅ Products loaded from script:", data);
       resolve(data || []);
     };
 
     const script = document.createElement("script");
-    script.src = "https://script.google.com/macros/s/AKfycbwKGMUdmQrftvySLZFbhzSnfWSXSfQJNOVy9FmUun_c6TN_zuF2Zdk9IWfqYFgagpSe/exec?callback=handleProducts";
+    script.src = "https://script.google.com/macros/s/AKfycbwo9mFy7pUgQN5BtfVx-DQXn4kRFJbQPKkvXw93yE3budYgAWiv6k3xJeBmZrPXe2YR/exec?callback=handleProducts";
 
     document.body.appendChild(script);
 
   });
-
 }
 
 /* ===============================
@@ -59,10 +58,11 @@ function buildCard(p) {
 ✅ RENDER PRODUCTS
 =============================== */
 function renderProducts(products) {
+
   const container = document.querySelector(".products");
 
   if (!container) {
-    console.error("Products container missing");
+    console.error("❌ Products container missing");
     return;
   }
 
@@ -102,6 +102,7 @@ function addToCart(id, name, price, image) {
   saveCart(cart);
   updateCartUI();
 
+  // small animation
   const btn = document.querySelector(".cart-btn");
   if (btn) {
     btn.style.transform = "scale(1.1)";
@@ -127,6 +128,7 @@ function updateCartUI() {
 ✅ CART DRAWER
 =============================== */
 function toggleCart() {
+
   const drawer = document.getElementById("cartDrawer");
   if (!drawer) return;
 
