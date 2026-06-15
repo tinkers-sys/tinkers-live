@@ -157,6 +157,33 @@ function goToShopifyCheckout() {
     cartString +
     "?checkout";
 }
+const products = [
+  {
+    id: 1,
+    name: "Test Bead Necklace",
+    price: 150,
+    image: "https://via.placeholder.com/200"
+  }
+];
+
+function loadProducts() {
+  const container = document.getElementById("products-container");
+  container.innerHTML = "";
+
+  products.forEach(product => {
+    container.innerHTML += `
+      <div class="product">
+        <img src="${product.image}" />
+        <h3>${product.name}</h3>
+        <p>R${product.price}</p>
+        <button>Add to Cart</button>
+      </div>
+    `;
+  });
+}
+
+// IMPORTANT: this must run
+loadProducts();
 
 /* ===============================
 ✅ INIT
@@ -168,5 +195,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   allProducts = products;
   renderProducts(products);
   updateCartUI();
+  
 
 });
