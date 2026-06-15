@@ -13,23 +13,48 @@ function formatCurrency(amount) {
 }
 
 /* ===============================
-✅ LOAD PRODUCTS (YOUR SCRIPT ✅)
+✅ LOAD PRODUCTS FROM GOOGLE SHEETS
 =============================== */
 function loadProducts() {
-
   return new Promise((resolve) => {
 
     window.handleProducts = function(data) {
-      console.log("✅ Products loaded from script:", data);
-      resolve(data || []);
+      console.log("✅ Products loaded:", data);
+
+      if (!data || data.length === 0) {
+        console.warn("⚠️ No data from Google Sheets — using fallback");
+        resolve(getFallbackProducts());
+      } else {
+        resolve(data);
+      }
     };
 
     const script = document.createElement("script");
-    script.src = "https://script.google.com/macros/s/AKfycbwo9mFy7pUgQN5BtfVx-DQXn4kRFJbQPKkvXw93yE3budYgAWiv6k3xJeBmZrPXe2YR/exec";
+
+    script.src =
+      "https://script.google.com/macros/s/AKfycbwo9mFy7pUgQN5BtfVx-DQXn4kRFJbQPKkvXw93yE3budYgAWiv6k3xJeBmZrPXe2YR/exec";
+
+    script.onerror = () => {
+      console.error("❌ Failed to load script — using fallback");
+      resolve(getFallbackProducts());
+    };
 
     document.body.appendChild(script);
-
   });
+}
+
+/* ===============================
+✅ FALLBACK PRODUCTS (TEST MODE)
+=============================== */
+function getFallbackProducts() {
+  return [
+    {
+      id: "1",
+      name: "Test Bead Necklace",
+      price: 150,
+      image: "https://via.placeholder.com/200"
+    }
+  ];
 }
 
 /* ===============================
@@ -62,17 +87,15 @@ function renderProducts(products) {
   const container = document.querySelector(".products");
 
   if (!container) {
-    console.error("❌ Products container missing");
-    return;
-  }
-
-  if (!products || products.length === 0) {
-    container.innerHTML = "<p>No products available</p>";
+    console.error("❌ Missing .products container in HTML");
     return;
   }
 
   let html = "";
-  products.forEach(p => html += buildCard(p));
+
+  products.forEach(p => {
+    html += buildCard(p);
+  });
 
   container.innerHTML = html;
 }
@@ -101,17 +124,10 @@ function addToCart(id, name, price, image) {
 
   saveCart(cart);
   updateCartUI();
-
-  // small animation
-  const btn = document.querySelector(".cart-btn");
-  if (btn) {
-    btn.style.transform = "scale(1.1)";
-    setTimeout(() => btn.style.transform = "scale(1)", 200);
-  }
 }
 
 /* ===============================
-✅ UPDATE CART
+✅ UPDATE CART UI
 =============================== */
 function updateCartUI() {
 
@@ -125,67 +141,6 @@ function updateCartUI() {
 }
 
 /* ===============================
-✅ CART DRAWER
-=============================== */
-function toggleCart() {
-
-  const drawer = document.getElementById("cartDrawer");
-  if (!drawer) return;
-
-  drawer.style.right =
-    drawer.style.right === "0px" ? "-350px" : "0px";
-}
-
-/* ===============================
-✅ SHOPIFY CHECKOUT
-=============================== */
-function goToShopifyCheckout() {
-
-  const cart = getCart();
-
-  if (cart.length === 0) {
-    alert("Cart is empty");
-    return;
-  }
-
-  let cartString = cart.map(item =>
-    item.id + ":" + item.qty
-  ).join(",");
-
-  window.location.href =
-    "https://tinkers-8375.myshopify.com/cart/" +
-    cartString +
-    "?checkout";
-}
-const products = [
-  {
-    id: 1,
-    name: "Test Bead Necklace",
-    price: 150,
-    image: "https://via.placeholder.com/200"
-  }
-];
-
-function loadProducts() {
-  const container = document.getElementById("products-container");
-  container.innerHTML = "";
-
-  products.forEach(product => {
-    container.innerHTML += `
-      <div class="product">
-        <img src="${product.image}" />
-        <h3>${product.name}</h3>
-        <p>R${product.price}</p>
-        <button>Add to Cart</button>
-      </div>
-    `;
-  });
-}
-
-// IMPORTANT: this must run
-loadProducts();
-
-/* ===============================
 ✅ INIT
 =============================== */
 document.addEventListener("DOMContentLoaded", async () => {
@@ -193,8 +148,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const products = await loadProducts();
 
   allProducts = products;
-  renderProducts(products);
-  updateCartUI();
-  
 
+  renderProducts(products);
+
+  updateCartUI();
 });
