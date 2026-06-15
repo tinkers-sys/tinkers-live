@@ -2,7 +2,7 @@
 
 let allProducts = [];
 
-/* ===============================
+/* =============================== 
 ✅ FORMAT CURRENCY
 =============================== */
 function formatCurrency(amount) {
